@@ -1,0 +1,129 @@
+In questo file verranno tenute aggiornate tutte le cose da fare:
+[X] indica (fatto)
+[OLD] indica parti che hanno perso il loro senso
+[NEXT] indica in progetto per la prossima versione. (attualmente la beta)
+
+Lista delle cose da programmare nel modulo: Aedilis [Pronto per la versione Beta]
+[X] Ottimizzazione del codice
+[X] Commentature dal codice
+[X] Implementare il comando dell'Help
+
+Lista delle cose da programmare nel modulo: DBConfig [Pronto per la versione Beta]
+[X] Ottimizzazione del codice
+[X] Commentature del codice
+[X] Aggiunta delle icone +- opzioni
+[X] Implementazione del comando di BackupDb
+[X] Implementazione del comando di RestoreDb
+[X] Aggiungere pulsante per aprire la guida
+
+Lista delle cose da programmare nel modulo: Configurator [Pronto per la versione Beta]
+[X] Ottimizzazione del codice
+[X] Commentatura del codice
+[X] Aggiunta icone ai comandi di salva ed esci
+[NEXT] Implementare l'AutoBackup
+[X] Aggiungere pulsante per aprire la guida
+
+Lista delle cose da programmare nel modulo: EditorFunzioni [Pronto per la versione Beta]
+[X] Ottimizzazione del codice
+[X] Commentatura del codice
+[X] Gestione crash di octave
+[X] Miglioramento Icone
+[X] Implementare il tasto dell'help
+
+Lista delle cose da programmare nel modulo: Dummy
+[X] Aggiungere l'installazione obbligatoria dei pacchetti: texlive-latex-base, tetex-bin 
+[X] Togliere la dipendenza da texlive-latex-base causa conflitto con il pacchetto ufficiale: tetex-bin.
+
+Lista delle cose da programmare nel modulo: EditorPrezziari
+[X] Controllare le importazioni da xml
+[X] Adattare tutte le importazioni al nuovo standard (xml già fatto)
+[X] Abilitare descrizione breve personalizzata o da ricavarsi da quella lunga
+[X] Scrittura in locale dei prezziari oltre che su database
+[X] Scrittura in locale anche delle modifiche
+- Eliminazione delle voci-prezziari[X] cancellati anche in locale.
+[X] Possibilità di chiudere un prezziario (impedirne l'editing, di default sui prezziari importati.)
+
+Lista delle cose da programmare nel modulo: ComputoMetrico
+[X] Nella tab dei prezziari vanno inseriti il simbolo dell'€ ai prezzi e il % agli sconti.
+[X] Implementare le fruizioni/stampe con il wizard.
+[X] Implementare anteprima delle fruizioni/stampe
+- Abbellire l'output delle fruizioni(con personalizzazioni, colori bordi etc)[Approfondire-Latex]
+[X] Le colonne non devono essere tutte larghe uguali. ci dev'essere + spazio per le descrizioni.
+- Formalizzazione dell'output (uniformare alle normative vigenti la stampa del computo)
+- Se si stampa l'elenco delle categorie con relativo prezzo, l'ultimo deve essere il totale del computo
+[X] Alla fine del computo tramite fruizione semplice deve sempre risultare il totale e non all'inizio.
+[X] La copertina dev'essere completamente personalizzabile (Come un foglio di OOD, OpenOfficeDraw, si potrebbe pensare a un software del genere per la realizzazione di una copertina esterna e tenere quella generata ora come seconda pagina.)
+- Implementare la gestione degli aggiornamenti dei prezziari.
+- Quando si modifica un elemento dev'essere possibile scegliere se la descrizione breve deve rimanere come prima (default se non si cambia quella completa) o se dev'essere ri-ricavata da quella lunga.
+[X] BUG: quando si carica un prezziario viene comunicato che il caricamento è stato interrotto anche se non è vero.
+[X] BUG: la prima volta che si usa il programma non trova la cartella user.home/.Aedilis/Funzioni e perciò Octave Crasha.
+[X] Aggiungere alle proprietà del progetto i campi: 
+	Dicitura di Lavoro
+	Data Documento
+	Comune
+	Provincia
+- Implementare importazione[X] ed esportazione verso i formati esportati da primus.
+[X] Possibilità di interrompere il caricamento di un prezziario
+[X] Modificare l'algoritmo di lettura dei prezziari in relazione a come cambieranno.
+[NEXT] Possibilità di stampare tutte le descrizioni delle misure con eventuali misure
+[X] Migliorare le fruizioni
+[X] Aggiornare l'output su html e csv con le nuove opzioni.
+[X] Aggiungere la possibilità di inserire nelle fruizioni: Costo totale per elemento, scontato e non
+[X] Possibilità di muovere gli elementi delle fruizioni
+[X] Possibilità di elencare gli elementi divisi per categorie
+[X] Possibilità di stampare il totale per categoria
+[X] Migliorare la funzione di salvataggio in latex
+[X] Modificare gli appellativi "Nome Progetto" e "Autore" in "Titolo Progetto" e "Professionista"
+[X] Possibilità di stampare il totale del computo in fondo a tutto allineato a destra.
+[X] Possibilità di stampare una categoria per pagina (nel caso che una categoria occupi più di una pagina si intende che essa finisca l'ultima pagina lasciandola bianca e inizi poi in quella successiva.)
+[X] Possibilità di stampare una copertina (per ora di solo testo con i dati principali, in seguito con anche la possibilità di inserire immagini)
+[X] Possibilità di ristampare l'intestazione ad ogni categoria.
+[X] Sviluppare un form per ottenere una fruizione completamente personalizzabile[X], mentre una per una fruizione abbastanza standard con sole poche decisioni(+ veloce)[X].
+[X] Togliere dalla fruizione veloce la stampa dello sconto
+[X] Aggiungere la stampa di una colonna vuota per le offerte(offerta in cifre e in lettere, 2 colonne quindi).
+[X] Possibilità di elencare le funzioni per Octave disponibili con la propria descrizione quando si inseriscono le quantità.
+[X] Modificare il formato di salvataggio in modo da poter salvare correttamente anche descrizioni che sono + lunghe di una linea (URGENTE)
+[X] Implementare la tab "Confronta Offerte" dove ci sia una colonna con i codici e le descrizioni brevi, infine una colonna con i prezzi "propri" degli elementi mentre poi N colonne con i prezzi delle varie offerte.
+[X] Implementare la creazione di un report per poter visualizzare facilmente quale sia l'offerta migliore (rosso, valutazione positiva, nero, valutazione negativa, scostamento percenturale dall'offerta di base.)
+[X] Implementare l'uso dei colori anche nell'esportazione in html.
+[X] Correggere bug, inserimento nuovi dati
+[X] Gli elementi delle offerte ancora da inserire vanno segnalati con il colore grigio.
+[X] Se viene inserito un carattere non consentito il programma non dovrebbe crashare ma chiedere di reinserire i dati.
+[X] Solo codice come identificativo.
+[X] Il report esporta anche il resoconto delle varie aziende basandosi sul totale.
+[X] Oggetti disegnati, Caricamento oggetti da ElencoPrezzi e prezzi standard
+[X] Concedere la possibilità di modificare le descrizioni brevi e lunghe
+
+Lista delle cose da programmare nel modulo Aedilis-Help
+- Scrivere l'help
+[X] Abilitare la visione delle immagini
+[X] Correggere bug: se viene selezionata un'immagine che non esiste il programma crasha!
+- Abilitare lo zoom per le immagini
+- Abilitare la creazione dell'indice della guida
+[X] Commentatura del codice
+[X] Ottimizzazione del codice
+
+Lista delle cose da programmare in Aedilis-Cover
+[X] Generazione anteprima del layout con dati fittizzi
+- Import/Export di pacchetti di layout
+[X] Edita, salva, elimina layout in memoria
+[X] Gestione immagini esterne
+- Legenda delle special-key utilizzabili.
+
+Lista dei nuovi moduli in cantiere
+[NEXT] Gestione clienti
+[NEXT] Contabilità
+[NEXT] Libretto delle misure
+
+Lista delle cose da programmare condivise su più moduli
+[X] Creare algoritmo che "taglia" le descrizioni lunghe e ne ricava quelle brevi [ComputoMetrico[X] - EditorPrezziari[X]]
+[X] Configurare i vari comandi di help in modo che passino l'url a Aedilis-Help
+[NEXT] Quando si apre-salva un file la volta dopo il form si deve riaprire nell'ultima cartella utilizzata. Se è la prima volta si deve aprire nella home.
+
+
+Altre cose da fare
+- Guida in odt per fruizione in pdf
+- Conversione guida in html per fruizione online e per diventare la documentazione del programma
+- Creare il pacchetto aedilis-doc
+- Pulizia/Commentatura codice
+
