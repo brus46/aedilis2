@@ -1,0 +1,21 @@
+# Gambas Project File 2.0
+Title=Aedilis
+Startup=Splash
+Icon=Icone/aedilis.png
+Version=0.0.35
+Library=gb.qt
+Library=gb.form
+Library=gb.db
+Library=gb.db.form
+Library=gb.qt.ext
+Description=Aedilis è la suite per eccellenza per l'edilizia in linux.\n Attualmente ha le seguenti caratteristiche salienti:\n  - Capacità di lavorare con i prezziari (importabili da vari formati)\n   - Capacità di eseguire computi metrici \n    - Capacità di usare formule personalizzate per il calcolo delle quantità (scritte in linguaggio per Octave)
+Authors=Mosconi Marco
+TabSize=5
+ControlPublic=1
+Maintainer=MosconiMarco
+Address=brus46@gmail.com
+License=General Public Licence
+Systems=ubuntu
+Menus=Apps/Tools
+Categories=Office
+Groups=Office

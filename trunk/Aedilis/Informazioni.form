@@ -1,0 +1,48 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,67)
+  Text = ("Informazioni riguardo ad Aedilis")
+  Icon = Picture["Icone/Ridimensionato-Guida.png"]
+  Border = Window.Fixed
+  { Help Button
+    MoveScaled(38,56,25,10)
+    Text = ("Guida di Aedilis")
+    Picture = Picture["Icone/Ridimensionato-Guida.png"]
+  }
+  { TextLabel2 TextLabel
+    MoveScaled(1,33,62,4)
+    Text = ("Versione: 0.0.31")
+  }
+  { TextLabel3 TextLabel
+    MoveScaled(1,37,62,4)
+    Text = ("Autore: Mosconi Marco")
+  }
+  { TextLabel4 TextLabel
+    MoveScaled(1,41,62,4)
+    Text = ("Licenza: GPL")
+  }
+  { SeeLicence Button
+    MoveScaled(48,40,15,4)
+    Text = ("Vedi Licenza")
+  }
+  { Back Button
+    MoveScaled(1,56,25,10)
+    Text = ("Indietro")
+  }
+  { PictureBox1 PictureBox
+    MoveScaled(3,1,58,32)
+    Picture = Picture["Icone/aedilis-splash.png"]
+    Stretch = True
+    Alignment = Align.Center
+    Border = Border.Plain
+  }
+  { TextArea1 TextArea
+    MoveScaled(1,46,62,9)
+    Background = Color.Background
+    Text = ("Aedilis \xC3\xA8 un software per realizzare computi metrici stimativi, richieste d'offerta, appalti speciali d'appalto, contabilit\xC3\xA0 e per aiutare il professionista ad aumentare la sua professionalit\xC3\xA0. ")
+    ReadOnly = True
+    Wrap = True
+    Border = False
+  }
+}

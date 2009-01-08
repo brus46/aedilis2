@@ -1,0 +1,72 @@
+* Fri Sep 28 2007 MosconiMarco <brus46@gmail.com> 0.0-34
+- Aggiunto il comando per lanciare l'editor dei layout (aedilis-cover)
+
+* Thu Sep 27 2007 MosconiMarco <brus46@gmail.com> 0.0-33
+- Bug fixed
+
+* Thu Sep 27 2007 MosconiMarco <brus46@gmail.com> 0.0-32
+- Creazione delle cartelle di base di Aedilis implementata.
+
+* Mon Sep 24 2007 MosconiMarco <brus46@gmail.com> 0.0-31
+- Commentatura e Ottimizzazione del codice
+
+* Sun Sep 23 2007 MosconiMarco <brus46@gmail.com> 0.0-30
+- Aggiunto il richiamo ad Aedilis-Help per la visualizzazione della guida.
+
+* Tue Sep 04 2007 MosconiMarco <brus46@gmail.com> 0.0-29
+- Add new module: Aedilis-FunzioniMatematiche
+
+* Tue Sep 04 2007 MosconiMarco <brus46@gmail.com> 0.0-28
+- Aedilis-Computo new icon
+
+* Sun Sep 02 2007 MosconiMarco <brus46@gmail.com> 0.0-27
+- Aedilis text resized
+
+* Mon Aug 27 2007 MosconiMarco <brus46@gmail.com> 0.0-26
+- Backup moved to DBConfig
+- new look
+
+* Tue Jul 31 2007 MosconiMarco <brus46@gmail.com> 0.0-25
+- New Face, Designed BackupWay but not yet implemented
+
+* Sun Jul 15 2007 MosconiMarco <brus46@gmail.com> 0.0-24
+- Turn Over
+
+* Thu Jul 05 2007 MosconiMarco <brus46@gmail.com> 0.0-23
+- Implementato il gestore delle categorie del computo
+
+* Sat Jun 30 2007 MosconiMarco <brus46@gmail.com> 0.0-22
+- Icon improved
+
+* Sun Jun 24 2007 MosconiMarco <brus46@gmail.com> 0.0-21
+- Icon Changed
+
+* Sat Jun 23 2007 MosconiMarco <brus46@gmail.com> 0.0-20
+- Start develop ElencoPrezzi
+
+* Wed Jun 20 2007 MosconiMarco <brus46@gmail.com> 0.0-19
+- Add Form: Informazioni
+- Add Form: Licenza
+- Logo Changed
+
+* Tue Jun 19 2007 MosconiMarco <brus46@gmail.com> 0.0-18
+- Add Form: ComputoMetrico
+
+* Tue Jun 19 2007 MosconiMarco <brus46@gmail.com> 0.0-17
+- Cambio nome progetto Aedile->Aedilis
+
+* Mon Jun 18 2007 MosconiMarco <brus46@gmail.com> 0.0-16
+- Bug Fixing
+
+* Mon Jun 18 2007 MosconiMarco <brus46@gmail.com> 0.0-15
+- Bug Fixed
+
+* Mon Jun 18 2007 MosconiMarco <brus46@gmail.com> 0.0-14
+- Bug fixing
+
+* Mon Jun 18 2007 MosconiMarco <brus46@gmail.com> 0.0-12
+- Implementazione della gestione dei progetti.
+
+* Sun Jun 17 2007 MosconiMarco <brus46@gmail.com> 0.0-10
+- Initial release
+

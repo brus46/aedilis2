@@ -1,0 +1,74 @@
+' Gambas class file
+
+PUBLIC SUB _new()
+
+END
+
+PUBLIC SUB Form_Open()
+     ME.Center
+END
+
+PUBLIC SUB DbConfig_Click()
+     'Lancio il configuratore del database     
+     SHELL "aedilisdbconf.gambas" 
+
+END
+
+PUBLIC SUB Chiudi_Click()
+     'Esco dal programma
+     ME.Close  
+
+END
+
+PUBLIC SUB EdPrezziari_Click()
+
+     'Lancio il programma per realizzare i Prezziari, nascondo il launcher fino alla morte del programma, quindi ricompaio.
+     ME.Hide
+     SHELL "aedilis-editorprezziari.gambas" WAIT 
+     ME.Show
+END
+
+PUBLIC SUB Config_Click()
+     'Lancio il programma di configurazione
+     SHELL "aedilisconfigurator.gambas" 
+
+END
+
+PUBLIC SUB Form_Close()
+     'Quando questo form viene chiuso termino il programma.
+     QUIT 
+
+END
+
+PUBLIC SUB Info_Click()
+     'Apro il form delle informazioni
+     Informazioni.Show
+     
+END
+
+PUBLIC SUB CM_Click()
+
+     'Lancio il programma per realizzare i Computi Metrici, nascondo il launcher fino alla morte del programma, quindi ricompaio.
+     ME.Hide
+     SHELL "aedilis-computometrico.gambas" WAIT 
+     ME.Show  
+
+END
+
+PUBLIC SUB EdFunzioni_Click()
+     
+  'Lancio il programma per editare le funzioni matematiche, nascondo il launcher fino alla morte del programma, quindi ricompaio.
+  ME.Hide
+  SHELL "aedilis-funzionimatematiche.gambas" WAIT 
+  ME.Show
+
+END
+
+PUBLIC SUB AedilisCover_Click()
+
+  'Lancio il programma per editare le funzioni matematiche, nascondo il launcher fino alla morte del programma, quindi ricompaio.
+  ME.Hide
+  SHELL "aedilis-cover.gambas" WAIT 
+  ME.Show
+
+END

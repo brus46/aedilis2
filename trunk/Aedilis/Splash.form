@@ -1,0 +1,18 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,42)
+  Text = ("")
+  Border = Window.None
+  { PictureBox1 PictureBox
+    MoveScaled(0,0,64,42)
+    Picture = Picture["Icone/aedilis-splash.png"]
+    Stretch = True
+  }
+  { Timer1 #Timer
+    #X = 0
+    #Y = 0
+    Enabled = True
+    Delay = 10
+  }
+}
