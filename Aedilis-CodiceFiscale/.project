@@ -1,0 +1,13 @@
+# Gambas Project File 2.0
+Title=Aedilis - Codice Fiscale
+Startup=Splash
+Icon=Immagini/CodiceFiscale.png
+Version=0.0.2
+Library=gb.qt
+Library=gb.form
+Library=gb.qt.ext
+Description=Questo programma calcola il codice fiscale di un cittadino italiano inserendo i suoi dati anagrafici.
+Authors=Mosconi Marco
+TabSize=5
+ControlPublic=1
+ExecPath=/home/marco/Aedilis-CodiceFiscale.gambas

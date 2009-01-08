@@ -1,0 +1,58 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,43)
+  Text = ("Il tuo Codice fiscale.")
+  Icon = Picture["Immagini/CodiceFiscale.png"]
+  Border = Window.None
+  { PictureBox1 PictureBox
+    MoveScaled(0,0,64,43)
+    Picture = Picture["Immagini/Facsimile_Codice_fiscale.jpg"]
+    Stretch = True
+  }
+  { TextBox1 TextBox
+    MoveScaled(11,20,50,5)
+    Text = ("CODICE")
+    ReadOnly = True
+    Border = False
+  }
+  { Sesso TextLabel
+    MoveScaled(53,29,3,3)
+    Background = &HFFFFFF&
+    Text = ("M")
+  }
+  { Data TextLabel
+    MoveScaled(43,36,10,3)
+    Background = &HFFFFFF&
+    Text = ("00/00/00")
+  }
+  { Cognome TextLabel
+    MoveScaled(11,25,15,3)
+    Background = &HFFFFFF&
+    Text = ("Cognome")
+  }
+  { Nome TextLabel
+    MoveScaled(11,29,15,3)
+    Background = &HFFFFFF&
+    Text = ("Nome")
+  }
+  { LuogoNascita TextLabel
+    MoveScaled(11,32,25,3)
+    Background = &HFFFFFF&
+    Text = ("Luogo")
+  }
+  { Provincia TextLabel
+    MoveScaled(11,36,15,3)
+    Background = &HFFFFFF&
+    Text = ("Provincia")
+  }
+  { Chiudi Button
+    MoveScaled(41,2,18,3)
+    Text = ("Chiudi")
+  }
+  { CAP TextLabel
+    MoveScaled(39,32,15,3)
+    Background = &HFFFFFF&
+    Text = ("CAP")
+  }
+}
