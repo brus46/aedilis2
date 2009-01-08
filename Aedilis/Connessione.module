@@ -1,0 +1,71 @@
+' Gambas module file
+
+PUBLIC DBConnect AS Connection
+PUBLIC DBResult AS Result
+PUBLIC Browser AS String
+
+PUBLIC SUB CheckConnection()
+DIM ConfFile AS File
+DIM linea AS String
+
+DBConnect = NEW Connection
+
+TRY ConfFile = OPEN user.Home & "/.Aedilis/DBConfig" FOR READ 
+  IF ERROR THEN 
+     Message.Info("Primo Avvio, lancio il software di configurazione del database")
+     SHELL "aedilisdbconf.gambas"
+     
+  ELSE 
+     LINE INPUT #ConfFile, DBConnect.Host
+     LINE INPUT #ConfFile, DBConnect.Login
+     LINE INPUT #ConfFile, DBConnect.Password
+     LINE INPUT #ConfFile, DBConnect.Name
+     LINE INPUT #ConfFile, DBConnect.Type
+     
+     TRY DBConnect.Open
+     IF ( ERROR ) THEN 
+          Message.Info("Errore nella connessione a Mysql: " & Error.Text & ", lancio il software di configurazione")
+          SHELL "aedilisdbconf.gambas"
+     ELSE 
+          CheckTables
+     END IF
+  END IF
+  
+END
+
+PUBLIC SUB CheckTables()
+DIM DBTable AS Table
+DIM esiste AS Boolean
+     esiste = DBConnect.Tables.Exist("ElProgetti")
+     IF (esiste = FALSE) THEN 
+          PRINT "Creazione tabella indice dei progetti"
+          DBTable = DBConnect.Tables.Add("ElProgetti")
+          DBTable.Fields.Add("Id", gb.Integer)
+          DBTable.Fields.Add("Nome", gb.String)
+          DBTable.Fields.Add("Id_Computo", gb.Integer)
+          DBTable.Fields.Add("Id_ElPrezzi", gb.Integer)
+          DBTable.Fields.Add("Tipo", gb.Integer)
+          DBTable.Update
+          DBTable.PrimaryKey.Add("Id")
+          DBResult = DBConnect.Exec("ALTER TABLE ElProgetti ADD PRIMARY KEY(id)")
+     END IF
+  
+  
+END
+
+PUBLIC SUB LoadConfig()
+DIM ConfFile AS File
+DIM linea AS String
+
+Browser = "none"
+TRY ConfFile = OPEN user.Home & "/.Aedilis/Config" FOR READ 
+  IF ERROR THEN 
+     Message.Info("Primo Avvio, lancio il software di configurazione")
+     SHELL "aedilisconfigurator.gambas"
+  ELSE 
+     LINE INPUT #ConfFile, linea
+     Browser = linea
+  END IF
+  
+  
+END

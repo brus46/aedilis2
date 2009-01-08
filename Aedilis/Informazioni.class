@@ -1,0 +1,34 @@
+' Gambas class file
+
+
+PUBLIC SUB Form_Open()
+
+     ME.Center
+       
+END
+
+PUBLIC SUB SeeLicence_Click()
+     'Mostro il form della licenza
+     Licenza.Show  
+
+END
+
+PUBLIC SUB Back_Click()
+     'Chiudo questo form ed eventualmente quello della licenza
+     ME.Close  
+     Licenza.Close
+
+END
+
+PUBLIC SUB Help_Click()
+'Scrivo nel file di configurazione dell'Help la path della pagina della guida per questa sezione
+DIM hfile AS File 'Questa variabile conterrà il descrittore del file di configurazione dell'help
+     TRY hfile = OPEN user.Home &/ ".Aedilis/Help" FOR WRITE CREATE 'Provo ad aprire il file di configurazione dell'help in scrittura/creazione
+     IF NOT ( ERROR ) THEN 'Se non ci sono stati errori (es. file protetto da scrittura) allora salvo la nuova path della guida
+          PRINT #hfile, "http://www.sciallo.net/Aedilis/Guida/Main.html"
+          hfile.Close 'Chiudo il descrittore del file
+          WAIT 1 'Attendo in modo che il file possa essere scritto
+     END IF
+     
+     SHELL "aedilis-help.gambas" 'Lancio la guida
+END

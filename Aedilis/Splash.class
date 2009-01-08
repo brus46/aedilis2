@@ -1,0 +1,27 @@
+' Gambas class file
+
+
+PUBLIC SUB Timer1_Timer()
+     'Disabilito questo timer in modo che queste operazioni non vengano ripetute.
+     Timer1.Enabled = FALSE
+     'Creo la cartella dove risiedono tutti i file di aedilis. Se esiste già il comando non avrà effetto.
+     SHELL "mkdir " & User.Home &/ ".Aedilis/"
+     'Creo la cartella dove risiedono le funzioni matematiche di aedilis. Se esiste già il comando non avrà effetto.
+     SHELL "mkdir " & User.Home &/ ".Aedilis/Funzioni/"
+     'Creo la cartella dove risiedono i layout di stampa di aedilis. Se esiste già il comando non avrà effetto.
+     SHELL "mkdir " & User.Home &/ ".Aedilis/Layout/"
+     
+     'Carico il file di configurazione
+     Connessione.LoadConfig
+     
+     'Lancio il programma vero e proprio e nascondo lo splash-screen
+     Start.Show
+     ME.Hide  
+
+END
+
+PUBLIC SUB Form_Open()
+
+ME.Center  
+
+END

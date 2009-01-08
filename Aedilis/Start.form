@@ -1,0 +1,65 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,56,63)
+  Text = ("Aedilis")
+  Icon = Picture["Icone/aedilis.png"]
+  Border = Window.Fixed
+  { Separator1 Separator
+    MoveScaled(1,40,29,3)
+  }
+  { EdPrezziari Button
+    MoveScaled(1,11,29,9)
+    Text = ("Edita Prezziari")
+    Picture = Picture["Icone/aedilisPrezziarioEdit.png"]
+  }
+  { DbConfig Button
+    MoveScaled(1,43,29,9)
+    Text = ("Configurazione DB")
+    Picture = Picture["Icone/aedilis-db-config.png"]
+  }
+  { Chiudi Button
+    MoveScaled(33,53,22,9)
+    Text = ("Exit")
+    Picture = Picture["Icone/esci.png"]
+  }
+  { Config Button
+    MoveScaled(1,53,29,9)
+    Text = ("Impostazioni Basilari")
+    Picture = Picture["Icone/aedilis-configura.png"]
+  }
+  { Info Button
+    MoveScaled(33,43,22,9)
+    Text = ("Help && Info")
+    Picture = Picture["Icone/Ridimensionato-Guida.png"]
+  }
+  { CM Button
+    MoveScaled(1,1,29,9)
+    Text = ("Computo Metrico")
+    Picture = Picture["Icone/aedilisComputoMetrico.png"]
+  }
+  { PictureBox1 PictureBox
+    MoveScaled(33,2,21,20)
+    Picture = Picture["Icone/aedilis.png"]
+    Alignment = Align.Center
+    Border = Border.Raised
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(32,22,23,8)
+    Font = Font["Arial Black,32"]
+    Text = ("Aedilis")
+  }
+  { Separator3 Separator
+    MoveScaled(31,1,1,61)
+  }
+  { EdFunzioni Button
+    MoveScaled(1,31,29,9)
+    Text = ("Editor di funzioni")
+    Picture = Picture["Icone/aedilis-funzionimatematiche.png"]
+  }
+  { AedilisCover Button
+    MoveScaled(1,21,29,9)
+    Text = ("Editor di Layout")
+    Picture = Picture["Icone/aedilis-cover.png"]
+  }
+}
