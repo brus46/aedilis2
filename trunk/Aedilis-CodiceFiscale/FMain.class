@@ -1,0 +1,87 @@
+' Gambas class file
+
+PUBLIC SUB _new()
+
+END
+
+PUBLIC SUB Form_Open()
+ME.Center
+END
+
+PUBLIC SUB Chiudi_Click()
+
+  ME.Close
+
+END
+
+PUBLIC SUB Form_Close()
+
+  QUIT 
+
+END
+
+PUBLIC SUB Calcola_Click()
+DIM hfile AS File
+DIM linea AS String
+
+DIM trovato AS Boolean
+'Cerco il comune
+  TRY hfile = OPEN user.Home &/ ".Aedilis/CodiceFiscale/Comuni.Db" FOR READ 
+  IF ( ERROR ) THEN 
+     DataBaseComuni.CreaDb(0)
+     WAIT 1
+     TRY hfile = OPEN user.Home &/ ".Aedilis/CodiceFiscale/Comuni.Db" FOR READ 
+  END IF
+  IF NOT ( ERROR ) THEN 
+     WHILE NOT (Eof(hfile))
+          LINE INPUT #hfile, linea
+          PRINT linea
+          
+          IF (Split(linea, ",")[1] = Upper$(Comune.Text)) THEN
+               trovato = TRUE
+               BREAK 
+          END IF
+     WEND 
+  ELSE 
+     trovato = FALSE
+  END IF
+  
+  IF (trovato = FALSE) THEN 
+  'Cerco fra le nazioni
+    TRY hfile = OPEN user.Home &/ ".Aedilis/CodiceFiscale/Stati.Db" FOR READ 
+     IF ( ERROR ) THEN 
+          DataBaseComuni.CreaDb(1)
+          WAIT 1
+          TRY hfile = OPEN user.Home &/ ".Aedilis/CodiceFiscale/Stati.Db" FOR READ 
+     END IF
+     IF NOT ( ERROR ) THEN 
+          WHILE NOT (Eof(hfile))
+               LINE INPUT #hfile, linea
+               IF (Split(linea, ",")[1] = Upper$(Comune.Text)) THEN
+                    trovato = TRUE
+                    BREAK 
+               END IF
+          WEND 
+     ELSE 
+          trovato = FALSE
+     END IF
+  
+  END IF
+  IF (trovato = TRUE) THEN 
+     
+     Codice.Nome.Text = Nome.Text
+     Codice.Cognome.Text = Cognome.Text
+     Codice.LuogoNascita.Text = Split(linea, ",")[1]
+     Codice.CAP.Text = Split(linea, ",")[2]
+     Codice.Provincia.Text = Split(linea, ",")[3]
+     IF (sesso.Index = 0) THEN 
+          Codice.Sesso.Text = "M"
+     ELSE 
+          Codice.Sesso.Text = "F"
+     END IF
+     Codice.Show
+  ELSE 
+     Message.warning("Impossibile trovare il comune selezionato.")
+  END IF
+
+END

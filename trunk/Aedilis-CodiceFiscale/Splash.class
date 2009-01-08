@@ -1,0 +1,27 @@
+' Gambas class file
+
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+
+END
+
+PUBLIC SUB Timer1_Timer()
+  Timer1.Enabled = FALSE
+
+  'Check DbComuni Existance
+  IF NOT (Exist(user.Home &/ ".Aedilis/CodiceFiscale/Comuni.Db")) THEN 
+     'Load DbComuni
+     message.Info("Devo creare il database dei comuni.")
+     DataBaseComuni.CreaDb(0)
+  END IF
+  'Check DbStati Existance
+  IF NOT (Exist(user.Home &/ ".Aedilis/CodiceFiscale/Stati.Db")) THEN 
+     'Load DbStati
+     message.Info("Devo creare il database degli stati.")
+     DataBaseComuni.CreaDb(1)
+  END IF
+  ME.Hide
+  FMain.Show
+END

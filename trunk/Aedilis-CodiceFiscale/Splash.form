@@ -1,0 +1,19 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,17,21)
+  Background = &H008000&
+  Text = ("Aedilis-CodiceFiscale")
+  Icon = Picture["Immagini/CodiceFiscale.resized.png"]
+  Border = Window.None
+  { PictureBox1 PictureBox
+    MoveScaled(0,0,18,22)
+    Picture = Picture["Immagini/CodiceFiscale.png"]
+  }
+  { Timer1 #Timer
+    #X = 84
+    #Y = 0
+    Enabled = True
+    Delay = 100
+  }
+}
