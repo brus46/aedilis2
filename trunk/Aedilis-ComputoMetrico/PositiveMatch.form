@@ -1,0 +1,20 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,62)
+  Text = ("Risultati della ricerca")
+  Icon = Picture["Icone/Ridimensionato-Info.png"]
+  { risultati ListView
+    MoveScaled(1,1,47,60)
+  }
+  { Button1 Button
+    MoveScaled(49,1,14,7)
+    Text = ("Chiudi")
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(49,10,14,16)
+    Text = ("Facendo doppio click su una voce essa verr\xC3\xA0 selezionata nel prezziaio.")
+    Alignment = Align.Center
+    Border = Border.Raised
+  }
+}

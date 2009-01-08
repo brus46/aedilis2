@@ -1,0 +1,17 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,37,6)
+  Text = ("Inserisci valore")
+  Icon = Picture["Icone/aedilisDocumentoEdit.png"]
+  Border = Window.Fixed
+  { Valore TextBox
+    MoveScaled(1,1,31,4)
+    Text = ("")
+  }
+  { Button1 Button
+    MoveScaled(32,1,4,4)
+    Text = ("Ok")
+    Default = True
+  }
+}

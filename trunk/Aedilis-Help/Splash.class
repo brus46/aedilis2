@@ -1,0 +1,31 @@
+' Gambas class file
+
+PUBLIC Home AS String
+PUBLIC SUB _new()
+
+END
+
+PUBLIC SUB Form_Open()
+ME.Center
+END
+
+PUBLIC SUB Timer1_Timer()
+DIM hfile AS File
+  TRY hfile = OPEN user.Home &/ ".Aedilis/Help" FOR READ 
+  IF NOT ( ERROR ) THEN 
+     LINE INPUT #hfile, Home
+  ELSE 
+     Home = "http://www.sciallo.net/"
+  END IF
+  Timer1.Enabled = FALSE
+  Browser.MyUrl.Text = Home
+  Browser.Go_Click()
+  ME.Hide
+  Browser.show
+END
+
+PUBLIC SUB PictureBox1_MouseDown()
+
+  
+
+END

@@ -1,0 +1,81 @@
+* Tue Jul 31 2007 MosconiMarco <brus46@gmail.com> 0.0-30
+- Version field add. Auto increment implemented.
+- This module is completenly server/DB dependence.
+
+* Mon Jul 09 2007 MosconiMarco <brus46@gmail.com> 0.0-29
+- Definition of rules for identify elements in xml files.
+
+* Sat Jul 07 2007 MosconiMarco <brus46@gmail.com> 0.0-28
+- Own Prezziari Editor improved with father selecting
+
+* Wed Jul 04 2007 MosconiMarco <brus46@gmail.com> 0.0-27
+- Improved XML importing Algorithm
+
+* Wed Jul 04 2007 MosconiMarco <brus46@gmail.com> 0.0-26
+- Bug fixed
+
+* Tue Jul 03 2007 MosconiMarco <brus46@gmail.com> 0.0-24
+- Some upgrades
+
+* Tue Jul 03 2007 MosconiMarco <brus46@gmail.com> 0.0-23
+- Bug, xml importing, fixed
+
+* Sun Jul 01 2007 MosconiMarco <brus46@gmail.com> 0.0-22
+- XML importing perfetionated.
+- libImport deleted
+
+* Sat Jun 30 2007 MosconiMarco <brus46@gmail.com> 0.0-21
+- Alfa2 CSV importing
+
+* Fri Jun 29 2007 MosconiMarco <brus46@gmail.com> 0.0-20
+- Alfa CSV importing
+
+* Wed Jun 27 2007 MosconiMarco <brus46@gmail.com> 0.0-19
+- Change Importa Form
+- Starting Implementing CSV importing
+
+* Mon Jun 25 2007 MosconiMarco <brus46@gmail.com> 0.0-18
+- Change Format Selecting
+
+* Fri Jun 22 2007 MosconiMarco <brus46@gmail.com> 0.0-17
+- Perfetioned importing
+
+* Fri Jun 22 2007 MosconiMarco <brus46@gmail.com> 0.0-16
+- Changed link to import file support
+
+* Thu Jun 21 2007 MosconiMarco <brus46@gmail.com> 0.0-15
+- Add external library help for importing
+
+* Thu Jun 21 2007 MosconiMarco <brus46@gmail.com> 0.0-14
+- Search Add
+- Code written for each voice
+
+* Wed Jun 20 2007 MosconiMarco <brus46@gmail.com> 0.0-13
+- ElencoPrezziari eyecandy
+- CSV Exporting perfetioned.
+
+* Tue Jun 19 2007 MosconiMarco <brus46@gmail.com> 0.0-12
+- Importing perfetioned
+
+* Tue Jun 19 2007 MosconiMarco <brus46@gmail.com> 0.0-11
+- Bug Fixed
+
+* Tue Jun 19 2007 MosconiMarco <brus46@gmail.com> 0.0-10
+- Add feature: Can Import XML.
+- Add Shortcuts
+
+* Tue Jun 19 2007 MosconiMarco <brus46@gmail.com> 0.0-9
+- Add feature: Can Add, Remove, Edit Voice.
+
+* Tue Jun 19 2007 MosconiMarco <brus46@gmail.com> 0.0-7
+- Bug Fixing
+
+* Tue Jun 19 2007 MosconiMarco <brus46@gmail.com> 0.0-6
+- Cambio nome Aedile->Aedilis
+
+* Mon Jun 18 2007 MosconiMarco <brus46@gmail.com> 0.0-5
+- Bug Fixing
+
+* Sun Jun 17 2007 MosconiMarco <brus46@gmail.com> 0.0-3
+- Initial release
+

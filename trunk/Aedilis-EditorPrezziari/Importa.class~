@@ -1,0 +1,103 @@
+' Gambas class file
+
+
+PUBLIC SUB Form_Open()
+
+ME.Center  
+
+END
+
+PUBLIC SUB Download_Click()
+DIM strings AS String[]
+     strings = Split(Splash.Browser, "=")
+     
+
+     SHELL strings[1] & " http://www.sciallo.net/modules.php?name=archivio"  
+
+END
+
+PUBLIC SUB SelectFile_Click()
+
+Dialog.Title = "Importa Prezziario"  
+IF (Formato.Text = "XML") THEN 
+     Dialog.Filter = ["*.xml", "File XML"]
+ELSE IF (Formato.Text = "CSV") THEN 
+     Dialog.Filter = ["*.csv", "File CSV"]
+ELSE 
+     Dialog.Filter = ["*.prezziario", "File del programma"]
+END IF
+
+Dialog.Path = User.Home &/ ""
+IF (FALSE = Dialog.OpenFile()) THEN 
+     Filename.Text = Dialog.Path
+END IF
+
+END
+
+PUBLIC SUB Import_Click()
+DIM id_prox AS Integer
+DIM DBTable AS Table
+DIM esiste AS Boolean
+
+
+WITH Splash
+     .DBResult = .DBConnect.EXEC("Select * from ElPrezziari order by id")
+     IF (.DBResult.Available = TRUE) THEN 
+          .DBResult.MoveLast
+          id_prox = .DBResult!Id + 1
+     ELSE 
+          id_prox = 1
+     END IF
+     .DBConnect.Exec("insert into ElPrezziari values(&1, &2, 1)", id_prox, Nome.Text)
+     
+     esiste = .DBConnect.Tables.Exist("Prezziario" & id_prox)
+     IF (esiste = FALSE) THEN 
+          DBTable = .DBConnect.Tables.Add("Prezziario" & id_prox)
+          DBTable.Fields.Add("Id", gb.Integer)
+          DBTable.Fields.Add("Codice", gb.String)
+          DBTable.Fields.Add("IdPadre", gb.Integer)
+          DBTable.Fields.Add("Nome", gb.String)
+
+          DBTable.Fields.Add("DescrizioneBreve", gb.String)
+          DBTable.Fields.Add("DescrizioneLunga", gb.String)
+          DBTable.Fields.Add("UM", gb.String)
+          DBTable.Fields.Add("Prezzo", gb.String)
+          DBTable.Fields.Add("Sconto", gb.String)
+          DBTable.Fields.Add("Tipo", gb.Boolean)
+          DBTable.Update
+          DBTable.PrimaryKey.Add("Id")
+          .DBResult = .DBConnect.Exec("ALTER TABLE " & "Prezziario" & id_prox & " ADD PRIMARY KEY(id)")
+     END IF
+
+END WITH   
+WITH ToolImportazione
+TRY .hfile = OPEN filename.Text FOR READ 
+TRY .hfile1 = OPEN filename.Text FOR READ 
+IF NOT ( ERROR ) THEN 
+     IF NOT (Formato.Text = "CSV") THEN message.Info("Inizio importazione, \nClikka Ok per continuare.")
+     Importa.Hide
+          .id_prezziario = id_prox
+          
+          IF (Formato.Text = "XML") THEN 
+               .ImportXML()
+          ELSE IF (Formato.Text = "CSV") THEN 
+               ImportaCSV.Show
+          ELSE IF (Formato.Text = "Prezziari Aedilis (con UM)") THEN 
+               .ImportPrezziario()
+          ELSE IF (Formato.Text = "Prezziari Aedilis (no UM)") THEN 
+               .ImportPrezziarioUM()
+          END IF
+
+     IF NOT (Formato.Text = "CSV") THEN message.Info("Importazione completata!")
+     Fmain.refresh_click
+ELSE 
+     message.Info("Impossibile aprire il file: " & ERROR.Text)
+END IF
+END WITH 
+END
+
+PUBLIC SUB Annulla_Click()
+
+ME.Close  
+
+END

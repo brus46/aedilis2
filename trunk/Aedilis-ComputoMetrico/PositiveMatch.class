@@ -1,0 +1,40 @@
+' Gambas class file
+
+
+PUBLIC SUB Button1_Click()
+
+  ME.Close
+
+END
+
+PUBLIC SUB risultati_DblClick()
+
+  ComputoMetrico.PrezziarioSelezionato[risultati.Current.Key].EnsureVisible()
+  ComputoMetrico.PrezziarioSelezionato[risultati.Current.Key].Selected = TRUE
+  ME.Close
+
+END
+
+PUBLIC SUB risultati_Click()
+
+  
+
+END
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+
+END
+
+PUBLIC SUB Form_Resize()
+
+  IF (ME.Width < 350) THEN ME.Width = 350
+  IF (ME.Height < 250) THEN ME.Height = 250
+
+  Button1.X = ME.Width - Button1.Width - 10
+  TextLabel1.X = Button1.X
+  risultati.Width = Button1.X - risultati.X - 10
+  risultati.Height = ME.Height - 40
+
+END

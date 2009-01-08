@@ -1,0 +1,235 @@
+' Gambas class file
+
+PUBLIC CatColonne AS Integer
+PUBLIC ElColonne AS Integer
+
+PUBLIC SUB anteprimaCat()
+
+  CatColonne = 1
+  IF ((Cat_codice.Value = TRUE) AND (CatColonne < Cat_PosCodice.Value)) THEN CatColonne = Cat_PosCodice.Value
+  IF ((cat_nome.Value = TRUE) AND (CatColonne < Cat_posNome.Value)) THEN CatColonne = Cat_posNome.Value
+  IF ((cat_descrizione.Value = TRUE) AND (CatColonne < Cat_posdescrizione.Value)) THEN CatColonne = Cat_posdescrizione.Value
+  
+  Anteprima_Cat.Clear
+  Anteprima_Cat.Rows.Count = 2
+  Anteprima_Cat.Columns.Count = CatColonne
+
+  IF (cat_codice.Value = TRUE) THEN Anteprima_Cat[0, Cat_posCodice.Value - 1].Text = "Codice"
+  
+  IF (cat_nome.Value = TRUE) THEN Anteprima_Cat[0, Cat_posNome.Value - 1].Text = "Nome"
+  
+  IF (cat_descrizione.Value = TRUE) THEN Anteprima_Cat[0, Cat_posdescrizione.Value - 1].Text = "Descrizione"
+     
+END
+
+
+PUBLIC SUB anteprimaEl()
+  ElColonne = 1
+  IF ((El_codice.Value = TRUE) AND (ElColonne < El_PosCodice.Value)) THEN ElColonne = El_PosCodice.Value
+  IF ((El_nome.Value = TRUE) AND (ElColonne < El_posNome.Value)) THEN ElColonne = El_posNome.Value
+  IF ((El_descrizione.Value = TRUE) AND (ElColonne < El_posdescrizione.Value)) THEN ElColonne = El_posdescrizione.Value
+  IF ((El_descrizionelunga.Value = TRUE) AND (ElColonne < El_Posdescrlunga.Value)) THEN ElColonne = El_Posdescrlunga.Value
+  IF ((El_prezzo.Value = TRUE) AND (ElColonne < El_posprezzo.Value)) THEN ElColonne = El_posprezzo.Value
+  IF ((El_sconto.Value = TRUE) AND (ElColonne < El_possconto.Value)) THEN ElColonne = El_possconto.Value
+  
+  Anteprima_El.Clear
+  Anteprima_El.Rows.Count = 2
+  Anteprima_El.Columns.Count = ElColonne
+
+  IF (El_codice.Value = TRUE) THEN Anteprima_El[0, El_posCodice.Value - 1].Text = "Codice"
+  
+  IF (El_nome.Value = TRUE) THEN Anteprima_El[0, El_posNome.Value - 1].Text = "Nome"
+  
+  IF (El_descrizione.Value = TRUE) THEN Anteprima_El[0, El_posdescrizione.Value - 1].Text = "Descrizione"
+     
+  IF (El_descrizionelunga.Value = TRUE) THEN Anteprima_El[0, El_Posdescrlunga.Value - 1].Text = "Descr. Lunga"
+  
+  IF (El_prezzo.Value = TRUE) THEN Anteprima_El[0, El_posprezzo.Value - 1].Text = "Prezzo"
+  
+  IF (El_sconto.Value = TRUE) THEN Anteprima_El[0, El_possconto.Value - 1].Text = "Sconto"
+  
+
+  
+  
+END
+
+
+
+PUBLIC SUB Button2_Click()
+
+     ME.Close  
+
+END
+
+PUBLIC SUB TabStrip1_Click()
+
+  
+
+END
+
+PUBLIC SUB Form_Open()
+TestoSep.Clear
+TestoSep.List = ["\"", "'"]
+TestoSep.Text = "'"
+ME.Center  
+anteprimaEl()
+anteprimaCat()
+
+END
+
+PUBLIC SUB Button1_Click()
+
+ToolImportazione.ImportCSV  
+'ME.Hide
+END
+
+PUBLIC SUB Cat_PosCodice_Change()
+
+anteprimaCat()  
+
+END
+
+PUBLIC SUB Cat_PosNome_Change()
+
+anteprimaCat()
+
+END
+
+PUBLIC SUB Cat_PosDescrizione_Change()
+
+anteprimaCat()
+
+END
+
+PUBLIC SUB N_Change()
+
+anteprimaCat()
+
+END
+
+PUBLIC SUB M_Change()
+
+anteprimaCat()
+
+END
+
+PUBLIC SUB TextBox1_Change()
+
+anteprimaCat()
+
+END
+
+PUBLIC SUB TextBox2_Change()
+
+anteprimaCat() 
+
+END
+
+PUBLIC SUB Cat_Codice_Click()
+
+anteprimaCat() 
+
+END
+
+PUBLIC SUB Cat_Nome_Click()
+
+anteprimaCat()   
+
+END
+
+PUBLIC SUB Cat_Descrizione_Click()
+
+anteprimaCat()   
+
+END
+
+PUBLIC SUB Cat_NCampi_Click()
+
+anteprimaCat()   
+
+END
+
+PUBLIC SUB RadioButton1_Click()
+
+anteprimaCat()   
+
+END
+
+PUBLIC SUB RadioButton2_Click()
+
+anteprimaCat()   
+
+END
+
+
+PUBLIC SUB El_codice_Click()
+
+anteprimaEl()  
+
+END
+
+PUBLIC SUB El_nome_Click()
+
+anteprimaEl()  
+
+END
+
+PUBLIC SUB El_descrizione_Click()
+
+anteprimaEl()  
+
+END
+
+PUBLIC SUB El_descrizionelunga_Click()
+
+anteprimaEl()  
+
+END
+
+PUBLIC SUB El_Prezzo_Click()
+
+anteprimaEl()  
+
+END
+
+PUBLIC SUB El_sconto_Click()
+
+anteprimaEl()  
+
+END
+
+PUBLIC SUB El_poscodice_Change()
+
+anteprimaEl()  
+
+END
+
+PUBLIC SUB El_posnome_Change()
+
+anteprimaEl()  
+
+END
+
+PUBLIC SUB El_posdescrizione_Change()
+
+anteprimaEl()  
+
+END
+
+PUBLIC SUB El_posdescrLunga_Change()
+
+anteprimaEl()  
+
+END
+
+PUBLIC SUB El_posPrezzo_Change()
+
+anteprimaEl()  
+
+END
+
+PUBLIC SUB El_posSconto_Change()
+
+anteprimaEl()  
+
+END

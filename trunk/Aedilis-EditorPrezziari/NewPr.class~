@@ -1,0 +1,57 @@
+' Gambas class file
+
+
+PUBLIC SUB annulla_Click()
+
+     Nome.Clear
+     Nome.Text = "Prezziario"
+     ME.Hide  
+
+END
+
+PUBLIC SUB ok_Click()
+DIM id_prox AS Integer
+DIM DBTable AS Table
+DIM esiste AS Boolean
+
+
+WITH Splash
+     .DBResult = .DBConnect.Exec("Select * from ElPrezziari order by Id")
+     IF (.DBResult.Available = TRUE) THEN 
+          .DBResult.MoveLast
+          id_prox = .DBResult!Id + 1
+     ELSE 
+          id_prox = 1
+     END IF
+     .DBConnect.Exec("insert into ElPrezziari values(&1, &2, &3, 0,0)", id_prox, Nome.Text, 1)
+     
+     esiste = .DBConnect.Tables.Exist("Prezziario" & id_prox)
+     IF (esiste = FALSE) THEN 
+          DBTable = .DBConnect.Tables.Add("Prezziario" & id_prox)
+          DBTable.Fields.Add("Id", gb.Integer)
+          DBTable.Fields.Add("Codice", gb.String)
+          DBTable.Fields.Add("IdPadre", gb.Integer)
+          DBTable.Fields.Add("Nome", gb.String)
+
+          DBTable.Fields.Add("DescrizioneBreve", gb.String)
+          DBTable.Fields.Add("DescrizioneLunga", gb.String)
+          DBTable.Fields.Add("UM", gb.String)
+          DBTable.Fields.Add("Prezzo", gb.String)
+          DBTable.Fields.Add("Sconto", gb.String)
+          DBTable.Fields.Add("Tipo", gb.Boolean)
+          DBTable.Update
+          DBTable.PrimaryKey.Add("Id")
+          .DBResult = .DBConnect.Exec("ALTER TABLE " & "Prezziario" & id_prox & " ADD PRIMARY KEY(Id)")
+     END IF
+     Message.Info("Prezziario Aggiunto")
+     FMain.Refresh_Click()
+     annulla_Click
+END WITH   
+
+END
+
+PUBLIC SUB Form_Open()
+
+ME.Center  
+
+END

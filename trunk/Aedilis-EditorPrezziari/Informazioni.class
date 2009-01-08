@@ -1,0 +1,22 @@
+' Gambas class file
+
+
+PUBLIC SUB Button1_Click()
+
+     ME.Close  
+
+END
+
+PUBLIC SUB Form_Open()
+
+     ME.Center  
+
+'     TextArea1.Text = "Autore: Mosconi Marco\nVersione: 0.0.4\nLicenza: GPL\n Rilasciato il: 14/6/2007" 
+
+END
+
+PUBLIC SUB Button2_Click()
+
+     licenza.Show  
+
+END

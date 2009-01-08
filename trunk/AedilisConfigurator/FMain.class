@@ -1,0 +1,233 @@
+' Gambas class file
+
+PUBLIC SUB _new()
+
+END
+PUBLIC SUB LoadConfig()
+
+DIM ConfFile AS File 'Questa variabile conterrà il descrittore del file di configurazione
+DIM linea AS String 'Questa variabile servirà per leggere le singole righe del file
+DIM splitted AS String[] 'Questa variabile servirà per dividere le varie voci del file di configurazione
+
+TRY ConfFile = OPEN user.Home & "/.Aedilis/Config" FOR READ 'Apro il file in sola lettura
+  IF NOT ( ERROR ) THEN 'Se non ci sono errori nella lettura del file (es. il file non esiste) allora proseguo
+     WHILE NOT (Eof(ConfFile)) 'Finchè il file non è finito
+          LINE INPUT #ConfFile, linea 'Leggo una linea
+          splitted = Split(linea, "=") 'Divido la linea per il simbolo di uguale perchè per come è stato costruito il file a sinistra dell'uguale ci sarà il descrittore del dato e a destra il dato.
+          SELECT splitted[0] 'Guardo la parte di sinistra
+          CASE "browser" 'Per i menù a tendina imposto sempre "Altro.." e poi metto nella casella altro il valore corretto.
+               altro.Text = splitted[1]
+               browser.Index = browser.Count - 1
+          CASE "pdf"
+               altropdf.Text = splitted[1]
+               pdf.Index = pdf.Count - 1
+          CASE "csv"
+               altrocsv.Text = splitted[1]
+               csv.Index = csv.Count - 1
+          CASE "editortesto"
+               AltroEditorTesto.Text = splitted[1]
+               EditorTesto.Index = EditorTesto.Count - 1
+          CASE "cifredecimali"  'Queste caselle hanno solo dei valori prefissati quindi posso fare direttamente questa associazione.
+               CifreDecimali.Text = splitted[1]
+          CASE "cifredecimaliprezzi"
+               CifreDecPrezzi.Text = splitted[1]
+          CASE "lendescrizionebreve" 'Per le variabili che stanno in una casella di testo questo non è un problema, quindi inserisco direttamente il valore.
+               LenDescrBreve.Text = splitted[1]
+          END SELECT 
+     WEND 
+     ConfFile.Close 'Chiudo il file
+  END IF  
+
+  
+END
+
+PUBLIC SUB Form_Open()
+ME.Center
+
+'Caricamento dei dati di default
+LenDescrBreve.Text = 80
+DirBackup.Text = User.Home
+'Disabilito l'autobackup in quanto non ancora implementato.
+AutoBackup_Click
+'Carico la configurazione precedente.
+LoadConfig()
+END
+
+PUBLIC SUB Salva_Click()
+'Salvataggio del file di configurazione
+DIM hFile AS File 'Questa variabile conterrà il descrittore del file di configurazione
+     IF (Val(LenDescrBreve.Text) = NULL) THEN LenDescrBreve.Text = "0" 'Per evitare un crash della funzione Val(stringa) impongo che nel caso sia NULL vada messo il valore zero
+     IF (Int(Val(LenDescrBreve.Text)) <= 10) THEN 'Se la descrizione è minore di 10 caratteri è incomprensibile e quindi viene generato un messaggio che indica di reinserire la grandezza.
+          Message.Error("Errore! Impostare almeno a 10 la lunghezza minima delle descrizioni brevi.")
+          TabStrip1.Index = 2 'Seleziono la tab delle descrizioni.
+     ELSE 
+     SHELL "mkdir " & user.Home &/ ".Aedilis" WAIT 'Creo la cartella dove vanno allocati i file di configurazione (se esiste già non fa niente)
+     hFile = OPEN user.Home & "/.Aedilis/Config" FOR WRITE CREATE  'Apro il file per scrivere o creare il file di configurazione
+     IF NOT ( ERROR ) THEN 'Se il file non è protetto da scrittura o cose simili posso procedere nel salvataggio.
+          'Salvataggio delle impostazioni sulle applicazioni predefinite.
+          IF NOT (browser.Index = browser.Count - 1) THEN 
+               PRINT #hFile, "browser=" & browser.Text
+          ELSE 
+               PRINT #hFile, "browser=" & altro.Text 
+          END IF
+          IF NOT (pdf.Index = pdf.Count - 1) THEN 
+               PRINT #hFile, "pdf=" & pdf.Text
+          ELSE 
+               PRINT #hFile, "pdf=" & altropdf.Text 
+          END IF
+          IF NOT (csv.Index = csv.Count - 1) THEN 
+               PRINT #hFile, "csv=" & csv.Text
+          ELSE 
+               PRINT #hFile, "csv=" & altrocsv.Text
+          END IF
+          IF NOT (EditorTesto.Index = EditorTesto.Count - 1) THEN 
+               PRINT #hFile, "editortesto=" & EditorTesto.Text
+          ELSE 
+               PRINT #hFile, "editortesto=" & AltroEditorTesto.Text
+          END IF
+          
+          'Salvataggio delle impostazioni sulle cifre decimali
+          PRINT #hFile, "cifredecimali=" & CifreDecimali.Text
+          PRINT #hFile, "cifredecimaliprezzi=" & CifreDecPrezzi.Text
+          
+          'Salvataggio delle impostazioni sulle descrizioni brevi
+          PRINT #hFile, "lendescrizionebreve=" & (Int(Val(LenDescrBreve.Text)))
+          
+          'Salvataggio delle impostazioni dell'auto-backup
+          IF (AutoBackup.Value = TRUE) THEN 
+               PRINT #hFile, "AUTO-BACKUP=TRUE"
+               PRINT #hFile, "TIME=" & Minuti.Value
+               PRINT #hFile, "DIR=" & DirBackup.Text
+               IF (SaveOnlyFewBackups.Value = TRUE) THEN 
+                    PRINT #hFile, "AUTO-REMOVE=TRUE"
+                    PRINT #hFile, "N=" & N.Value
+               ELSE 
+                    PRINT #hFile, "AUTO-REMOVE=FALSE"
+               END IF
+          ELSE 
+                PRINT #hFile, "AUTO-BACKUP=FALSE"
+          END IF
+          hFile.Close         
+          'Creo i layout di default
+            SHELL "mkdir " & User.Home &/ ".Aedilis/Layout/" WAIT 
+            SHELL "mkdir /tmp/Layout/" WAIT 
+            WAIT 1
+            'Copertina
+            TRY hfile = OPEN "/tmp/Layout/Latex.tex" FOR WRITE CREATE 
+            IF NOT ( ERROR ) THEN 
+               PRINT #hfile, "\\documentclass[a4paper,12pt]{article}"
+               PRINT #hfile, "\\usepackage{longtable}"
+               PRINT #hfile, "\\usepackage{marvosym}"
+               PRINT #hfile, "\\usepackage[pdftex]{lscape} "
+               PRINT #hfile, "\\usepackage[latin1]{inputenc}"
+               PRINT #hfile, "\\usepackage[italian]{babel}"
+               PRINT #hfile, "\\setlength {\\oddsidemargin}{-1.5cm}"
+               PRINT #hfile, "\\oddsidemargin  = -1.5cm"                 
+               PRINT #hfile, "\\textwidth =19cm"
+               PRINT #hfile, "\\topmargin =0cm"
+               PRINT #hfile, "\\headheight = 0 cm"
+               PRINT #hfile, "\\headsep = 0 cm"
+               PRINT #hfile, "\\footskip = 0 cm"
+               PRINT #hfile, "\\pagestyle{empty}"
+               PRINT #hfile, "\\begin{document}"
+               
+               PRINT #hfile, "{\\Large Titolo Progetto:  ##TitoloProgetto##} \\\\ \n {\\Large Titolo Documento:  ##TitoloDocumento##} \\\\ \n {\\Large Committente:  ##Committente##} \\\\ \n {\\Large Tipo Committente:  ##TipoCommittente##} \\\\ \n {\\Large Progettista:  ##Progettista##} \\\\ \n {\\Large Data Documento:  ##DataDocumento##} \\\\ \n {\\Large Comune:  ##Comune##} \\\\ \n {\\Large Provincia:  ##Provincia##} \\\\ \n {\\Large  } \\\\ \n"
+               
+               PRINT #hfile, "\\end{document}"
+               hfile.Close()
+                 TRY hfile = OPEN "/tmp/Layout/ExtraPictures.list" FOR WRITE CREATE 
+                 IF NOT ( ERROR ) THEN 
+                    PRINT #hfile, ""
+                    hfile.Close()
+                    Anteprima.Picture.Save("/tmp/Layout/Preview.png")
+                    SHELL "tar -cvf " & User.Home &/ ".Aedilis/Layout/Default.ACL -C /tmp/Layout Latex.tex ExtraPictures.list Preview.png" WAIT
+                 ELSE 
+                    PRINT ERROR.Text
+                 END IF
+            ELSE 
+               PRINT ERROR.Text
+            END IF
+            'Retro
+            TRY hfile = OPEN "/tmp/Layout/Latex.tex" FOR WRITE CREATE 
+            IF NOT ( ERROR ) THEN 
+               PRINT #hfile, "\\documentclass[a4paper,12pt]{article}"
+               PRINT #hfile, "\\usepackage{longtable}"
+               PRINT #hfile, "\\usepackage{marvosym}"
+               PRINT #hfile, "\\usepackage[pdftex]{lscape} "
+               PRINT #hfile, "\\usepackage[latin1]{inputenc}"
+               PRINT #hfile, "\\usepackage[italian]{babel}"
+               PRINT #hfile, "\\setlength {\\oddsidemargin}{-1.5cm}"
+               PRINT #hfile, "\\oddsidemargin  = -1.5cm"                 
+               PRINT #hfile, "\\textwidth =19cm"
+               PRINT #hfile, "\\topmargin =0cm"
+               PRINT #hfile, "\\headheight = 0 cm"
+               PRINT #hfile, "\\headsep = 0 cm"
+               PRINT #hfile, "\\footskip = 0 cm"
+               PRINT #hfile, "\\pagestyle{empty}"
+               PRINT #hfile, "\\begin{document}"
+          
+               PRINT #hfile, "\\begin{Large} Resoconto: \\\\ \n ##Resoconto## \\\\ \n \\end{Large}"
+               
+               PRINT #hfile, "\\end{document}"
+               
+               hfile.Close()
+                 TRY hfile = OPEN "/tmp/Layout/ExtraPictures.list" FOR WRITE CREATE 
+                 IF NOT ( ERROR ) THEN 
+                    PRINT #hfile, ""
+                    hfile.Close()
+                    Anteprima.Picture.Save("/tmp/Layout/Preview.png")
+                    SHELL "tar -cvf " & User.Home &/ ".Aedilis/Layout/Default.ABL -C /tmp/Layout Latex.tex ExtraPictures.list Preview.png" WAIT
+                 ELSE 
+                    PRINT ERROR.Text
+                 END IF
+            ELSE 
+               PRINT ERROR.Text
+            END IF
+            SHELL "rm -R /tmp/Layout/"
+          Message.Info("Verifica e salvataggio eseguiti correttamente. Riavviare il programma.")
+          ME.Close
+     ELSE 
+          Message.Error("Impossibile creare il file di configurazione.")
+     END IF  
+     END IF
+END
+
+PUBLIC SUB Chiudi_Click()
+
+ME.Close  
+
+END
+
+PUBLIC SUB SfogliaDirBackup_Click()
+
+Dialog.Path = DirBackup.Text
+IF (0 = Dialog.SelectDirectory()) THEN 'Se l'utente non ha premuto annulla o ha chiuso il form allora salva la directory di backup
+     DirBackup.Text = Dialog.Path
+END IF
+
+END
+
+PUBLIC SUB AutoBackup_Click()
+'Se abilito l'autobackup automaticamente anche il frame di configurazione diventa accessibile e viceversa.
+Frame1.Enabled = AutoBackup.Value  
+
+END
+
+PUBLIC SUB Form_Close()
+'Se il form principale viene chiuso termino il programma 
+  QUIT 
+'In questo caso è superfluo in quanto vi è un solo form.
+END
+
+PUBLIC SUB Help_Click()
+'Scrivo nel file di configurazione dell'Help la path della pagina della guida per questa sezione
+DIM hfile AS File 'Questa variabile conterrà il descrittore del file di configurazione dell'help
+     TRY hfile = OPEN user.Home &/ ".Aedilis/Help" FOR WRITE CREATE 'Provo ad aprire il file di configurazione dell'help in scrittura/creazione
+     IF NOT ( ERROR ) THEN 'Se non ci sono stati errori (es. file protetto da scrittura) allora salvo la nuova path della guida
+          PRINT #hfile, "http://www.sciallo.net/Aedilis/Guida/Config.html"
+          hfile.Close 'Chiudo il descrittore del file
+          WAIT 1 'Attendo in modo che il file possa essere scritto
+     END IF
+     
+     SHELL "aedilis-help.gambas" 'Lancio la guida
+END

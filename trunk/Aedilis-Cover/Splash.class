@@ -1,0 +1,17 @@
+' Gambas class file
+
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+
+END
+
+PUBLIC SUB Timer1_Timer()
+  SHELL "mkdir /tmp/Layout/"
+  Timer1.Enabled = FALSE
+  ME.Hide
+  FMain.Aggiorna_Click()
+  FMain.Show
+
+END

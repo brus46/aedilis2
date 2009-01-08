@@ -1,0 +1,62 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,58,57)
+  Text = ("Categorie ElencoPrezzi/Computo")
+  Icon = Picture["Icone/Categorie.png"]
+  Border = Window.Fixed
+  { NomeCat TextBox
+    MoveScaled(15,50,23,6)
+    Text = ("Categoria")
+  }
+  { Add Button
+    MoveScaled(39,4,18,8)
+    Text = ("Aggiungi")
+    Picture = Picture["Icone/aedilisDocumentoNew.png"]
+  }
+  { Edit Button
+    MoveScaled(39,13,18,8)
+    Text = ("Edita")
+    Picture = Picture["Icone/aedilisDocumentoEdit.png"]
+  }
+  { Delete Button
+    MoveScaled(39,22,18,8)
+    Text = ("Elimina")
+    Picture = Picture["Icone/aedilisPrezziarioErase.png"]
+  }
+  { Closing Button
+    MoveScaled(39,48,18,8)
+    Text = ("Chiudi")
+    Picture = Picture["Icone/esci.png"]
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(1,1,19,3)
+    Text = ("Categorie")
+  }
+  { ElCat ListView
+    MoveScaled(1,4,37,45)
+  }
+  { TextLabel2 TextLabel
+    MoveScaled(1,51,14,5)
+    Text = ("Nome Categoria:")
+    Alignment = Align.Center
+  }
+  { CatPic PictureBox
+    MoveScaled(42,31,7,7)
+    Visible = False
+    Picture = Picture["Icone/Categorie.png"]
+  }
+  { CatLockedPic PictureBox
+    MoveScaled(50,31,7,7)
+    Visible = False
+    Picture = Picture["Icone/lucchetto.gif"]
+  }
+  { Categorie ListBox
+    MoveScaled(19,4,12,45)
+    Visible = False
+  }
+  { CatProp ListBox
+    MoveScaled(31,4,7,45)
+    Visible = False
+  }
+}

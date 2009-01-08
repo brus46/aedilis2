@@ -1,0 +1,42 @@
+' Gambas class file
+
+PUBLIC dbresult AS Result
+PUBLIC id_prezz AS Integer
+PUBLIC SUB Button2_Click()
+
+ME.Close  
+
+END
+
+PUBLIC SUB refresh_cerca()
+  PRINT "Aggiunto"
+  REPEAT  
+               IF (DBResult!tipo = TRUE) THEN 
+                    Positive.Add(dbresult!Id, dbresult!Codice & "\t\t\t" & dbresult!Nome, posCARpic.Picture)
+               ELSE 
+                    Positive.Add(dbresult!Id, dbresult!Codice & "\t\t\t" & dbresult!Nome, pospic.Picture)
+               END IF
+     Splash.dbresult.MoveNext
+   UNTIL (Splash.dbresult.Available = FALSE)
+  
+END
+
+
+PUBLIC SUB Form_Open()
+
+ME.Center  
+
+
+END
+
+PUBLIC SUB Button1_Click()
+
+IF NOT (Null?(Positive.Current)) THEN 
+
+     FMain.CatPrezziario[Positive.Current.Key].EnsureVisible()
+     FMain.CatPrezziario[Positive.Current.Key].Selected = TRUE
+
+     ME.Close
+END IF
+
+END

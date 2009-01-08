@@ -1,0 +1,643 @@
+' Gambas class file
+
+PUBLIC ABORT AS Boolean 'Questa variabile serve per interrompere la creazione dell'anteprima.
+PUBLIC LatexDimChar AS String[]
+
+PUBLIC SUB InizializzaVariabiliLatex()
+  
+  LatexDimChar = ["tiny", "scriptsize", "footnotesize", "small", "normalsize", "large", "Large", "LARGE", "huge", "Huge"]
+  
+END
+
+
+PUBLIC SUB Sostituisci_Special_key(linea AS String) AS String
+DIM templinea AS String
+  templinea = linea
+  templinea = Replace$(templinea, "##TitoloProgetto##", LatexCorrection(Globals.Projectname))
+  templinea = Replace$(templinea, "##TitoloDocumento##", LatexCorrection(Globals.ProjectDicituraLavoro))
+  templinea = Replace$(templinea, "##Committente##", LatexCorrection(Globals.ProjectCommittente))
+  templinea = Replace$(templinea, "##TipoCommittente##", LatexCorrection(Globals.ProjectTipoComm))
+  templinea = Replace$(templinea, "##Progettista##", LatexCorrection(Globals.ProjectAutore))
+  templinea = Replace$(templinea, "##DataDocumento##", LatexCorrection(Globals.ProjectDataDocumento))
+  templinea = Replace$(templinea, "##Comune##", LatexCorrection(Globals.ProjectComune))
+  templinea = Replace$(templinea, "##Provincia##", LatexCorrection(Globals.ProjectProvincia))
+  templinea = Replace$(templinea, "##TotaleComputo##", LatexCorrection(ComputoMetrico.TotComputo.Text & " €"))
+  templinea = Replace$(templinea, "##Resoconto##", "")
+  
+  templinea = Replace$(templinea, "##ImgPath##", "/tmp/Layout/")
+  RETURN templinea
+END
+
+PUBLIC SUB LatexCorrection(linea AS String) AS String
+  
+  linea = Replace$(linea, "€", "\\EUR")
+  
+  linea = Replace$(linea, "$", "\\$")
+  linea = Replace$(linea, "%", "\\%")
+  linea = Replace$(linea, "#", "\\#")
+  linea = Replace$(linea, "&", "\\&")
+  linea = Replace$(linea, "_", "\\_")
+  linea = Replace$(linea, "{", "\\{")
+  linea = Replace$(linea, "}", "\\}")
+  linea = Replace$(linea, "^", "\\^{}")
+  linea = Replace$(linea, "~", "\\~{}")
+  
+  linea = Replace$(linea, "à", "\\`{a}")
+  linea = Replace$(linea, "é", "\\`{e}")
+  linea = Replace$(linea, "è", "\\'{e}")
+  linea = Replace$(linea, "É", "\\`{E}")
+  linea = Replace$(linea, "È", "\\'{E}")
+  linea = Replace$(linea, "ì", "\\`{\\i}")
+  linea = Replace$(linea, "ò", "\\`{o}")
+  linea = Replace$(linea, "ù", "\\`{u}")
+  
+  linea = Replace$(linea, "m²", "$ m^2 $")
+  linea = Replace$(linea, "m³", "$ m^3 $")
+  
+  RETURN linea
+  
+END
+
+PUBLIC SUB PrintPdf(FilePath AS String, LatexPath AS String)
+DIM SaveFile AS File
+DIM Processo AS Process
+DIM contatore AS Integer
+DIM directory AS String
+     TRY SaveFile = OPEN FilePath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          SaveFile.Close
+          SHELL "cp " & LatexPath & " /tmp/Temp.latex" WAIT 
+          WAIT 1
+          Processo = SHELL "pdflatex -output-directory /tmp/ /tmp/Temp.latex" FOR WRITE  
+          WAIT 1
+          WHILE NOT (Processo.State = Process.Stopped)
+               IF NOT (Processo = NULL) THEN 
+                    TRY PRINT #Processo, ""
+               END IF
+               WAIT 1
+          WEND 
+          SHELL "mv /tmp/Temp.pdf " & FilePath WAIT 
+          SHELL "rm /tmp/Temp.latex"
+     ELSE 
+          PRINT ERROR.Text
+     END IF
+     
+END
+
+PUBLIC SUB MergePdf(path1 AS String, path2 AS String, OutputPath AS String)
+  
+  SHELL "pdftk " & path1 & " " & path2 & " cat output " & OutputPath WAIT 
+  
+END
+
+PUBLIC SUB Intestazione() AS String
+DIM templinea AS String
+DIM contatore AS Integer
+     templinea = "\\begin{center} \\begin{longtable}{"
+     FOR contatore = 0 TO ListaStampa.Count - 1
+          SELECT ListaStampa[contatore].Text
+          CASE "Descrizione Completa"
+               templinea = templinea & "|p{7cm}"
+          CASE "Descrizione Breve"
+               templinea = templinea & "|p{5cm}"
+          DEFAULT 
+               templinea = templinea & "|c"
+          END SELECT 
+     NEXT 
+     templinea = templinea & "|}\n \\hline \n "
+     
+     FOR contatore = 0 TO ListaStampa.Count - 2
+          
+               templinea = templinea & "{\\intestazione{" & LatexCorrection(ListaStampa[contatore].Text) & "}} & "
+
+     NEXT 
+     templinea = templinea & "{\\intestazione{" & LatexCorrection(ListaStampa[contatore].Text) & "}} \\\\ \n \\hline \n"
+     
+     
+     RETURN templinea
+     
+END
+
+PUBLIC SUB Dati(id AS Integer) AS String
+DIM ContatoreStampa AS Integer
+DIM templinea AS String
+
+DIM parziale AS Float
+DIM contatoreQ AS Float
+
+     templinea = " {\\Testo { "
+     WITH ComputoMetrico
+     FOR ContatoreStampa = 0 TO ListaStampa.Count - 1
+          SELECT ListaStampa[ContatoreStampa].Text
+               CASE "Codice"
+                    templinea = templinea & LatexCorrection(.ListElCode[ContatoreStampa].Text)
+               CASE "Descrizione Breve"
+                    templinea = templinea & LatexCorrection(.ListElDescrBreve[ContatoreStampa].Text)
+               CASE "Descrizione Completa"
+                    templinea = templinea & LatexCorrection(.ListElDescr[ContatoreStampa].Text) 
+               CASE "Prezzo"
+                    templinea = templinea & LatexCorrection(.ListElPrezzo[ContatoreStampa].Text & " €")
+               CASE "Sconto"   
+                    templinea = templinea & LatexCorrection(.ListElSconto[ContatoreStampa].Text & " %")
+               CASE "UM"   
+                    templinea = templinea & LatexCorrection(.ListElUM[ContatoreStampa].Text)
+               CASE "Quantità"   
+                    parziale = 0
+                    FOR contatoreQ = 0 TO .ListQuantitaId.Count - 1
+                         IF (.ListQuantitaId[ContatoreQ].Text = .ListCmId[ContatoreStampa].Text) THEN 
+                              parziale = parziale + .ListCMTot[contatoreQ].Text            
+                         END IF
+                    NEXT 
+                    parziale = Globals.Approssima(parziale, 1)
+                    templinea = templinea & LatexCorrection(parziale)
+               CASE "Costo"   
+                    parziale = 0
+                    FOR contatoreQ = 0 TO .ListQuantitaId.Count - 1
+                         IF (.ListQuantitaId[ContatoreQ].Text = .ListCmId[ContatoreStampa].Text) THEN 
+                              parziale = parziale + .ListCMTot[contatoreQ].Text            
+                         END IF
+                    NEXT 
+                    parziale = parziale * .ListElPrezzo[ContatoreStampa].Text
+                    parziale = parziale - (parziale * .ListElSconto[ContatoreStampa].Text) / 100
+                    parziale = Globals.Approssima(parziale, 0)
+                    templinea = templinea & LatexCorrection(parziale & " €")
+               CASE "Costo(no sconto)"   
+                    parziale = 0
+                    FOR contatoreQ = 0 TO .ListQuantitaId.Count - 1
+                         IF (.ListQuantitaId[ContatoreQ].Text = .ListCmId[ContatoreStampa].Text) THEN 
+                              parziale = parziale + .ListCMTot[contatoreQ].Text            
+                         END IF
+                    NEXT 
+                    parziale = parziale * .ListElPrezzo[ContatoreStampa].Text                    
+                    parziale = Globals.Approssima(parziale, 0)
+                    templinea = templinea & LatexCorrection(parziale & " €")
+               CASE "Offerte (numerica)" OR "Offerte (letterale)"
+                    templinea = templinea & " "
+          END SELECT 
+          IF NOT (ContatoreStampa = ListaStampa.Count - 1) THEN 
+               templinea = templinea & "}} & {\\Testo{ "
+          ELSE 
+               templinea = templinea & "}} \\\\ \\hline"
+          END IF
+     NEXT 
+     END WITH 
+RETURN templinea
+END
+
+
+PUBLIC SUB MakeData(path AS String)
+DIM hfile AS file
+DIM Contatore_Elementi AS Integer
+DIM Contatore_Categorie AS Integer
+DIM CategorieDaStampare AS String[]
+DIM BordoTop AS Integer
+DIM BordoLeft AS Integer
+
+
+SHELL "mkdir /tmp/AedilisLatex/"
+TRY hfile = OPEN "/tmp/AedilisLatex/Data.tex" FOR WRITE CREATE 
+IF NOT ( ERROR ) THEN 
+          IF (Orizzontale.Value = FALSE) THEN 
+               PRINT #hfile, "\\documentclass[a4paper]{article}"
+          ELSE 
+               PRINT #hfile, "\\documentclass[landscape,a4paper]{article}"
+          END IF
+          PRINT #hfile, "\\usepackage{longtable}"
+          PRINT #hfile, "\\usepackage {marvosym}"
+          PRINT #hfile, "\\usepackage[latin1]{inputenc}"
+          PRINT #hfile, "\\usepackage[italian]{babel}"
+          IF (Orizzontale.Value = TRUE) THEN PRINT #hFile, "\\usepackage[pdftex]{lscape} "
+          PRINT #hfile, "\\usepackage {array}"
+          PRINT #hfile, "\\usepackage {color}"
+          IF NOT (Val(LeftBordo.Text) = NULL) THEN 
+               BordoLeft = Val(LeftBordo.Text) - 20
+          ELSE 
+               BordoLeft = -20
+          END IF
+          PRINT #hfile, "\\oddsidemargin = " & BordoLeft & "mm"
+          IF (Verticale.Value = TRUE) THEN 
+               PRINT #hfile, "\\textwidth = " & Textwidth.Text & "cm"
+               PRINT #hfile, "\\textheight = " & Textheight.Text & "cm"
+          ELSE 
+               PRINT #hfile, "\\textwidth = " & Textheight.Text & "cm"
+               PRINT #hfile, "\\textheight = " & Textwidth.Text & "cm"
+          END IF
+          IF NOT (Val(TopBordo.Text) = NULL) THEN 
+               BordoTop = Val(TopBordo.Text) - 40
+          ELSE 
+               BordoTop = -40
+          END IF
+          PRINT #hfile, "\\topmargin = " & BordoTop & "mm"
+          PRINT #hfile, "\\pagestyle {empty}"
+          
+          'Definizione dei colori
+          PRINT #hfile, "\\definecolor {ColIntestazione}{rgb}{" & ColorToRGB(ColoreIntestazione.Color) & "}"
+          PRINT #hfile, "\\definecolor {ColTesto}{rgb}{" & ColorToRGB(ColoreTesto.Color) & "}"
+          PRINT #hfile, "\\definecolor {ColTitolo}{rgb}{" & ColorToRGB(ColoreTitolo.Color) & "}"
+          
+          'Definizione degli stili
+          'Stile intestazione
+          PRINT #hfile, "\\newcommand{\\intestazione}[1]{\\";
+               PRINT #hfile, LatexDimChar[DimCarattereIntestazione.Index];
+               IF (IntestazioneCorsivo.Value = TRUE) THEN PRINT #hfile, "{\\itshape "
+               IF (IntestazioneGrassetto.Value = TRUE) THEN PRINT #hfile, "{\\bfseries "
+               PRINT #hfile, "{\\color{ColIntestazione} #1   }"
+               IF (IntestazioneGrassetto.Value = TRUE) THEN PRINT #hfile, "}"
+               IF (IntestazioneCorsivo.Value = TRUE) THEN PRINT #hfile, "}"
+               PRINT #hfile, "}"
+          'Stile Testo
+          PRINT #hfile, "\\newcommand{\\Testo}[1]{\\";
+               PRINT #hfile, LatexDimChar[DimCarattereTesto.Index];
+               IF (TestoCorsivo.Value = TRUE) THEN PRINT #hfile, "{\\itshape "
+               IF (TestoGrassetto.Value = TRUE) THEN PRINT #hfile, "{\\bfseries "
+               PRINT #hfile, "{\\color{ColTesto} #1   }"
+               IF (TestoGrassetto.Value = TRUE) THEN PRINT #hfile, "}"
+               IF (TestoCorsivo.Value = TRUE) THEN PRINT #hfile, "}"
+               PRINT #hfile, "}"
+          'Stile Titoli
+          PRINT #hfile, "\\newcommand{\\titolo}[1]{\\";
+               PRINT #hfile, LatexDimChar[DimCarattereTitolo.Index];
+               IF (TitoloCorsivo.Value = TRUE) THEN PRINT #hfile, "{\\itshape "
+               IF (TitoloGrassetto.Value = TRUE) THEN PRINT #hfile, "{\\bfseries "
+               PRINT #hfile, "{\\color{ColTitolo} #1   }"
+               IF (TitoloGrassetto.Value = TRUE) THEN PRINT #hfile, "}"
+               IF (TitoloCorsivo.Value = TRUE) THEN PRINT #hfile, "}"
+               PRINT #hfile, "}"
+          
+          PRINT #hfile, "\\begin{document}"
+          WITH ComputoMetrico
+          IF (categorie.Value = TRUE) THEN 
+               'Categorie Divise
+               CategorieDaStampare = ["0"]
+               CategorieDaStampare.Clear
+               IF (SomeCategorie.Value = TRUE) THEN 
+                    CategorieDaStampare = ListaStampaCatId.List
+               ELSE 
+                    FOR Contatore_Categorie = 0 TO CategorieComputo.Categorie.Count - 1
+                         CategorieDaStampare.Add(Contatore_Categorie)
+                    NEXT 
+               END IF
+               FOR Contatore_Categorie = 0 TO CategorieDaStampare.Count - 1
+     
+                    IF (TotCat.Value = TRUE) THEN 
+                         .CategorieCM_Click()
+                         PRINT #hfile, "{\\titolo{" & LatexCorrection(.TotPerCategoria[CategorieDaStampare[Contatore_Categorie]].text) & "}} \\\\ "
+                    ELSE 
+                         PRINT #hfile, "{\\titolo{" & LatexCorrection(.CategorieCM[CategorieDaStampare[Contatore_Categorie]].text) & "}} \\\\"
+                    END IF
+                    PRINT #hfile, Intestazione()     
+                    FOR Contatore_Elementi = 0 TO .ListCMId.Count - 1
+                         IF (CategorieDaStampare[Contatore_Categorie] = .ListElCat[Contatore_Elementi].Text) THEN         
+                              PRINT #hfile, Dati(Contatore_Elementi)
+                         END IF
+                    NEXT 
+                    PRINT #hfile, "\\end{longtable} \\end{center}"
+                    IF (CategoriaPerPagina.Value = TRUE) THEN PRINT #hfile, "\\newpage"
+               NEXT 
+          ELSE 
+               'Categorie non divise
+               PRINT #hfile, Intestazione()
+               FOR Contatore_Elementi = 0 TO .ListCMid.Count - 1
+                    'Ciclo tutti i dati e li stampo in latex tramite la funzione Dati(id)->stringa
+                    PRINT #hfile, Dati(Contatore_Elementi)
+               NEXT 
+               PRINT #hfile, "\\end{longtable} \\end{center}"
+          END IF
+          END WITH 
+          PRINT #hfile, "\\end{document}"
+          hfile.Close
+          WAIT 1
+          'DEBUG
+          'SHELL "gedit /tmp/AedilisLatex/Data.tex"
+          PrintPdf(path, "/tmp/AedilisLatex/Data.tex")
+END IF
+END
+
+PUBLIC SUB MakeCover(path AS String, cover AS Boolean)
+DIM hfile AS File
+DIM linea AS String
+DIM latex AS String
+IF NOT (LayoutCopertina.Index = LayoutCopertina.Count - 2) THEN 
+     SHELL "mkdir /tmp/AedilisLatex/" WAIT
+     SHELL "mkdir /tmp/Layout/" WAIT 
+     SHELL "tar -xvf " & user.Home &/ ".Aedilis/Layout/" & LayoutCopertina.Text & " -C /tmp/Layout/" WAIT 'Eseguo la decompressione della cartella specificata e aspetta il termine
+     latex = ""
+     TRY hfile = OPEN "/tmp/Layout/Latex.tex" FOR READ 
+     IF NOT ( ERROR ) THEN 
+          WHILE NOT (Eof(hfile)) 
+               LINE INPUT #hfile, linea
+               latex = latex & "\n" & linea
+          WEND 
+          latex = Sostituisci_Special_key(latex)
+          hfile.Close
+          TRY hfile = OPEN "/tmp/AedilisLatex/Cover.tex" FOR WRITE CREATE 
+          IF NOT ( ERROR ) THEN 
+               PRINT #hfile, latex
+               hfile.Close
+               WAIT 1
+               PrintPdf(path, "/tmp/AedilisLatex/Cover.tex")
+          ELSE 
+               ABORT = TRUE
+               Message.Error("Non riesco a scrivere la copertina")          
+          END IF
+     ELSE 
+          ABORT = TRUE
+          Message.Error("Non riesco a leggere il layout della copertina selezionato")          
+     END IF
+ELSE 
+     IF (cover = TRUE) THEN 
+          SHELL "cp " & coverfromfile.Text & " " & path
+     ELSE 
+          SHELL "cp " & backfromfile.Text & " " & path
+     END IF
+END IF
+
+END
+
+
+
+PUBLIC SUB Aggiorna_Click()
+'Questa funzione aggiorna la lista delle funzioni disponibili.
+DIM linea AS String  'Questa variabile serve per leggere l'output del comando "ls" dato all'interno della path dei layout
+DIM linee AS String[] 'Questa variabile conterrà le singole linee estratte dalla variabile linea splittando per il carattere speciale \n
+DIM contatore AS Integer  'Con questa variabile scorreremo tutti gli elementi di "linee"
+DIM estensione AS String[]  'Con questa variabile estrapoleremo l'estensione di ogni file presente nella path dei layout
+
+  'Lancio il comando "ls" all'interno della path dei layout e reindirizzo l'stdout su linea
+  SHELL "ls " & user.Home &/ ".Aedilis/Layout/" WAIT TO linea 
+  'Cancello la lista precedente di layout e inizio a caricare quella nuova.
+  LayoutCopertina.Clear
+  LayoutUltimaPagina.Clear
+  
+  'Estraggo i singoli elementi splittando per il carattere speciale \n
+  linee = Split(linea, "\n")
+  FOR contatore = 0 TO linee.Count - 1
+     'Ricerco l'estensione
+     estensione = Split(linee[contatore], ".")
+     IF (estensione.Count > 1) THEN 
+          'Se l'estensione è .ACL allora è un layout di copertine (AedilisCoverLayout)
+          'Se l'estensione è .ABL allora è un layout di ultima pagina (AedilisBackLayout)
+          IF (estensione[estensione.Count - 1] = "ACL") THEN 
+               LayoutCopertina.Add(linee[contatore])
+          ELSE IF (estensione[estensione.Count - 1] = "ABL") THEN 
+               LayoutUltimaPagina.Add(linee[contatore])
+          END IF
+     END IF
+  NEXT 
+  LayoutCopertina.Add("Da File")
+  LayoutUltimaPagina.Add("Da File")
+  LayoutCopertina.Add("Nessuno")
+  LayoutUltimaPagina.Add("Nessuno")
+  LayoutCopertina_Click()
+  LayoutUltimaPagina_Click()
+  
+END
+
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+  Aggiorna_Click()
+  StampaDefault_Click()
+  DimCarattereTesto.Index = 1
+  DimCarattereIntestazione.Index = 1
+  DimCarattereTitolo.Index = 3
+  
+END
+
+
+
+PUBLIC SUB WizardFru_Cancel()
+
+  ME.Close
+
+END
+
+
+
+PUBLIC SUB WizardFru_BeforeChange()
+
+  IF (WizardFru.Index = WizardFru.Count - 1) THEN 
+     ME.Hide
+     InizializzaVariabiliLatex()
+     SHELL "mkdir /tmp/AedilisStampa/"
+     Message.Info("Creo l'anteprima di stampa")
+     'Creo la parte centrale della stampa
+     MakeData("/tmp/AedilisStampa/Center.pdf")
+     IF NOT (LayoutCopertina.Index = LayoutCopertina.Count - 1) THEN 
+          'Creo il file di copertina
+          MakeCover("/tmp/AedilisStampa/Cover.pdf", TRUE)
+          IF NOT (LayoutUltimaPagina.Index = LayoutUltimaPagina.Count - 1) THEN 
+               'Creo il file di ultima pagina
+               MakeCover("/tmp/AedilisStampa/Back.pdf", FALSE)
+               WAIT 1
+               MergePdf("/tmp/AedilisStampa/Center.pdf", "/tmp/AedilisStampa/Back.pdf", "/tmp/AedilisStampa/Temp.pdf")
+               WAIT 1
+               MergePdf("/tmp/AedilisStampa/Cover.pdf", "/tmp/AedilisStampa/Temp.pdf", "/tmp/AedilisStampa/FileStampato.pdf")
+          ELSE 
+               WAIT 1
+               MergePdf("/tmp/AedilisStampa/Cover.pdf", "/tmp/AedilisStampa/Center.pdf", "/tmp/AedilisStampa/FileStampato.pdf")
+          END IF
+     ELSE IF NOT (LayoutUltimaPagina.Index = LayoutUltimaPagina.Count - 1) THEN 
+          'Creo il file di ultima pagina
+          MakeCover("/tmp/AedilisStampa/Back.pdf", FALSE)
+          WAIT 1
+          MergePdf("/tmp/AedilisStampa/Center.pdf", "/tmp/AedilisStampa/Back.pdf", "/tmp/AedilisStampa/FileStampato.pdf")
+     ELSE 
+          SHELL "mv /tmp/AedilisStampa/Center.pdf /tmp/AedilisStampa/FileStampato.pdf"
+     END IF
+     SHELL Connessione.PdfReader & " /tmp/AedilisStampa/FileStampato.pdf"
+     Message.Info("Anteprima creata")
+  END IF
+
+END
+
+PUBLIC SUB LayoutCopertina_Click()
+IF NOT (LayoutCopertina.Index >= LayoutCopertina.Count - 2) THEN 
+  SHELL "mkdir /tmp/Layout/" WAIT 
+  SHELL "tar -xvf " & user.Home &/ ".Aedilis/Layout/" & LayoutCopertina.Text & " -C /tmp/Layout/" WAIT 'Eseguo la decompressione della cartella specificata e aspetta il termine
+  TRY AnteprimaCopertina.Picture = Picture.Load("/tmp/Layout/Preview.png")
+  IF ( ERROR ) THEN AnteprimaCopertina.Picture = NoPicture.Picture
+  SHELL "rm -R /tmp/Layout/" WAIT 
+ELSE 
+     AnteprimaCopertina.Picture = NoPicture.Picture
+END IF
+END
+
+PUBLIC SUB LayoutUltimaPagina_Click()
+IF NOT (LayoutUltimaPagina.Index >= LayoutUltimaPagina.Count - 2) THEN 
+  SHELL "mkdir /tmp/Layout/" WAIT 
+  SHELL "tar -xvf " & user.Home &/ ".Aedilis/Layout/" & LayoutUltimaPagina.Text & " -C /tmp/Layout/" WAIT 'Eseguo la decompressione della cartella specificata e aspetta il termine
+  TRY AnteprimaUltimaPagina.Picture = Picture.Load("/tmp/Layout/Preview.png")
+  IF ( ERROR ) THEN AnteprimaUltimaPagina.Picture = NoPicture.Picture
+  SHELL "rm -R /tmp/Layout/" WAIT 
+ELSE 
+     AnteprimaUltimaPagina.Picture = NoPicture.Picture
+END IF
+END
+
+PUBLIC SUB AddDati_Click()
+  IF NOT (ListaDati.Current = NULL) THEN
+     ListaStampa.Add(ListaDati.Current.Text)
+     ListaDati.Remove(ListaDati.Index)
+  END IF
+END
+
+PUBLIC SUB RMDati_Click()
+  IF NOT (ListaStampa.Current = NULL) THEN
+     ListaDati.Add(ListaStampa.Current.Text)
+     ListaStampa.Remove(ListaStampa.Index)
+  END IF
+END
+
+PUBLIC SUB UpDati_Click()
+
+DIM nameA AS String
+DIM indice AS Integer
+
+     IF NOT (ListaStampa.Index < 1) THEN 
+    
+          indice = ListaStampa.Index
+
+          nameA = ListaStampa[indice].Text
+          
+          ListaStampa[indice].Text = ListaStampa[indice - 1].Text
+     
+          ListaStampa[indice - 1].Text = nameA
+          
+          ListaStampa.Index = indice - 1
+     END IF  
+
+END
+
+PUBLIC SUB DownDati_Click()
+
+DIM nameA AS String
+DIM indice AS Integer
+
+     IF NOT ((ListaStampa.Index < 0) OR (ListaStampa.Index = ListaStampa.Count - 1)) THEN 
+    
+          indice = ListaStampa.Index
+          
+          nameA = ListaStampa[indice].Text
+          
+          ListaStampa[indice].Text = ListaStampa[indice + 1].Text
+          
+          ListaStampa[indice + 1].Text = nameA
+          
+          
+          ListaStampa.Index = indice + 1
+     END IF  
+
+END
+
+PUBLIC SUB Categorie_Click()
+  TotCat.enabled = categorie.Value
+  CategoriaPerPagina.Enabled = categorie.Value
+  CatIntestazione.Enabled = categorie.Value
+  SomeCategorie.Enabled = categorie.Value
+END
+
+PUBLIC SUB SomeCategorie_Click()
+
+  panelcategorie.Enabled = SomeCategorie.Value
+  IF (panelcategorie.Enabled = TRUE) THEN 
+     AggiornaCategorie_Click()
+  ELSE 
+     listaCat.Clear
+     ListaStampaCat.Clear
+     listaCatId.Clear
+     ListaStampaCatId.Clear
+  END IF
+END
+
+PUBLIC SUB AggiornaCategorie_Click()
+DIM contatore AS Integer
+  listaCat.Clear
+  ListaStampaCat.Clear
+  listaCatId.Clear
+  ListaStampaCatId.Clear
+  
+  listaCat.List = CategorieComputo.Categorie.List
+  FOR contatore = 0 TO listaCat.Count - 1
+     listaCatId.Add(contatore)
+  NEXT 
+END
+
+PUBLIC SUB AnteprimaCopertina_DblClick()
+'  ShowPic.Anteprima.Picture = AnteprimaCopertina.Picture
+ ' ShowPic.Form_Resize()
+  'ShowPic.Show
+
+END
+
+PUBLIC SUB AnteprimaUltimaPagina_DblClick()
+  
+ ' ShowPic.Anteprima.Picture = AnteprimaUltimaPagina.Picture
+ ' ShowPic.Form_Resize()
+ ' ShowPic.Show
+
+END
+
+PUBLIC SUB StampaDefault_Click()
+
+  ListaStampa.Clear
+  ListaDati.Clear
+
+  ListaStampa.List = ["Codice", "Descrizione Completa", "Quantità", "UM", "Prezzo", "Costo", "Offerte (numerica)", "Offerte (letterale)"]
+  ListaDati.List = ["Descrizione Breve", "Sconto", "Costo(no sconto)"]
+END
+
+PUBLIC SUB AddCat_Click()
+  IF NOT (listaCat.Current = NULL) THEN
+     ListaStampaCat.Add(ListaCat.Current.Text)
+     ListaStampaCatId.Add(listaCatId[listaCat.Index].Text)
+     listaCatId.Remove(ListaCat.Index)
+     ListaCat.Remove(ListaCat.Index)
+  END IF
+END
+
+PUBLIC SUB RmCat_Click()
+  IF NOT (ListaStampaCat.Current = NULL) THEN
+     ListaCat.Add(ListaStampaCat.Current.Text)
+     ListaCatId.Add(listaStampaCatId[listaStampaCat.Index].Text)
+     listaStampaCatId.Remove(ListaStampaCat.Index)
+     ListaStampaCat.Remove(ListaStampaCat.Index)
+  END IF
+END
+
+PUBLIC SUB GetCoverFromFilePath_Click()
+
+  Dialog.Filter = ["*.pdf", "PDF - Portable Document Format"]
+  Dialog.Title = "Seleziona il file per la tua copertina"
+  IF (Dialog.Path = "") THEN Dialog.Path = User.Home
+  IF NOT (Dialog.OpenFile()) THEN 
+     coverfromfile.Text = Dialog.Path
+  END IF
+  
+END
+
+PUBLIC SUB GetBackFromFilePath_Click()
+
+  Dialog.Filter = ["*.pdf", "PDF - Portable Document Format"]
+  Dialog.Title = "Seleziona il file per la tua ultima pagina"
+  IF (Dialog.Path = "") THEN Dialog.Path = User.Home
+  IF NOT (Dialog.OpenFile()) THEN 
+     Backfromfile.Text = Dialog.Path
+  END IF
+
+END
+
+PUBLIC SUB ColorToRGB(colore AS Integer) AS String
+DIM r AS Float
+DIM g AS Float
+DIM b AS Float
+
+  r = Int(Colore / (256 * 256))
+  g = Int((Colore - r * (256 * 256)) / (256))
+  b = Int(Colore - r * (256 * 256) - g * 256)
+  r = r / 255
+  g = g / 255
+  b = b / 255
+  RETURN r & "," & g & "," & b
+END

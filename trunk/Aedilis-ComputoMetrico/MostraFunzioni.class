@@ -1,0 +1,73 @@
+' Gambas class file
+
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+  AggiornaLista_Click()
+  
+END
+
+PUBLIC SUB AggiornaLista_Click()
+
+DIM linea AS String
+DIM linee AS String[]
+DIM contatore AS Integer
+DIM estensione AS String[]
+
+  SHELL "ls " & user.Home &/ ".Aedilis/Funzioni/" WAIT TO linea 
+  ListaFunzioni.Clear
+  
+  linee = Split(linea, "\n")
+  FOR contatore = 0 TO linee.Count - 1
+     estensione = Split(linee[contatore], ".")
+     IF (estensione.Count > 1) THEN 
+          IF estensione[estensione.Count - 1] = "m" THEN 
+               ListaFunzioni.Add(Left$(linee[contatore], -2))
+          END IF
+     END IF
+  NEXT 
+
+
+END
+
+PUBLIC SUB Button1_Click()
+
+  Message.Info("Il programma di metterà in attesa che tu finisca\ndi lavorare alle funzioni prima di continuare.")
+  SHELL "aedilis-funzionimatematiche.gambas" WAIT 
+  AggiornaLista_Click()
+
+END
+
+PUBLIC SUB ListaFunzioni_Click()
+
+DIM OpenFile AS File
+DIM linea AS String
+DIM split1 AS String[]
+
+  IF NOT (ListaFunzioni.Current = NULL) THEN         
+          TRY OpenFile = OPEN user.Home &/ ".Aedilis/Funzioni/" & ListaFunzioni.Current.Text & ".m" FOR READ
+          IF NOT ( ERROR ) THEN 
+               LINE INPUT #OpenFile, linea
+               split1 = Split(linea, " ")
+               IF NOT (split1.Count > 1) THEN 
+                    message.Warning("La funzione selezionata non ha un formato corretto")
+               ELSE 
+                    HowTo.Text = Split1[1]
+               END IF
+          
+               LINE INPUT #OpenFile, linea
+               Descrizione.Text = Mid$(linea, 2)
+          
+          ELSE 
+               message.Warning("Impossibile aprire il file della funzione.")
+          END IF
+  END IF
+
+END
+
+PUBLIC SUB Button2_Click()
+
+  ME.Close
+
+END

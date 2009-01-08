@@ -1,0 +1,20 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,22,24)
+  Background = &HFFFFFF&
+  Text = ("")
+  Picture = Picture["Icone/Aedilis-Help.png"]
+  Border = Window.None
+  { PictureBox1 PictureBox
+    MoveScaled(0,0,22,24)
+    Picture = Picture["Icone/Aedilis-Help.png"]
+    Stretch = True
+  }
+  { Timer1 #Timer
+    #X = 0
+    #Y = 0
+    Enabled = True
+    Delay = 100
+  }
+}

@@ -1,0 +1,181 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,48)
+  Text = ("Aggiungi al computo")
+  Icon = Picture["Icone/aedilisDocumentoNew.png"]
+  Border = Window.Fixed
+  { TabStrip1 TabStrip
+    MoveScaled(1,8,62,31)
+    Count = 4
+    Index = 0
+    Text = ("Categoria")
+    { TextLabel7 TextLabel
+      MoveScaled(14,5,10,4)
+      Text = ("Categoria:")
+    }
+    { Categorie ComboBox
+      MoveScaled(29,5,26,4)
+      Text = ("Varie")
+      ReadOnly = True
+      List = [("Varie")]
+    }
+    { EditCat Button
+      MoveScaled(21,14,18,4)
+      Text = ("Edita Categorie")
+    }
+    Index = 1
+    Text = ("Sconto")
+    { ScontoPrezziario RadioButton
+      MoveScaled(2,5,26,4)
+      Text = ("Applica Sconto Prezziario")
+      Value = True
+    }
+    { ScontoPer RadioButton
+      MoveScaled(2,10,24,4)
+      Text = ("Sconto Personalizzato:")
+    }
+    { NoSconto RadioButton
+      MoveScaled(2,15,19,5)
+      Text = ("Nessuno Sconto")
+    }
+    { ScontoSlide Slider
+      MoveScaled(30,9,29,7)
+      Mark = True
+    }
+    { TextLabel2 TextLabel
+      MoveScaled(59,17,2,3)
+      Text = ("%")
+    }
+    { ScontoVal TextLabel
+      MoveScaled(49,17,9,3)
+      Text = ("0")
+      Alignment = Align.Right
+    }
+    { ValScontoPrezziario TextLabel
+      MoveScaled(30,5,4,3)
+      Text = ("0")
+      Alignment = Align.Right
+    }
+    { TextLabel8 TextLabel
+      MoveScaled(35,5,2,3)
+      Text = ("%")
+    }
+    Index = 2
+    Text = ("Descrizione")
+    { TextLabel9 TextLabel
+      MoveScaled(1,2,58,3)
+      Text = ("La descrizione breve sar\xC3\xA0 estrapolata tagliando quella estesa.")
+    }
+    { TextLabel10 TextLabel
+      MoveScaled(1,6,12,3)
+      Text = ("Estesa:")
+    }
+    { Descrizione TextArea
+      MoveScaled(1,9,59,16)
+      Text = ("")
+    }
+    Index = 3
+    Text = ("Quantità")
+    { quantita TableView
+      MoveScaled(12,4,48,21)
+      Mode = Select.Single
+      Header = GridView.Horizontal
+    }
+    { Button1 Button
+      MoveScaled(1,2,10,5)
+      Text = ("Aggiungi")
+    }
+    { Button2 Button
+      MoveScaled(1,8,10,5)
+      Text = ("Edita")
+    }
+    { Button3 Button
+      MoveScaled(1,14,10,5)
+      Text = ("Rimuovi")
+    }
+    { Inserisci Frame
+      MoveScaled(1,1,60,24)
+      Visible = False
+      Text = ("Inserisci")
+      { TextLabel1 TextLabel
+        MoveScaled(1,7,10,3)
+        Text = ("Larghezza:")
+      }
+      { Q1 TextBox
+        MoveScaled(11,3,8,3)
+        Text = ("0")
+      }
+      { Q2 TextBox
+        MoveScaled(11,7,8,3)
+        Text = ("0")
+      }
+      { TextLabel4 TextLabel
+        MoveScaled(1,11,10,3)
+        Text = ("Lunghezza:")
+      }
+      { TextLabel5 TextLabel
+        MoveScaled(1,15,10,3)
+        Text = ("Profondit\xC3\xA0:")
+      }
+      { Q3 TextBox
+        MoveScaled(11,11,8,3)
+        Text = ("0")
+      }
+      { Q4 TextBox
+        MoveScaled(11,15,8,3)
+        Text = ("0")
+      }
+      { TextLabel6 TextLabel
+        MoveScaled(1,2,10,5)
+        Text = ("Parti uguali:")
+      }
+      { DescrMisura TextArea
+        MoveScaled(20,5,39,13)
+        Text = ("")
+      }
+      { TextLabel11 TextLabel
+        MoveScaled(20,2,27,3)
+        Text = ("Descrizione della misura:")
+      }
+      { Button4 Button
+        MoveScaled(36,19,11,4)
+        Text = ("Ok")
+      }
+      { Button5 Button
+        MoveScaled(48,19,11,4)
+        Text = ("Annulla")
+      }
+      { SeeFunzioni Button
+        MoveScaled(20,19,13,4)
+        Text = ("Vedi funzioni")
+      }
+    }
+    { UM TextLabel
+      MoveScaled(52,0,10,4)
+      Text = ("UM=")
+      Border = Border.Raised
+    }
+    Index = 0
+  }
+  { TextLabel3 TextLabel
+    MoveScaled(1,2,16,4)
+    Text = ("Hai Selezionato:")
+  }
+  { Nome TextBox
+    MoveScaled(17,1,46,5)
+    Text = ("Cod-Nome")
+  }
+  { Ok Button
+    MoveScaled(1,41,29,6)
+    Text = ("Ok")
+  }
+  { Cancel Button
+    MoveScaled(34,41,29,6)
+    Text = ("Annulla")
+  }
+  { Dati ListBox
+    MoveScaled(27,2,37,3)
+    Visible = False
+  }
+}

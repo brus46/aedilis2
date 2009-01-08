@@ -1,0 +1,91 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,139,90)
+  Text = ("Aedilis-Help")
+  Icon = Picture["Icone/Aedilis-Help.png"]
+  Maximized = True
+  { File Menu
+    Text = ("&File")
+    { Esci Menu
+      Text = ("&Esci")
+      Picture = Picture["Icone/esci.png"]
+    }
+  }
+  { MyHelp Menu
+    Text = ("&?")
+    { Help Menu
+      Text = ("&Help")
+      Picture = Picture["Icone/Guida.png"]
+      Shortcut = "F1"
+    }
+    { InfoProg Menu
+      Text = ("&Info")
+      Picture = Picture["Icone/Info.png"]
+    }
+  }
+  { Home Button
+    MoveScaled(1,1,6,7)
+    Text = ("")
+    Picture = Picture["Icone/Home.resized.png"]
+  }
+  { Indietro Button
+    MoveScaled(7,1,6,7)
+    Enabled = False
+    Text = ("")
+    Picture = Picture["Icone/Indietro.resized.png"]
+  }
+  { Avanti Button
+    MoveScaled(13,1,6,7)
+    Enabled = False
+    Text = ("")
+    Picture = Picture["Icone/Avanti.resized.png"]
+  }
+  { MyUrl TextBox
+    MoveScaled(38,1,91,7)
+    Text = ("")
+  }
+  { GO Button
+    MoveScaled(132,1,6,7)
+    Text = ("")
+    Picture = Picture["Icone/GO.resized.png"]
+    Default = True
+  }
+  { MyBrowser WebBrowser
+    MoveScaled(1,9,137,80)
+    JavaScript = True
+    Java = True
+    Plugins = True
+  }
+  { ListPages ListBox
+    MoveScaled(40,11,22,38)
+    Visible = False
+  }
+  { RefreshPage Button
+    MoveScaled(19,1,6,7)
+    Text = ("")
+    Picture = Picture["Icone/refresh.resized.png"]
+  }
+  { ZoomOut Button
+    MoveScaled(25,1,6,7)
+    Text = ("")
+    Picture = Picture["Icone/zoom-.resized.png"]
+  }
+  { ZoomIn Button
+    MoveScaled(31,1,6,7)
+    Text = ("")
+    Picture = Picture["Icone/zoom+.resized.png"]
+  }
+  { PictureView PictureBox
+    MoveScaled(1,9,38,29)
+    Visible = False
+    Border = Border.Plain
+  }
+  { NoPicture PictureBox
+    MoveScaled(1,22,14,16)
+    Visible = False
+    Picture = Picture["Icone/NoPic.png"]
+    Stretch = True
+    Border = Border.Plain
+  }
+}

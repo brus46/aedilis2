@@ -1,0 +1,444 @@
+' Gambas class file
+
+PUBLIC BadColor AS String
+PUBLIC GoodColor AS String
+PUBLIC Intestazione AS String
+PUBLIC Intestazione2 AS String
+
+PUBLIC SUB LatexCorrection(linea AS String) AS String
+  
+  linea = Replace$(linea, "€", "\\EUR")
+  
+  linea = Replace$(linea, "$", "\\$")
+  linea = Replace$(linea, "%", "\\%")
+  linea = Replace$(linea, "#", "\\#")
+  linea = Replace$(linea, "&", "\\&")
+  linea = Replace$(linea, "_", "\\_")
+  linea = Replace$(linea, "{", "\\{")
+  linea = Replace$(linea, "}", "\\}")
+  linea = Replace$(linea, "^", "\\^{}")
+  linea = Replace$(linea, "~", "\\~{}")
+  
+  linea = Replace$(linea, "à", "\\`{a}")
+  linea = Replace$(linea, "é", "\\`{e}")
+  linea = Replace$(linea, "è", "\\'{e}")
+  linea = Replace$(linea, "É", "\\`{E}")
+  linea = Replace$(linea, "È", "\\'{E}")
+  linea = Replace$(linea, "ì", "\\`{\\i}")
+  linea = Replace$(linea, "ò", "\\`{o}")
+  linea = Replace$(linea, "ù", "\\`{u}")
+  
+  linea = Replace$(linea, "m²", "$ m^2 $")
+  linea = Replace$(linea, "m³", "$ m^3 $")
+  
+  RETURN linea
+  
+END
+PUBLIC SUB Cut_String(linea AS String, numcar AS Integer, insert AS String) AS String
+DIM contatore AS Integer
+DIM tempLine AS String
+     IF NOT (numcar <= 0) THEN 
+          tempLine = ""
+          WHILE (Len(linea) > numcar)
+     
+               tempLine = tempLine & Left$(linea, numcar) & insert
+               linea = Right$(linea, - numcar)
+     
+          WEND 
+          IF NOT (Len(linea) = 0) THEN 
+               tempLine = tempLine & linea
+          ELSE 
+               tempLine = tempLine & Left$(linea, - Len(insert))
+          END IF
+
+          RETURN tempLine  
+     ELSE 
+          RETURN linea
+     END IF
+END
+
+PUBLIC SUB DoLatex(FilePath AS String) AS Integer
+
+DIM SaveFile AS File
+DIM Contatore AS Integer
+DIM contatore2 AS Integer
+DIM CRighe AS Integer
+DIM linea AS String
+DIM splitted AS String[]
+DIM larghezza AS Float
+DIM firstline AS Integer
+DIM templine AS String
+
+     TRY SaveFile = OPEN FilePath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          PRINT #SaveFile, "\\documentclass[a4paper,12pt]{article}"
+          PRINT #SaveFile, "\\usepackage{longtable}"
+          PRINT #SaveFile, "\\usepackage{marvosym}"
+          PRINT #SaveFile, "\\usepackage[pdftex]{lscape} "
+          PRINT #SaveFile, "\\usepackage[latin1]{inputenc}"
+          PRINT #SaveFile, "\\usepackage[italian]{babel}"
+          PRINT #SaveFile, "\\usepackage[usenames]{color}"
+          
+          PRINT #SaveFile, "\\setlength {\\oddsidemargin}{-1.5cm}"
+          PRINT #SaveFile, "\\oddsidemargin  = -1.5cm"                 
+          PRINT #SaveFile, "\\textwidth =25cm"
+          PRINT #SaveFile, "\\topmargin =5cm"
+          PRINT #SaveFile, "\\headheight = 0 cm"
+          PRINT #SaveFile, "\\headsep = 0 cm"
+          PRINT #SaveFile, "\\footskip = 0 cm"
+          PRINT #SaveFile, "\\pagestyle{empty}"
+          
+          PRINT #SaveFile, "\\begin{document}"
+          PRINT #SaveFile, "\\definecolor{Blu}{rgb}{0,0,1}"
+          PRINT #SaveFile, "\\definecolor{Red}{rgb}{1,0,0}"
+          'Riassunto Aziende
+          PRINT #SaveFile, "\\begin{landscape}"
+          PRINT #SaveFile, "{\\Huge " & LatexCorrection(Intestazione) & "}\\\\"
+          PRINT #SaveFile, "\\begin{longtable}{|";
+          linea = ""
+          larghezza = 1 / (SitAziende.Columns.Count)
+          FOR Contatore = 0 TO SitAziende.Columns.Count - 2
+               linea = linea & "p{" & larghezza & "\\textwidth}|"
+          NEXT 
+          PRINT #SaveFile, linea & "}"
+          FOR CRighe = 0 TO SitAziende.Rows.Count - 1
+               PRINT #SaveFile, "\\hline"
+               linea = ""
+               FOR Contatore = 0 TO SitAziende.Columns.Count - 2
+                    IF (CRighe = 0) THEN linea = linea & " \\bf "
+                    templine = SitAziende[CRighe, Contatore].Text
+                    IF (contatore = 2) THEN 
+                         IF NOT (Val(Replace$(Left$(templine, -2), ".", ",")) = NULL) THEN 
+                              IF (Val(Replace$(Left$(templine, -2), ".", ",")) > 0) THEN 
+                                   linea = linea & "{\\color{" & BadColor & "}" & LatexCorrection(templine) & "}"
+                              ELSE IF (Val(Replace$(Left$(templine, -2), ".", ",")) < 0) THEN 
+                                   linea = linea & "{\\color{" & GoodColor & "}" & LatexCorrection(templine) & "}"
+                              ELSE 
+                                   linea = linea & LatexCorrection(templine)
+                              END IF
+                         ELSE 
+                              linea = linea & LatexCorrection(templine)
+                         END IF
+                    ELSE 
+                         linea = linea & LatexCorrection(templine)
+                    END IF
+                    
+                    IF (contatore < SitAziende.Columns.Count - 2) THEN 
+                         linea = linea & " & "
+                    ELSE 
+                         linea = linea & " \\" & "\\"
+                    END IF
+               NEXT 
+               PRINT #SaveFile, linea
+          NEXT 
+          PRINT #SaveFile, "\\hline"
+          
+          PRINT #SaveFile, "\\end{longtable}"
+          PRINT #SaveFile, "\\end{landscape}"
+          PRINT #SaveFile, "\\newpage"  
+          
+          'Stampa dell'elenco dettagliato
+          
+          PRINT #SaveFile, "\\begin{landscape}"
+          PRINT #SaveFile, "{\\Huge " & LatexCorrection(Intestazione2) & "}\\\\"
+          PRINT #SaveFile, "\\begin{longtable}{|";
+          linea = ""
+          larghezza = 1 / (Anteprima.Columns.Count)
+          FOR Contatore = 0 TO Anteprima.Columns.Count - 2
+               linea = linea & "p{" & larghezza & "\\textwidth}|"
+          NEXT 
+          PRINT #SaveFile, linea & "}"
+          FOR CRighe = 0 TO Anteprima.Rows.Count - 1
+               PRINT #SaveFile, "\\hline"
+               linea = ""
+               FOR Contatore = 0 TO Anteprima.Columns.Count - 2
+                    IF (CRighe = 0) THEN linea = linea & " \\bf "
+                    templine = Anteprima[CRighe, Contatore].Text
+                    IF NOT ((contatore MOD 2 = 0) OR (contatore = 1)) THEN 
+                         IF NOT (Val(Replace$(Left$(templine, -2), ".", ",")) = NULL) THEN 
+                              IF (Val(Replace$(Left$(templine, -2), ".", ",")) > 0) THEN 
+                                   linea = linea & "{\\color{" & BadColor & "}" & LatexCorrection(templine) & "}"
+                              ELSE IF (Val(Replace$(Left$(templine, -2), ".", ",")) < 0) THEN 
+                                   linea = linea & "{\\color{" & GoodColor & "}" & LatexCorrection(templine) & "}"
+                              ELSE 
+                                   linea = linea & LatexCorrection(templine)
+                              END IF
+                         ELSE 
+                              linea = linea & LatexCorrection(templine)
+                         END IF
+                    ELSE 
+                         linea = linea & LatexCorrection(templine)
+                    END IF
+                    
+                    IF (contatore < Anteprima.Columns.Count - 2) THEN 
+                         linea = linea & " & "
+                    ELSE 
+                         linea = linea & " \\" & "\\"
+                    END IF
+               NEXT 
+               PRINT #SaveFile, linea
+          NEXT 
+          PRINT #SaveFile, "\\hline"
+          PRINT #SaveFile, "\\end{longtable}"
+          PRINT #SaveFile, "\\end{landscape}"
+          PRINT #SaveFile, "\\end{document}"
+          SaveFile.Close
+          RETURN 1
+     ELSE 
+          RETURN -1
+          Message.Error("Impossibile scrivere sul file specificato")
+     END IF
+  
+END
+
+
+
+PUBLIC SUB PrintHtml(FilePath AS String)
+DIM SaveFile AS File
+DIM contatoreR AS Integer
+DIM contatoreC AS Integer
+DIM splitted AS String[]
+DIM contatore AS Integer
+DIM ColorBetter AS String
+DIM ColorBad AS String
+
+     TRY SaveFile = OPEN FilePath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          'Intestazione Html
+          PRINT #SaveFile, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\""
+          PRINT #SaveFile, "\"http://www.w3.org/TR/REC-html40/strict.dtd\">"
+          PRINT #SaveFile, "<html>"
+          PRINT #SaveFile, "<head>"
+          PRINT #SaveFile, "<title>" & Intestazione & "</title>"
+          PRINT #SaveFile, "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
+          PRINT #SaveFile, "</head>"   
+          PRINT #SaveFile, "<body>"
+          'Situazione generale
+          PRINT #SaveFile, "<br><table cellspacing=0 cellpadding=3 border=1>"
+          PRINT #SaveFile, "<caption><h3>" & Intestazione & "</h3></caption>"
+          
+          FOR contatoreR = 0 TO SitAziende.Rows.Count - 1
+               PRINT #SaveFile, "<tr>"
+               FOR contatoreC = 0 TO SitAziende.Columns.Count - 2
+                    IF (contatoreR = 0) THEN 
+                         PRINT #SaveFile, "<td><b>" & SitAziende[contatoreR, contatoreC].Text & "</b></td>"
+                    ELSE IF ((contatoreC = 2) AND (NOT (Val(Replace$(Left$(SitAziende[contatoreR, contatoreC].Text, -2), ".", ",")) = NULL))) THEN
+                         IF (Val(Replace$(Left$(SitAziende[contatoreR, contatoreC].Text, -2), ".", ",")) > 0) THEN 
+                              PRINT #SaveFile, "<td><font color=\"" & BadColor & "\">" & SitAziende[contatoreR, contatoreC].Text & "</font></td>"
+                         ELSE IF (Val(Replace$(Left$(SitAziende[contatoreR, contatoreC].Text, -2), ".", ",")) < 0) THEN 
+                              PRINT #SaveFile, "<td><font color=\"blue\">" & SitAziende[contatoreR, contatoreC].Text & "</font></td>"
+                         ELSE 
+                              PRINT #SaveFile, "<td>" & SitAziende[contatoreR, contatoreC].Text & "</td>"
+                         END IF
+                    ELSE IF ((contatoreC > 1) AND (contatoreC MOD 2 = 0) AND (NOT (Val(Replace$(Left$(SitAziende[contatoreR, contatoreC].Text, -2), ".", ",")) = NULL))) THEN
+                         IF (Val(Replace$(Left$(SitAziende[contatoreR, contatoreC].Text, -2), ".", ",")) > Val(Replace$(Left$(SitAziende[contatoreR, 1].Text, -2), ".", ","))) THEN 
+                              PRINT #SaveFile, "<td><font color=\"" & BadColor & "\">" & SitAziende[contatoreR, contatoreC].Text & "</font></td>"
+                         ELSE IF (Val(Replace$(Left$(SitAziende[contatoreR, contatoreC].Text, -2), ".", ",")) < Val(Replace$(Left$(SitAziende[contatoreR, 1].Text, -2), ".", ","))) THEN 
+                              PRINT #SaveFile, "<td><font color=\"blue\">" & SitAziende[contatoreR, contatoreC].Text & "</font></td>"
+                         ELSE 
+                              PRINT #SaveFile, "<td>" & SitAziende[contatoreR, contatoreC].Text & "</td>"
+                         END IF                    
+                    ELSE 
+                         PRINT #SaveFile, "<td>" & SitAziende[contatoreR, contatoreC].Text & "</td>"
+                    END IF
+               NEXT 
+               PRINT #SaveFile, "</tr>"
+          NEXT           
+          PRINT #SaveFile, "</table><br><br><hr><br><br>"
+
+          
+          'Dettaglio elementi
+          PRINT #SaveFile, "<table cellspacing=0 cellpadding=3 border=1>"
+          PRINT #SaveFile, "<caption><h3>" & Intestazione2 & "</h3></caption>"
+          FOR contatoreR = 0 TO Anteprima.Rows.Count - 1
+               PRINT #SaveFile, "<tr>"
+               FOR contatoreC = 0 TO Anteprima.Columns.Count - 2
+                    IF (contatoreR = 0) THEN 
+                         PRINT #SaveFile, "<td><b>" & Anteprima[contatoreR, contatoreC].Text & "</b></td>"
+                    ELSE IF ((contatoreC > 1) AND (NOT (contatoreC MOD 2 = 0)) AND (NOT (Val(Replace$(Left$(Anteprima[contatoreR, contatoreC].Text, -2), ".", ",")) = NULL))) THEN
+                         IF (Val(Replace$(Left$(Anteprima[contatoreR, contatoreC].Text, -2), ".", ",")) > 0) THEN 
+                              PRINT #SaveFile, "<td><font color=\"" & BadColor & "\">" & Anteprima[contatoreR, contatoreC].Text & "</font></td>"
+                         ELSE IF (Val(Replace$(Left$(Anteprima[contatoreR, contatoreC].Text, -2), ".", ",")) < 0) THEN 
+                              PRINT #SaveFile, "<td><font color=\"blue\">" & Anteprima[contatoreR, contatoreC].Text & "</font></td>"
+                         ELSE 
+                              PRINT #SaveFile, "<td>" & Anteprima[contatoreR, contatoreC].Text & "</td>"
+                         END IF
+                    ELSE IF ((contatoreC > 1) AND (contatoreC MOD 2 = 0) AND (NOT (Val(Replace$(Left$(Anteprima[contatoreR, contatoreC].Text, -2), ".", ",")) = NULL))) THEN
+                         IF (Val(Replace$(Left$(Anteprima[contatoreR, contatoreC].Text, -2), ".", ",")) > Val(Replace$(Left$(Anteprima[contatoreR, 1].Text, -2), ".", ","))) THEN 
+                              PRINT #SaveFile, "<td><font color=\"" & BadColor & "\">" & Anteprima[contatoreR, contatoreC].Text & "</font></td>"
+                         ELSE IF (Val(Replace$(Left$(Anteprima[contatoreR, contatoreC].Text, -2), ".", ",")) < Val(Replace$(Left$(Anteprima[contatoreR, 1].Text, -2), ".", ","))) THEN 
+                              PRINT #SaveFile, "<td><font color=\"blue\">" & Anteprima[contatoreR, contatoreC].Text & "</font></td>"
+                         ELSE 
+                              PRINT #SaveFile, "<td>" & Anteprima[contatoreR, contatoreC].Text & "</td>"
+                         END IF                    
+                    ELSE 
+                         PRINT #SaveFile, "<td>" & Anteprima[contatoreR, contatoreC].Text & "</td>"
+                    END IF
+               NEXT 
+               PRINT #SaveFile, "</tr>"
+          NEXT           
+          PRINT #SaveFile, "</table></center></body></html>"
+          SaveFile.Close()
+          IF (viewresult.Value = TRUE) THEN SHELL Connessione.Browser & FilePath
+  
+     ELSE 
+          Message.Error("Impossibile scrivere sul file specificato")
+     END IF
+  
+  
+END
+
+PUBLIC SUB PrintCsv(FilePath AS String)
+DIM SaveFile AS File
+DIM fieldSep AS String
+DIM textsep AS String
+DIM contatoreR AS Integer
+DIM contatoreC AS Integer
+
+     textsep = "\""
+     fieldSep = ";"
+     TRY SaveFile = OPEN FilePath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          PRINT #SaveFile, Intestazione
+          FOR contatoreR = 0 TO SitAziende.Rows.Count - 1
+               FOR contatoreC = 0 TO SitAziende.Columns.Count - 2
+                    PRINT #SaveFile, textsep & SitAziende[contatoreR, contatoreC].Text & textsep & fieldSep;
+               NEXT 
+               PRINT #SaveFile, ""
+          NEXT           
+          PRINT #SaveFile, ""
+          PRINT #SaveFile, Intestazione2
+          FOR contatoreR = 0 TO Anteprima.Rows.Count - 1
+               FOR contatoreC = 0 TO Anteprima.Columns.Count - 2
+                    PRINT #SaveFile, textsep & Anteprima[contatoreR, contatoreC].Text & textsep & fieldSep;
+               NEXT 
+               PRINT #SaveFile, ""
+          NEXT           
+          SaveFile.Close()
+          IF (viewresult.Value = TRUE) THEN SHELL Connessione.CsvReader & FilePath
+     ELSE 
+          Message.Error("Impossibile scrivere sul file specificato")
+     END IF
+  
+  
+END
+
+PUBLIC SUB PrintPdf(FilePath AS String)
+DIM SaveFile AS File
+DIM Processo AS Process
+DIM contatore AS Integer
+DIM directory AS String
+     TRY SaveFile = OPEN FilePath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          SaveFile.Close
+          DoLatex("/tmp/Temp.latex")
+          WAIT 1
+          Processo = SHELL "pdflatex -output-directory /tmp/ /tmp/Temp.latex" WAIT 
+          SHELL "mv /tmp/Temp.pdf " & FilePath WAIT 
+          SHELL "rm /tmp/Temp.latex"
+          IF (viewresult.Value = TRUE) THEN SHELL Connessione.PdfReader & FilePath
+          Message.Info("File creato")
+     ELSE 
+          Message.Error("Impossibile scrivere sul file specificato")
+     END IF
+     
+END
+
+PUBLIC SUB PrintPs(FilePath AS String)
+DIM SaveFile AS File
+
+     TRY SaveFile = OPEN FilePath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          SaveFile.Close
+          DoLatex("/tmp/Temp.latex")
+          WAIT 1
+          SHELL "latex -output-directory /tmp/ /tmp/Temp.latex" WAIT 
+          WAIT 1
+          SHELL "pdftops /tmp/Temp.pdf /tmp/Temp.ps" WAIT 
+          WAIT 1
+          SHELL "mv /tmp/Temp.ps " & FilePath WAIT 
+          SHELL "rm /tmp/Temp.latex"
+          SHELL "rm /tmp/Temp.pdf"
+          IF (viewresult.Value = TRUE) THEN SHELL Connessione.PdfReader & FilePath
+          Message.Info("File creato")
+     ELSE 
+          Message.Error("Impossibile scrivere sul file specificato")
+     END IF
+     
+END
+
+
+PUBLIC SUB PrintLatex(FilePath AS String)
+     IF NOT (-1 = DoLatex(FilePath)) THEN 
+          IF (viewresult.Value = TRUE) THEN SHELL Connessione.EditorTesto & FilePath
+          Message.Info("Salvataggio completato")
+     END IF
+END
+
+PUBLIC SUB StampaReport()
+  
+     DoLatex("/tmp/Temp.latex")
+     WAIT 1
+     SHELL "latex -output-directory /tmp/ /tmp/Temp.latex" WAIT 
+     WAIT 1
+     SHELL "pdftops /tmp/Temp.pdf /tmp/Temp.ps" WAIT 
+     WAIT 1
+     SHELL "lpr /tmp/Temp.ps" WAIT 
+     SHELL "rm /tmp/Temp.latex"
+     SHELL "rm /tmp/Temp.pdf"
+     IF (viewresult.Value = TRUE) THEN 
+          SHELL Connessione.PdfReader & "/tmp/Temp.ps"
+     ELSE 
+          SHELL "rm /tmp/Temp.ps"
+     END IF
+     Message.Info("Il file è stato mandato in stampa.")
+  
+END
+
+PUBLIC SUB Form_Resize()
+
+END
+
+PUBLIC SUB Annulla_Click()
+
+  ME.Close
+
+END
+
+PUBLIC SUB Genera_Click()
+
+
+IF NOT (stampa.Value = TRUE) THEN 
+  Dialog.Path = User.Home
+  Dialog.Title = "Salva la fruizione"
+  IF (pdf.Value = TRUE) THEN Dialog.Filter = ["*.pdf", "PDF, Portable Document Format"]
+  IF (ps.Value = TRUE) THEN Dialog.Filter = ["*.ps", "PS, PostScript"]
+  IF (latex.Value = TRUE) THEN Dialog.Filter = ["*.latex", "Latex"]
+  IF (html.Value = TRUE) THEN Dialog.Filter = ["*.html", "Html"]
+  IF (Csv.Value = TRUE) THEN Dialog.Filter = ["*.csv", "Csv"]
+  
+  IF NOT (Dialog.SaveFile()) THEN  
+  
+     IF (pdf.Value = TRUE) THEN PrintPdf(Dialog.Path)
+     IF (ps.Value = TRUE) THEN PrintPs(Dialog.Path)
+     IF (latex.Value = TRUE) THEN PrintLatex(Dialog.Path)
+     IF (html.Value = TRUE) THEN PrintHtml(Dialog.Path)
+     IF (Csv.Value = TRUE) THEN PrintCsv(Dialog.Path)
+     
+  END IF
+ELSE 
+
+     StampaReport()
+
+END IF
+
+END
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+  GoodColor = "Blu"
+  BadColor = "Red"
+
+END
+

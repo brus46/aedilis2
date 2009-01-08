@@ -1,0 +1,132 @@
+' Gambas class file
+
+PUBLIC SUB Add_data(NomeAzienda AS String)
+DIM contatore AS Integer
+  ComputoMetrico.DatiOfferte.Columns.Count = ComputoMetrico.DatiOfferte.Columns.Count + 1
+  IF (ComputoMetrico.DatiOfferte.Rows.Count < 1) THEN ComputoMetrico.DatiOfferte.Rows.Count = 1
+  ComputoMetrico.DatiOfferte[0, ComputoMetrico.DatiOfferte.Columns.Count - 1].Text = NomeAzienda
+  FOR contatore = 1 TO ComputoMetrico.DatiOfferte.Rows.Count - 1
+     ComputoMetrico.DatiOfferte[contatore, ComputoMetrico.DatiOfferte.Columns.Count - 1].Text = "0"
+  NEXT 
+  ComputoMetrico.Refresh_Offerte()
+END
+PUBLIC SUB RM_data(ColId AS Integer)
+DIM contatore AS Integer
+DIM contatore2 AS Integer
+WITH ComputoMetrico
+     FOR contatore = ColId TO .DatiOfferte.Columns.Count - 2
+          FOR contatore2 = 0 TO .DatiOfferte.Rows.Count - 1
+               .DatiOfferte[contatore2, contatore].Text = .DatiOfferte[contatore2, contatore + 1].Text
+          NEXT 
+     NEXT 
+     .DatiOfferte.Columns.Count = .DatiOfferte.Columns.Count - 1
+     .Refresh_Offerte()
+     
+END WITH 
+END
+
+
+
+PUBLIC SUB Chiudi_Click()
+
+  ME.hide
+
+END
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+
+END
+
+PUBLIC SUB Up_Click()
+
+DIM nameA AS String
+DIM indice AS Integer
+
+     IF NOT (ListAziende.Index < 1) THEN 
+    
+          indice = ListAziende.Index
+
+          nameA = ListAziende[indice].Text
+          
+          ListAziende[indice].Text = ListAziende[indice - 1].Text
+     
+          ListAziende[indice - 1].Text = nameA
+          
+          ListAziende.Index = indice - 1
+     END IF  
+
+
+
+END
+
+PUBLIC SUB Dw_Click()
+
+DIM nameA AS String
+DIM indice AS Integer
+
+     IF NOT ((ListAziende.Index < 0) OR (ListAziende.Index = ListAziende.Count - 1)) THEN 
+    
+          indice = ListAziende.Index
+          
+          nameA = ListAziende[indice].Text
+          
+          ListAziende[indice].Text = ListAziende[indice + 1].Text
+          
+          ListAziende[indice + 1].Text = nameA
+          
+          
+          ListAziende.Index = indice + 1
+     END IF  
+  
+
+END
+
+PUBLIC SUB AddAzienda_Click()
+
+  IF NOT (NomeAzienda.Text = "") THEN 
+     ListAziende.Add(NomeAzienda.Text)
+     Add_data(NomeAzienda.Text)
+     ComputoMetrico.CategorieOfferte_Click()
+     NomeAzienda.Text = ""
+  END IF
+
+END
+
+PUBLIC SUB RmAzienda_Click()
+
+  IF NOT (ListAziende.Current = NULL) THEN
+     IF (1 = Message.Question("Sei sicuro di voler eliminare questa azienda?", "Sì", "No")) THEN  
+          RM_data(ListAziende.Index)
+          ListAziende.Remove(ListAziende.Index)
+          ComputoMetrico.CategorieOfferte_Click()
+     END IF
+  END IF
+
+END
+
+PUBLIC SUB EditAzienda_Click()
+
+  IF NOT (ListAziende.Current = NULL) THEN 
+  IF NOT (NomeAzienda.Text = "") THEN 
+     ListAziende.Current.Text = NomeAzienda.Text
+     ComputoMetrico.DatiOfferte[0, ListAziende.Index].Text = NomeAzienda.Text
+     ComputoMetrico.CategorieOfferte_Click()
+     NomeAzienda.Text = ""
+  END IF
+  END IF
+
+END
+
+PUBLIC SUB ListAziende_Click()
+
+  NomeAzienda.Text = ListAziende.Current.Text
+
+END
+
+PUBLIC SUB Agenda_Click()
+
+  Message.Warning("NYI")
+
+END

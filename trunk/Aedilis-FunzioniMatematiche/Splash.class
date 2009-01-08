@@ -1,0 +1,24 @@
+' Gambas class file
+
+PUBLIC SUB _new()
+
+END
+
+PUBLIC SUB Form_Open()
+     ME.Center
+     
+     'Abilito il timer che caricherà le impostazioni iniziali del programma.
+     timer1.enabled = TRUE
+END
+
+PUBLIC SUB Timer1_Timer()
+  'Disabilito il timer in modo che queste istruzioni non vengano eseguite nuovamente
+  timer1.Enabled = FALSE
+  
+  'Creo la cartella dove verranno messe le funzioni di Aedilis, se esiste già il comando non fa nulla
+  SHELL "mkdir " & user.Home &/ ".Aedilis/Funzioni/"
+
+  'Lancio l'editor e nascondo lo splash-screen
+  EditorFunzioni.Show
+  ME.Hide
+END

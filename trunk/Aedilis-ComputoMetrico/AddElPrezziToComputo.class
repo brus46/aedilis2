@@ -1,0 +1,232 @@
+' Gambas class file
+
+PUBLIC aggiungi AS Boolean
+PUBLIC RowToEdit AS Integer
+
+PUBLIC SUB Cancel_Click()
+
+  ME.Close
+  
+END
+
+PUBLIC SUB Form_Open()
+
+ME.Center
+
+  nome.Text = ComputoMetrico.ListElCode[id.Text].Text & " - " & ComputoMetrico.ListElDescrBreve[id.Text].Text
+  quantita.Columns.Count = 7
+  quantita.Rows.Count = 1
+  quantita[0, 0].Text = "DescrMisura"
+  quantita[0, 1].Text = "Parti Uguali"
+  quantita[0, 2].Text = "Larg"
+  quantita[0, 3].Text = "Lung"
+  quantita[0, 4].Text = "Prof"
+  quantita[0, 5].Text = "Tot"
+
+END
+
+PUBLIC SUB Ok_Click()
+
+DIM contatore AS Integer
+DIM prosegui AS Integer
+DIM sostituire AS Integer
+DIM ToRemove AS Integer[]
+
+WITH ComputoMetrico
+  
+  prosegui = 1
+  'Controllo se non esiste nel computo
+  FOR contatore = 0 TO .ListCMid.Count - 1
+     
+     IF (id.Text = .ListCMid[contatore].Text) THEN 
+          IF (1 = Message.question("Questa voce esiste già nel computo.\nProcedendo sovrascriverai i dati precedenti.\nProcedo?", "Sì", "No")) THEN
+               prosegui = 2
+               sostituire = contatore
+          ELSE      
+               prosegui = -1
+          END IF
+     END IF
+
+  NEXT 
+
+
+  IF (prosegui >= 1) THEN 
+     IF (prosegui = 2) THEN 
+          ToRemove = [0]
+          ToRemove.Clear
+          FOR contatore = .ListQuantitaId.Count - 1 TO 0 STEP -1
+               IF (.ListQuantitaId[contatore].Text = id.Text) THEN 
+                    ToRemove.Add(contatore)
+               END IF
+          NEXT 
+          FOR contatore = 0 TO ToRemove.Count - 1
+                    .ListCMDescrMis.Remove(ToRemove[contatore])
+                    .ListCMQ1.Remove(ToRemove[contatore])
+                    .ListCMQ2.Remove(ToRemove[contatore])
+                    .ListCMQ3.Remove(ToRemove[contatore])
+                    .ListCMQ4.Remove(ToRemove[contatore])
+                    .ListCMTot.Remove(ToRemove[contatore])
+                    .ListQuantitaId.Remove(ToRemove[contatore])
+          NEXT 
+     END IF
+     FOR contatore = 1 TO quantita.Rows.Count - 1
+          .ListQuantitaId.Add(id.Text)
+          .ListCMDescrMis.Add(quantita[contatore, 0].Text)
+          .ListCMQ1.Add(quantita[contatore, 1].Text)
+          .ListCMQ2.Add(quantita[contatore, 2].Text)
+          .ListCMQ3.Add(quantita[contatore, 3].Text)
+          .ListCMQ4.Add(quantita[contatore, 4].Text)
+          .ListCMTot.Add(quantita[contatore, 5].Text)
+     NEXT 
+     IF NOT (prosegui = 2) THEN 
+          .ListCMid.Add(id.Text)
+     END IF
+     .CategorieCM_click()
+     .RefreshTotaleComputo()
+     .ListaElementiElPrezzi[id.Text].Picture = .PicIns.Picture
+     ME.Close
+  ELSE 
+          
+  END IF
+  
+END WITH 
+END
+
+PUBLIC SUB TextLabel2_MouseDown()
+
+  
+
+END
+
+PUBLIC SUB Button1_Click()
+
+  aggiungi = TRUE
+  DescrMisura.Text = ""
+  q1.Text = 0
+  q2.Text = 0
+  q3.Text = 0
+  q4.Text = 0
+  Inserisci.Visible = TRUE
+
+END
+
+PUBLIC SUB Button4_Click()
+  DIM x AS String
+  DIM y AS String
+  DIM z AS String
+  DIM w AS String
+  DIM parziale AS Float
+  
+  IF (aggiungi = TRUE) THEN 
+     quantita.Rows.Count = quantita.Rows.Count + 1
+     parziale = 1
+     x = "1"
+     y = "1"
+     z = "1"
+     w = "1"
+     'IF NOT ((q1.Text = 0) OR (q1.Text = "")) THEN parziale = parziale * Globals.Math(q1.Text)
+     'IF NOT ((q2.Text = 0) OR (q2.Text = "")) THEN parziale = parziale * Globals.Math(q2.Text)
+     'IF NOT ((q3.Text = 0) OR (q3.Text = "")) THEN parziale = parziale * Globals.Math(q3.Text)
+     'IF NOT ((q4.Text = 0) OR (q4.Text = "")) THEN parziale = parziale * Globals.Math(q4.Text)
+
+     IF NOT ((q1.Text = 0) OR (q1.Text = "")) THEN x = q1.Text
+     IF NOT ((q2.Text = 0) OR (q2.Text = "")) THEN y = q2.Text
+     IF NOT ((q3.Text = 0) OR (q3.Text = "")) THEN z = q3.Text
+     IF NOT ((q4.Text = 0) OR (q4.Text = "")) THEN W = q4.Text
+
+     
+     parziale = Globals.Math(x & " .* " & y & " .* " & z & " .* " & w)
+     parziale = Globals.Approssima(parziale, 1)
+     
+     IF ((q1.Text = 0) OR (q1.Text = "")) THEN q1.Text = "0"
+     IF ((q2.Text = 0) OR (q2.Text = "")) THEN q2.Text = "0"
+     IF ((q3.Text = 0) OR (q3.Text = "")) THEN q3.Text = "0"
+     IF ((q4.Text = 0) OR (q4.Text = "")) THEN q4.Text = "0"
+     
+     quantita[quantita.Rows.Count - 1, 0].Text = DescrMisura.Text
+     quantita[quantita.Rows.Count - 1, 1].Text = q1.Text
+     quantita[quantita.Rows.Count - 1, 2].Text = q2.Text
+     quantita[quantita.Rows.Count - 1, 3].Text = q3.Text
+     quantita[quantita.Rows.Count - 1, 4].Text = q4.Text
+     quantita[quantita.Rows.Count - 1, 5].Text = parziale
+     
+  ELSE 
+     x = "1"
+     y = "1"
+     z = "1"
+     w = "1"
+     'IF NOT ((q1.Text = 0) OR (q1.Text = "")) THEN parziale = parziale * Globals.Math(q1.Text)
+     'IF NOT ((q2.Text = 0) OR (q2.Text = "")) THEN parziale = parziale * Globals.Math(q2.Text)
+     'IF NOT ((q3.Text = 0) OR (q3.Text = "")) THEN parziale = parziale * Globals.Math(q3.Text)
+     'IF NOT ((q4.Text = 0) OR (q4.Text = "")) THEN parziale = parziale * Globals.Math(q4.Text)
+
+     IF NOT ((q1.Text = 0) OR (q1.Text = "")) THEN x = q1.Text
+     IF NOT ((q2.Text = 0) OR (q2.Text = "")) THEN y = q2.Text
+     IF NOT ((q3.Text = 0) OR (q3.Text = "")) THEN z = q3.Text
+     IF NOT ((q4.Text = 0) OR (q4.Text = "")) THEN W = q4.Text
+
+     
+     parziale = Globals.Math(x & " .* " & y & " .* " & z & " .* " & w)
+     parziale = Globals.Approssima(parziale, 1)
+     
+     IF ((q1.Text = 0) OR (q1.Text = "")) THEN q1.Text = "0"
+     IF ((q2.Text = 0) OR (q2.Text = "")) THEN q2.Text = "0"
+     IF ((q3.Text = 0) OR (q3.Text = "")) THEN q3.Text = "0"
+     IF ((q4.Text = 0) OR (q4.Text = "")) THEN q4.Text = "0"
+     
+     quantita[RowToEdit, 0].Text = DescrMisura.Text
+     quantita[RowToEdit, 1].Text = q1.Text
+     quantita[RowToEdit, 2].Text = q2.Text
+     quantita[RowToEdit, 3].Text = q3.Text
+     quantita[RowToEdit, 4].Text = q4.Text
+     quantita[RowToEdit, 5].Text = parziale
+  END IF
+  Inserisci.Visible = FALSE
+  
+
+END
+
+PUBLIC SUB Button5_Click()
+
+  Inserisci.Visible = FALSE
+
+END
+
+PUBLIC SUB Button2_Click()
+
+IF NOT (quantita.Row <= 0) THEN 
+  aggiungi = FALSE
+  RowToEdit = quantita.Row
+  DescrMisura.Text = quantita[RowToEdit, 0].Text
+  q1.Text = quantita[RowToEdit, 1].Text
+  q2.Text = quantita[RowToEdit, 2].Text
+  q3.Text = quantita[RowToEdit, 3].Text
+  q4.Text = quantita[RowToEdit, 4].Text
+  
+  Inserisci.Visible = TRUE
+END IF
+END
+
+PUBLIC SUB Button3_Click()
+DIM contatore AS Integer
+IF NOT (quantita.Row <= 0) THEN 
+     IF (1 = message.Question("Sei sicuro di voler eliminare questo elemento?", "Sì", "No")) THEN
+          FOR contatore = quantita.row TO quantita.Rows.Count - 2
+               quantita[contatore, 0].Text = quantita[contatore + 1, 0].Text
+               quantita[contatore, 1].Text = quantita[contatore + 1, 1].Text
+               quantita[contatore, 2].Text = quantita[contatore + 1, 2].Text
+               quantita[contatore, 3].Text = quantita[contatore + 1, 3].Text
+               quantita[contatore, 4].Text = quantita[contatore + 1, 4].Text
+               quantita[contatore, 5].Text = quantita[contatore + 1, 5].Text 
+          NEXT 
+          quantita.Rows.Count = quantita.Rows.Count - 1
+     END IF
+END IF
+
+END
+
+PUBLIC SUB SeeFunzioni_Click()
+
+  MostraFunzioni.Show
+
+END

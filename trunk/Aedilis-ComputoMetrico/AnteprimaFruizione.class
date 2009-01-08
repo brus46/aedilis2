@@ -1,0 +1,462 @@
+' Gambas class file
+
+PUBLIC categorie AS Boolean
+PUBLIC ristampaintestazione AS Boolean
+PUBLIC UnaCatUnaPag AS Boolean
+PUBLIC FastFruizione AS Boolean
+PUBLIC LargeCol1 AS Integer
+PUBLIC LargeCol2 AS Integer
+
+PUBLIC SUB LatexCorrection(linea AS String) AS String
+  
+  linea = Replace$(linea, "€", "\\EUR")
+  
+  linea = Replace$(linea, "$", "\\$")
+  linea = Replace$(linea, "%", "\\%")
+  linea = Replace$(linea, "#", "\\#")
+  linea = Replace$(linea, "&", "\\&")
+  linea = Replace$(linea, "_", "\\_")
+  linea = Replace$(linea, "{", "\\{")
+  linea = Replace$(linea, "}", "\\}")
+  linea = Replace$(linea, "^", "\\^{}")
+  linea = Replace$(linea, "~", "\\~{}")
+  
+  linea = Replace$(linea, "à", "\\`{a}")
+  linea = Replace$(linea, "é", "\\`{e}")
+  linea = Replace$(linea, "è", "\\'{e}")
+  linea = Replace$(linea, "É", "\\`{E}")
+  linea = Replace$(linea, "È", "\\'{E}")
+  linea = Replace$(linea, "ì", "\\`{\\i}")
+  linea = Replace$(linea, "ò", "\\`{o}")
+  linea = Replace$(linea, "ù", "\\`{u}")
+  
+  linea = Replace$(linea, "m²", "$ m^2 $")
+  linea = Replace$(linea, "m³", "$ m^3 $")
+  
+  RETURN linea
+  
+END
+PUBLIC SUB Cut_String(linea AS String, numcar AS Integer, insert AS String) AS String
+DIM contatore AS Integer
+DIM tempLine AS String
+
+     tempLine = ""
+     WHILE (Len(linea) > numcar)
+     
+          tempLine = tempLine & Left$(linea, numcar) & insert
+          linea = Right$(linea, - numcar)
+     
+     WEND 
+     IF NOT (Len(linea) = 0) THEN 
+          tempLine = tempLine & linea
+     ELSE 
+          tempLine = tempLine & Left$(linea, - Len(insert))
+     END IF
+
+     RETURN tempLine  
+END
+
+
+PUBLIC SUB Form_Close()
+
+  Fruizioni.Close
+
+END
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+
+END
+
+PUBLIC SUB DoLatex(FilePath AS String) AS Integer
+
+DIM SaveFile AS File
+DIM Contatore AS Integer
+DIM contatore2 AS Integer
+DIM CRighe AS Integer
+DIM linea AS String
+DIM splitted AS String[]
+DIM larghezza AS Float
+DIM firstline AS Integer
+
+     TRY SaveFile = OPEN FilePath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          PRINT #SaveFile, "\\documentclass[a4paper,12pt]{article}"
+          PRINT #SaveFile, "\\usepackage{longtable}"
+          PRINT #SaveFile, "\\usepackage{marvosym}"
+          PRINT #SaveFile, "\\usepackage[pdftex]{lscape} "
+          PRINT #SaveFile, "\\usepackage[latin1]{inputenc}"
+          PRINT #SaveFile, "\\usepackage[italian]{babel}"
+          
+          
+          
+          PRINT #SaveFile, "\\setlength {\\oddsidemargin}{-1.5cm}"
+          PRINT #SaveFile, "\\oddsidemargin  = -1.5cm"                 
+          PRINT #SaveFile, "\\textwidth =19cm"
+          PRINT #SaveFile, "\\topmargin =0cm"
+          PRINT #SaveFile, "\\headheight = 0 cm"
+          PRINT #SaveFile, "\\headsep = 0 cm"
+          PRINT #SaveFile, "\\footskip = 0 cm"
+          'PRINT #SaveFile, "\\evensidemargin = -1.5cm"
+          PRINT #SaveFile, "\\pagestyle{empty}"
+          PRINT #SaveFile, "\\begin{document}"
+          PRINT #SaveFile, "\\begin{small}"
+          'PRINT #SaveFile, "\\begin{landscape}"
+          splitted = Split(intestazione.Text, "\n")
+          FOR contatore = 0 TO splitted.Count - 1
+               linea = "{\\Large " & LatexCorrection(splitted[contatore]) & " } \\" & "\\"
+               PRINT #SaveFile, linea
+          NEXT 
+          IF (Copertina.Visible = TRUE) THEN 
+               'PRINT #SaveFile, "\\end{landscape}"
+               PRINT #SaveFile, "\\newpage"
+               'PRINT #SaveFile, "\\begin{landscape}"
+          END IF
+          IF (Categorie = FALSE) THEN 
+               PRINT #SaveFile, "\\begin{scriptsize}"
+               PRINT #SaveFile, "\\begin{longtable}{|";
+               linea = ""
+               FOR Contatore = 0 TO Anteprima.Columns.Count - 2
+                    IF ((Contatore = LargeCol1) OR (Contatore = LargeCol2)) THEN 
+                         linea = linea & "p{5cm}|"
+                    ELSE 
+                         linea = linea & "c|"
+                    END IF
+               NEXT 
+               PRINT #SaveFile, linea & "}"
+               
+               FOR CRighe = 0 TO Anteprima.Rows.Count - 1
+                    PRINT #SaveFile, "\\hline"
+                    linea = ""
+                    FOR Contatore = 0 TO Anteprima.Columns.Count - 2
+                         IF (CRighe = 0) THEN linea = linea & " \\bf "
+                         linea = linea & LatexCorrection(Anteprima[CRighe, Contatore].Text)
+                         IF (contatore < Anteprima.Columns.Count - 2) THEN 
+                              linea = linea & " & "
+                         ELSE 
+                              linea = linea & " \\" & "\\"
+                         END IF
+                    NEXT 
+                    PRINT #SaveFile, linea
+               NEXT 
+               PRINT #SaveFile, "\\hline"
+               
+               PRINT #SaveFile, "\\end{longtable}"
+               PRINT #SaveFile, "\\end{scriptsize}"
+          ELSE 
+               CRighe = 0
+               FOR contatore2 = 1 TO LineeCategorie.Count - 1
+
+                    PRINT #SaveFile, "{\\Large " & LatexCorrection(Anteprima[CRighe, 0].Text) & "} \\\\"
+                    PRINT #SaveFile, "\\begin{scriptsize}"
+                    PRINT #SaveFile, "\\begin{longtable}{|";
+                    CRighe = CRighe + 1
+                    linea = ""
+                    FOR Contatore = 0 TO Anteprima.Columns.Count - 2
+                         IF ((Contatore = LargeCol1) OR (Contatore = LargeCol2)) THEN 
+                              linea = linea & "p{5cm}|"
+                         ELSE 
+                              linea = linea & "c|"
+                         END IF
+                    NEXT 
+               
+                    PRINT #SaveFile, linea & "}"
+                    IF (contatore2 = 1) THEN
+                         firstline = 1
+                    ELSE 
+                         firstline = Val(LineeCategorie[contatore2 - 1].Text) + 1
+                    END IF
+                    FOR CRighe = CRighe TO Val(LineeCategorie[contatore2].Text) - 1
+                         PRINT #SaveFile, "\\hline"
+                         linea = ""
+                         FOR Contatore = 0 TO Anteprima.Columns.Count - 2
+                              IF (CRighe = firstline) THEN 
+                                   linea = linea & " \\bf "
+                              END IF
+                              linea = linea & LatexCorrection(Anteprima[CRighe, Contatore].Text)
+                              IF (contatore < Anteprima.Columns.Count - 2) THEN 
+                                   linea = linea & " & "
+                              ELSE 
+                                   linea = linea & " \\" & "\\"
+                              END IF
+                         NEXT 
+                         PRINT #SaveFile, linea
+                    NEXT 
+                    PRINT #SaveFile, "\\hline"
+                    PRINT #SaveFile, "\\end{longtable}"
+                    PRINT #SaveFile, "\\end{scriptsize}"
+                    IF (UnaCatUnaPag = TRUE) THEN 
+                         PRINT #SaveFile, "\\newpage"  
+                    END IF
+               NEXT 
+          
+          
+          
+          END IF
+          IF NOT (TotaleFondo.Text = "") THEN 
+               PRINT #SaveFile, "\\begin{raggedleft}" 
+               PRINT #SaveFile, "{\\Large " & LatexCorrection("Totale Computo: " & TotaleFondo.Text) & "} \\" & "\\" 
+               PRINT #SaveFile, "\\end{raggedleft}"
+          END IF
+          'PRINT #SaveFile, "\\end{landscape}"
+          PRINT #SaveFile, "\\end{small}"
+          PRINT #SaveFile, "\\end{document}"
+          SaveFile.Close
+          RETURN 1
+     ELSE 
+          RETURN -1
+          Message.Error("Impossibile scrivere sul file specificato")
+     END IF
+  
+END
+
+
+PUBLIC SUB PrintPdf(FilePath AS String)
+DIM SaveFile AS File
+DIM Processo AS Process
+DIM contatore AS Integer
+DIM directory AS String
+     TRY SaveFile = OPEN FilePath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          SaveFile.Close
+          DoLatex("/tmp/Temp.latex")
+          WAIT 1
+          Processo = SHELL "pdflatex -output-directory /tmp/ /tmp/Temp.latex" WAIT 
+          SHELL "mv /tmp/Temp.pdf " & FilePath WAIT 
+          SHELL "rm /tmp/Temp.latex"
+          IF (viewresult.Value = TRUE) THEN SHELL Connessione.PdfReader & FilePath
+          Message.Info("File creato")
+     ELSE 
+          Message.Error("Impossibile scrivere sul file specificato")
+     END IF
+     
+END
+
+PUBLIC SUB PrintPs(FilePath AS String)
+DIM SaveFile AS File
+
+     TRY SaveFile = OPEN FilePath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          SaveFile.Close
+          DoLatex("/tmp/Temp.latex")
+          WAIT 1
+          SHELL "latex -output-directory /tmp/ /tmp/Temp.latex" WAIT 
+          WAIT 1
+          SHELL "pdftops /tmp/Temp.pdf /tmp/Temp.ps" WAIT 
+          WAIT 1
+          SHELL "mv /tmp/Temp.ps " & FilePath WAIT 
+          SHELL "rm /tmp/Temp.latex"
+          SHELL "rm /tmp/Temp.pdf"
+          IF (viewresult.Value = TRUE) THEN SHELL Connessione.PdfReader & FilePath
+          Message.Info("File creato")
+     ELSE 
+          Message.Error("Impossibile scrivere sul file specificato")
+     END IF
+     
+END
+
+PUBLIC SUB StampaFruizione()
+
+     DoLatex("/tmp/Temp.latex")
+     WAIT 1
+     SHELL "latex -output-directory /tmp/ /tmp/Temp.latex" WAIT 
+     WAIT 1
+     'SHELL "dvips /tmp/Temp.dvi -o /tmp/Temp.ps" WAIT 
+     SHELL "pdftops /tmp/Temp.pdf /tmp/Temp.ps" WAIT 
+     WAIT 1
+     SHELL "lpr /tmp/Temp.ps" WAIT 
+     SHELL "rm /tmp/Temp.latex"
+     SHELL "rm /tmp/Temp.pdf"
+     IF (viewresult.Value = TRUE) THEN 
+          SHELL Connessione.PdfReader & "/tmp/Temp.ps"
+     ELSE 
+          SHELL "rm /tmp/Temp.ps"
+     END IF
+     Message.Info("Il file è stato mandato in stampa.")
+END
+
+
+
+PUBLIC SUB PrintHtml(FilePath AS String)
+DIM SaveFile AS File
+DIM contatoreR AS Integer
+DIM contatoreC AS Integer
+DIM splitted AS String[]
+DIM contatore AS Integer
+DIM CRighe AS Integer
+DIM contatore2 AS Integer
+DIM firstline AS Integer
+DIM linea AS String
+
+     TRY SaveFile = OPEN FilePath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          'Intestazione Html
+          PRINT #SaveFile, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\""
+          PRINT #SaveFile, "\"http://www.w3.org/TR/REC-html40/strict.dtd\">"
+          PRINT #SaveFile, "<html>"
+          PRINT #SaveFile, "<head>"
+          PRINT #SaveFile, "<title>" & Globals.ProjectName & "</title>"
+          PRINT #SaveFile, "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">"
+          PRINT #SaveFile, "</head>"   
+          PRINT #SaveFile, "<body>"
+          PRINT #SaveFile, "<h3>"
+          splitted = Split(intestazione.Text, "\n")
+          FOR contatore = 0 TO splitted.Count - 1
+               PRINT #SaveFile, splitted[contatore] & "<br>"
+          NEXT 
+          PRINT #SaveFile, "</h3><br><br><center>"
+          IF (Copertina.Visible = TRUE) THEN PRINT #SaveFile, "<br><br><hr><br><br><center>"
+          IF (categorie = FALSE) THEN 
+               PRINT #SaveFile, "<table cellspacing=0 cellpadding=3 border=1>"
+               PRINT #SaveFile, "<caption><h3>" & Globals.ProjectName & "</h3></caption>"
+          
+               FOR contatoreR = 0 TO Anteprima.Rows.Count - 1
+                    PRINT #SaveFile, "<tr>"
+                    FOR contatoreC = 0 TO Anteprima.Columns.Count - 2
+                         PRINT #SaveFile, "<td>" & Anteprima[contatoreR, contatoreC].Text & "</td>"
+                    NEXT 
+                    PRINT #SaveFile, "</tr>"
+               NEXT           
+               PRINT #SaveFile, "</table></center>"
+          ELSE 
+               CRighe = 0
+               FOR contatore2 = 1 TO LineeCategorie.Count - 1
+                    PRINT #SaveFile, "<table cellspacing=0 cellpadding=3 border=1>"
+                    PRINT #SaveFile, "<caption><h3>" & Anteprima[CRighe, 0].Text & "</h3></caption>"
+
+                    IF (contatore2 = 1) THEN
+                         firstline = 1
+                    ELSE 
+                         firstline = Val(LineeCategorie[contatore2 - 1].Text) + 1
+                    END IF
+                    FOR CRighe = CRighe + 1 TO Val(LineeCategorie[contatore2].Text) - 1
+                         PRINT #SaveFile, "<tr>"
+                         linea = "<td>"
+                         FOR Contatore = 0 TO Anteprima.Columns.Count - 2
+                              IF (CRighe = firstline) THEN 
+                                   IF (contatore < Anteprima.Columns.Count - 2) THEN 
+                                        linea = linea & "<b>" & Anteprima[CRighe, Contatore].Text & "</b></td><td> "
+                                   ELSE 
+                                        linea = linea & "<b>" & Anteprima[CRighe, Contatore].Text & "</b></td></tr>"
+                                   END IF
+                              ELSE 
+                                   IF (contatore < Anteprima.Columns.Count - 2) THEN 
+                                        linea = linea & Anteprima[CRighe, Contatore].Text & "</td><td> "
+                                   ELSE 
+                                        linea = linea & Anteprima[CRighe, Contatore].Text & "</td></tr>"
+                                   END IF
+                              END IF
+                         NEXT 
+                         PRINT #SaveFile, linea
+                    NEXT 
+                    PRINT #SaveFile, "</table>"
+                    IF (UnaCatUnaPag = TRUE) THEN 
+                         PRINT #SaveFile, "<br><br><hr><br><br>"  
+                    END IF
+               NEXT 
+               PRINT #SaveFile, "</center>"   
+          END IF
+          IF NOT (TotaleFondo.Text = "") THEN 
+               PRINT #SaveFile, "<br><h3><p align=\"right\"> Totale Fondo: " & TotaleFondo.Text & "</p></h3>" 
+          END IF
+          PRINT #SaveFile, "</body></html>"
+          SaveFile.Close()
+          IF (viewresult.Value = TRUE) THEN SHELL Connessione.Browser & FilePath
+  
+     ELSE 
+          Message.Error("Impossibile scrivere sul file specificato")
+     END IF
+     
+END
+
+PUBLIC SUB PrintCsv(FilePath AS String)
+DIM SaveFile AS File
+DIM fieldSep AS String
+DIM textsep AS String
+DIM contatoreR AS Integer
+DIM contatoreC AS Integer
+
+     textsep = "\""
+     fieldSep = ";"
+     TRY SaveFile = OPEN FilePath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          PRINT #SaveFile, textsep & intestazione.Text & textsep & fieldSep
+          FOR contatoreR = 0 TO Anteprima.Rows.Count - 1
+               FOR contatoreC = 0 TO Anteprima.Columns.Count - 2
+                    PRINT #SaveFile, textsep & Anteprima[contatoreR, contatoreC].Text & textsep & fieldSep;
+               NEXT 
+               PRINT #SaveFile, ""
+          NEXT           
+          PRINT #SaveFile, TotaleFondo.Text
+          SaveFile.Close()
+          IF (viewresult.Value = TRUE) THEN SHELL Connessione.CsvReader & FilePath
+     ELSE 
+          Message.Error("Impossibile scrivere sul file specificato")
+     END IF
+      
+END
+
+PUBLIC SUB PrintLatex(FilePath AS String)
+
+     'PRINT "Format: Latex, SavePath: " & FilePath
+     IF NOT (-1 = DoLatex(FilePath)) THEN 
+          IF (viewresult.Value = TRUE) THEN SHELL Connessione.EditorTesto & FilePath
+          Message.Info("Salvataggio completato")
+     END IF
+END
+
+PUBLIC SUB Form_Resize()
+   IF (ME.Width < frame1.Width + 20) THEN ME.Width = frame1.Width + 20
+   IF (ME.Height < frame1.Height + 20) THEN ME.Height = frame1.Height + 20
+
+  Anteprima.X = 10
+  Anteprima.Width = ME.Width - 20
+  Anteprima.Height = ME.Height - 30 - Anteprima.Y
+  TotaleFondo.Y = Anteprima.Height + Anteprima.Y
+  TotaleFondo.Width = Anteprima.Width
+  TotaleFondo.X = 10
+  intestazione.X = Anteprima.X
+  intestazione.Width = Anteprima.Width
+  Frame1.X = (ME.Width - Frame1.Width) / 2
+  Copertina.X = Frame1.X
+END
+
+PUBLIC SUB Genera_Click()
+
+IF NOT (stampa.Value = TRUE) THEN 
+  Dialog.Path = User.Home
+  Dialog.Title = "Salva la fruizione"
+  IF (pdf.Value = TRUE) THEN Dialog.Filter = ["*.pdf", "PDF, Portable Document Format"]
+  IF (ps.Value = TRUE) THEN Dialog.Filter = ["*.ps", "PS, PostScript"]
+  IF (latex.Value = TRUE) THEN Dialog.Filter = ["*.latex", "Latex"]
+  IF (html.Value = TRUE) THEN Dialog.Filter = ["*.html", "Html"]
+  IF (Csv.Value = TRUE) THEN Dialog.Filter = ["*.csv", "Csv"]
+  
+  IF NOT (Dialog.SaveFile()) THEN  
+  
+     IF (pdf.Value = TRUE) THEN PrintPdf(Dialog.Path)
+     IF (ps.Value = TRUE) THEN PrintPs(Dialog.Path)
+     IF (latex.Value = TRUE) THEN PrintLatex(Dialog.Path)
+     IF (html.Value = TRUE) THEN PrintHtml(Dialog.Path)
+     IF (Csv.Value = TRUE) THEN PrintCsv(Dialog.Path)
+     
+  END IF
+ELSE 
+
+     StampaFruizione()
+
+END IF
+END
+
+PUBLIC SUB Annulla_Click()
+
+  ME.hide
+  IF (FastFruizione = FALSE) THEN 
+       Fruizioni.Show
+  ELSE 
+     FruizioneSemplice.Show
+     FruizioneSemplice.Form_Open
+  END IF
+
+END

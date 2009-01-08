@@ -1,0 +1,16 @@
+* Thu Sep 27 2007 MosconiMarco <brus46@gmail.com> 0.0-6
+- Terminale vero: il terminale sembra vero ora.
+
+* Mon Sep 24 2007 MosconiMarco <brus46@gmail.com> 0.0-5
+- Codice commentato ed ottimizzato.
+
+* Mon Sep 24 2007 MosconiMarco <brus46@gmail.com> 0.0-4
+- Aggiornate le icone
+- Il programma riconosce se Octave ha crashato e lo segnala all'utente.
+
+* Sat Sep 08 2007 MosconiMarco <brus46@gmail.com> 0.0-3
+- Bug fixed
+
+* Tue Sep 04 2007 MosconiMarco <brus46@gmail.com> 0.0-2
+- Initial release
+

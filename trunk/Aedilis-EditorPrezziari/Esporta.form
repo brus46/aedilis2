@@ -1,0 +1,75 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,53)
+  Text = ("Esporta Prezziario")
+  Icon = Picture["Icone/Esporta.png"]
+  Border = Window.Fixed
+  { Frame1 Frame
+    MoveScaled(1,1,62,22)
+    Text = ("Formato")
+    { miei RadioButton
+      MoveScaled(2,3,26,5)
+      Text = ("Prezziari Aedilis (no UM)")
+      Value = True
+    }
+    { mieiUM RadioButton
+      MoveScaled(2,9,26,5)
+      Text = ("Prezziari Aedilis (con UM)")
+    }
+    { CSV RadioButton
+      MoveScaled(2,15,30,5)
+      Text = ("CSV")
+    }
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(1,39,15,4)
+    Text = ("Filename:")
+    Alignment = Align.Right
+  }
+  { FileName TextBox
+    MoveScaled(17,38,41,5)
+    Text = ("")
+  }
+  { SelectFile Button
+    MoveScaled(59,38,4,5)
+    Text = ("...")
+  }
+  { Export Button
+    MoveScaled(2,44,24,8)
+    Text = ("Esporta")
+    Picture = Picture["Icone/Esporta.png"]
+    Default = True
+  }
+  { Annulla Button
+    MoveScaled(39,44,24,8)
+    Text = ("Annulla")
+    Picture = Picture["Icone/Elimina.png"]
+  }
+  { Frame2 Frame
+    MoveScaled(2,23,61,14)
+    Text = ("Impostazioni CSV")
+    { TextLabel2 TextLabel
+      MoveScaled(2,3,20,3)
+      Text = ("Separatore di Testo:")
+    }
+    { TestoSep ComboBox
+      MoveScaled(26,2,10,5)
+      Font = Font["12"]
+      Text = ("''")
+      ReadOnly = True
+      List = [("''"), ("'")]
+    }
+    { CampoSep ComboBox
+      MoveScaled(26,8,10,5)
+      Font = Font["12"]
+      Text = (";")
+      ReadOnly = True
+      List = [(";"), ("."), (":")]
+    }
+    { TextLabel3 TextLabel
+      MoveScaled(2,9,20,3)
+      Text = ("Separatore di Campo:")
+    }
+  }
+}

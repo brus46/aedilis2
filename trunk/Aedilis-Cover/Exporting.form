@@ -1,0 +1,50 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,67,56)
+  Text = ("Esporta")
+  Icon = Picture["Immagini/export1.resized.png"]
+  Border = Window.Fixed
+  { RmEx Button
+    MoveScaled(30,15,7,7)
+    Text = ("")
+    Picture = Picture["Immagini/Retro.png"]
+  }
+  { AddEx Button
+    MoveScaled(30,23,7,7)
+    Text = ("")
+    Picture = Picture["Immagini/Front.png"]
+  }
+  { Esporta Button
+    MoveScaled(38,44,28,11)
+    Text = ("Esporta")
+    Picture = Picture["Immagini/export1.png"]
+  }
+  { Annulla Button
+    MoveScaled(1,44,28,11)
+    Text = ("Annulla")
+    Picture = Picture["Immagini/cancel.png"]
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(1,0,14,3)
+    Text = ("I tuoi Layout")
+  }
+  { TextLabel2 TextLabel
+    MoveScaled(37,0,14,3)
+    Text = ("Da esportare:")
+  }
+  { ListLayout ListView
+    MoveScaled(1,3,28,40)
+  }
+  { ListExport ListView
+    MoveScaled(38,3,28,40)
+  }
+  { ListLayoutId ListBox
+    MoveScaled(19,31,10,12)
+    Visible = False
+  }
+  { ListExportId ListBox
+    MoveScaled(56,31,10,12)
+    Visible = False
+  }
+}

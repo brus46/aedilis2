@@ -1,0 +1,61 @@
+' Gambas class file
+
+
+PUBLIC SUB Annulla_Click()
+
+     ME.Hide  
+
+END
+
+PUBLIC SUB SelectFile_Click()
+
+Dialog.Title = "Esporta Prezziario"  
+
+IF (CSV.Value = TRUE) THEN 
+     Dialog.Filter = ["*.csv", "File CSV"]
+ELSE 
+     Dialog.Filter = ["*.prezziario", "File del programma"]
+END IF
+
+Dialog.Path = User.Home &/ ""
+IF (FALSE = Dialog.SaveFile()) THEN 
+IF (CSV.Value = TRUE) THEN 
+     Filename.Text = Dialog.Path
+ELSE 
+     Filename.Text = Dialog.Path
+END IF
+     
+END IF
+  
+
+END
+
+PUBLIC SUB Export_Click()
+WITH ToolEsportazione
+TRY .hfile = OPEN Dialog.Path FOR WRITE CREATE 
+IF NOT ( ERROR ) THEN 
+    IF (miei.Value = TRUE) THEN 
+          .EsportaPrezziario(0)
+    ELSE IF (mieiUM.Value = TRUE) THEN 
+          .EsportaPrezziario(1)
+    ELSE IF (CSV.Value = TRUE) THEN 
+          .CSV_field = CampoSep.Text
+          .CSV_text = Testosep.Text
+          .intestazione_CSV
+          .EsportaPrezziario(2)
+    END IF
+     message.Info("Esportazione completata.")
+     Annulla_Click()
+ELSE 
+     message.Error("Impossibile accedere al file: " & Error.Text)
+END IF
+END WITH 
+END
+
+PUBLIC SUB Form_Open()
+TestoSep.Clear
+TestoSep.List = ["\"", "'"]
+TestoSep.Text = "'"
+  ME.Center
+
+END

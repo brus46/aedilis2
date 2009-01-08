@@ -1,0 +1,275 @@
+' Gambas class file
+
+PUBLIC dirty AS Boolean 'Questa variabile segnala se ci sono delle cose diverse dall'ultimo salvataggio di un file
+
+PUBLIC SUB Form_Close()
+     'Se chiudi questo form il programma deve terminare.
+     QUIT 
+  
+END
+
+PUBLIC SUB Form_Open()
+  
+  ME.Center
+  ME.Maximized = TRUE
+  'Carico le funzioni presenti della path delle funzioni di aedilis
+  aggiorna_Click()
+  'Imposto la variabile dirty a false perchè non c'è niente da salvare
+  dirty = FALSE
+
+END
+
+PUBLIC SUB Testa_Click()
+
+  IF (dirty = TRUE) THEN 'Se il file ha subito modifiche è auspicabile salvare prima di testarlo.
+   IF (1 = message.Question("Prima devo salvare il file. Procedo?")) THEN 
+     salva_Click() 'Richiamo la funzione di salvataggio della funzione
+     Testa_Click() 'Rilancio questa funzione ma questa volta dirty sarà false perchè ho appena salvato il file
+   END IF
+  ELSE 
+     Test.Show  'Mostro il form per i test.
+  END IF
+END
+
+PUBLIC SUB FName_Change()
+  'Il file è diverso da quello salvato quindi
+  dirty = TRUE
+
+END
+
+PUBLIC SUB FInput_Change()
+  'Il file è diverso da quello salvato quindi
+  dirty = TRUE
+
+END
+
+PUBLIC SUB FOutput_Change()
+  'Il file è diverso da quello salvato quindi
+  dirty = TRUE
+
+END
+
+PUBLIC SUB FDescr_Change()
+  'Il file è diverso da quello salvato quindi
+  dirty = TRUE
+
+END
+
+PUBLIC SUB Aggiorna_Click()
+'Questa funzione aggiorna la lista delle funzioni disponibili.
+DIM linea AS String  'Questa variabile serve per leggere l'output del comando "ls" dato all'interno della path delle funzioni
+DIM linee AS String[] 'Questa variabile conterrà le singole linee estratte dalla variabile linea splittando per il carattere speciale \n
+DIM contatore AS Integer  'Con questa variabile scorreremo tutti gli elementi di "linee"
+DIM estensione AS String[]  'Con questa variabile estrapoleremo l'estensione di ogni file presente nella path delle funzioni
+
+  'Lancio il comando "ls" all'interno della path delle funzioni e reindirizzo l'stdout su linea
+  SHELL "ls " & user.Home &/ ".Aedilis/Funzioni/" WAIT TO linea 
+  'Cancello la lista precedente di funzioni e inizio a caricare quella nuova.
+  ListaFunzioni.Clear
+  
+  'Estraggo i singoli elementi splittando per il carattere speciale \n
+  linee = Split(linea, "\n")
+  FOR contatore = 0 TO linee.Count - 1
+     'Ricerco l'estensione
+     estensione = Split(linee[contatore], ".")
+     IF (estensione.Count > 1) THEN 
+          'Se l'estensione è .m allora è una funzione e va aggiunta.
+          IF (estensione[estensione.Count - 1] = "m") THEN 
+               ListaFunzioni.Add(linee[contatore])
+          END IF
+     END IF
+  NEXT 
+  
+END
+
+PUBLIC SUB Salva_Click()
+'Questa funzione salva su file la funzione corrente
+DIM SaveFile AS File 'Questa variabile conterrà il descrittore del file da salvare.
+     
+     'Provo ad creare/aprire il file della funzione che sarà nella path delle funzioni di aedilis 
+     'e avrà come nome il nome della funzione e come estensione l'estensione dei file funzione di Octave ovvero .m
+     TRY SaveFile = OPEN user.Home &/ ".Aedilis/Funzioni/" & FName.Text & ".m" FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 'Se non ci sono stati errori (es. Il file è in sola lettura)
+          'Stampo l'intestazione della funzione nel formato riconosciuto da Octave
+          PRINT #SaveFile, "function " & FOutPut.Text & "=" & FName.Text & "(" & FInput.Text & ")"
+          'Stampo l'help rapido della funzione [ATTENZIONE: funziona solo per una linea, le altre andranno inserite manualmente]
+          PRINT #SaveFile, "%" & FDescr.Text
+          'Stampo il testo vero e proprio della funzione
+          PRINT #SaveFile, EditFunzione.Text
+          'Ora che il contenuto del file è identico a quello sotto lavorazione posso impostare dirty a false
+          dirty = FALSE
+          'Aggiornlo l'elenco delle funzioni nel caso che la mia sia una nuova funzione.
+          Aggiorna_Click()
+          'Chiudo il descrittore del file di salvataggio
+          SaveFile.Close
+     ELSE 
+          message.Warning("Impossibile salvare la funzione!")
+     END IF
+  
+
+END
+
+PUBLIC SUB NuovaFunzione_Click()
+'Questa funzione crea una nuova funzione, ovvero libera i campi di editing.
+DIM prosegui AS Boolean 'Questa variabile è vera solo se l'utente e tutte le condizioni necessarie sono favorevoli alla creazione di una nuova funzione.
+  prosegui = TRUE 'Di defaul è vera, se ci sarà qualcosa che va in contrasto con questa affermazione essa cambierà di valore.
+  IF (dirty = TRUE) THEN 'Se il file ha subito modifiche chiedo se devo proseguire
+     IF NOT (1 = message.Question("Proseguendo cancellerai tutti i progressi fatti!", "Prosegui", "Annulla")) THEN prosegui = FALSE
+  END IF
+  IF (prosegui = TRUE) THEN 
+     'Pulisco tutti i campi
+     FName.Clear
+     FInput.Clear
+     FOutPut.Clear
+     FDescr.Clear
+     EditFunzione.Clear
+     'Imposto Dirty a falso in quanto il file di base è vuoto.
+     dirty = FALSE
+  END IF
+
+END
+
+PUBLIC SUB Guida_Click()
+'Scrivo nel file di configurazione dell'Help la path della pagina della guida per questa sezione
+DIM hfile AS File 'Questa variabile conterrà il descrittore del file di configurazione dell'help
+     TRY hfile = OPEN user.Home &/ ".Aedilis/Help" FOR WRITE CREATE 'Provo ad aprire il file di configurazione dell'help in scrittura/creazione
+     IF NOT ( ERROR ) THEN 'Se non ci sono stati errori (es. file protetto da scrittura) allora salvo la nuova path della guida
+          PRINT #hfile, "http://www.sciallo.net/Aedilis/Guida/EdFunzioni.html"
+          hfile.Close 'Chiudo il descrittore del file
+          WAIT 1 'Attendo in modo che il file possa essere scritto
+     END IF
+     
+     SHELL "aedilis-help.gambas" 'Lancio la guida
+
+END
+
+PUBLIC SUB EliminaFunzione_Click()
+'Questa funzione elimina la funzione selezionata.
+  IF NOT (ListaFunzioni.Current = NULL) THEN 'Se esiste un elemento corrente allora
+     'Chiedo se l'utente è sicuro della sua decisione.
+     IF (1 = message.Question("Sei sicuro di voler eliminare: " & ListaFunzioni.Current.Text & " ?", "Sì", "No")) THEN 
+          'Elimino fisicamente il file della funzione
+          SHELL "rm " & user.Home &/ ".Aedilis/Funzioni/" & ListaFunzioni.Current.Text
+          'Elimino l'elemento corrente dalla lista poichè non esiste più.
+          ListaFunzioni.Remove(ListaFunzioni.Index)
+     END IF
+  END IF
+
+END
+
+PUBLIC SUB Edita_Click()
+'Questa funzione carica dal file funzione selezionato tutti gli elementi necessari per l'editing
+DIM OpenFile AS File 'Questa variabile conterrà il descrittore del file funzione da caricare
+DIM linea AS String 'Questa variabile serve per leggere il file una linea per volta
+DIM split1 AS String[] 'Questa variabile serve per dividere la linea
+DIM split2 AS String[] 'Questa variabile serve per dividere la linea
+DIM prosegui AS Boolean 'Questa variabile è vera solo se l'utente e tutte le condizioni necessarie sono a favore dell'editing dell'elemento.
+
+  IF NOT (ListaFunzioni.Current = NULL) THEN  'Se esiste un elemento corrente da editare
+     prosegui = TRUE 'Di default è vera, ma se ci fossero delle condizioni avverse cambierà di valore.
+     IF (dirty = TRUE) THEN 'Se il file corrente (quello precedente a quello in esame ora) è stato modificato chiedo quali sono le intenzioni dell'utente.
+         IF NOT (1 = message.Question("Proseguendo cancellerai tutti i progressi fatti!", "Prosegui", "Annulla")) THEN prosegui = FALSE
+     END IF
+     IF (prosegui = TRUE) THEN 
+          'Pulisco i cambi di editing
+          FName.Clear
+          FInput.Clear
+          FOutPut.Clear
+          FDescr.Clear
+          EditFunzione.Clear
+          'Provo ad aprire in lettura il file selezionato
+          TRY OpenFile = OPEN user.Home &/ ".Aedilis/Funzioni/" & ListaFunzioni.Current.Text FOR READ
+          IF NOT ( ERROR ) THEN 'Se non ci sono stati errori (es. il file non esiste)
+               'Leggo la prima linea che conterrà l'header della funzione
+               LINE INPUT #OpenFile, linea
+               'Dall'header devo ricavare (es. function Area=AreaCerchio(raggio) ) :
+               '-Il nome della variabile di Output (FOutPut.text)
+               '-Il nome della funzione (FName.text)
+               '-I parametri in ingresso (FInput.text)
+               'Splittando prima per l'= e poi la prima metà per lo spazio ottendo due metà una con la costante "function", la seconda con la variabile di output.
+               'Splittando prima per l'= e poi la seconda metà per la ( ottengo due metà, la prima con il nome della funzione e la seconda con i parametri in ingresso.
+               'Se gli split avranno dei count pari a zero(non trova il carattere) vuol dire che la funzione non ha un formato corretto.
+               split1 = Split(linea, "=")
+               IF NOT (split1.Count > 1) THEN 
+                    message.Warning("La funzione selezionata non ha un formato corretto")
+               ELSE 
+                    split2 = Split(split1[0], " ")
+                    IF NOT (split2.Count > 1) THEN 
+                         message.Warning("La funzione selezionata non ha un formato corretto")
+                    ELSE 
+                         FOutPut.Text = Split2[1] 
+                    END IF
+               
+                    split2 = Split(split1[1], "(")
+                    IF NOT (split2.Count > 1) THEN 
+                         message.Warning("La funzione selezionata non ha un formato corretto")
+                    ELSE 
+                         FName.Text = Split2[0]
+                         split1 = Split(split2[1], ")")
+                         FInput.Text = split1[0]
+                    END IF
+               END IF
+               'La linea dopo l'header contiene l'help rapido, basta togliergli il % iniziale.
+               LINE INPUT #OpenFile, linea
+               FDescr.Text = Mid$(linea, 2)
+               'Il resto del file contiene il testo della funzione e lo ricopio.
+               WHILE NOT Eof(OpenFile)
+                    LINE INPUT #OpenFile, linea
+                    EditFunzione.Text = EditFunzione.Text & linea
+               WEND 
+          ELSE 
+               message.Warning("Impossibile aprire il file della funzione.")
+          END IF
+          'La variabile dirty viene impostata a false perchè il file appena caricato è identico a quello presente nel file.
+          dirty = FALSE
+     END IF
+  END IF
+
+END
+
+PUBLIC SUB ListaFunzioni_DblClick()
+  'Facendo doppio click su un elemento lo si edita.
+  Edita_Click()
+
+END
+
+PUBLIC SUB Esporta_Click()
+  'Aggiorno la lista di funzioni del form "Exporting" e lo apro
+  Exporting.ListFunzioni.list = ListaFunzioni.list
+  Exporting.Show
+
+END
+
+PUBLIC SUB Importa_Click()
+'Questa funzione importa un file di funzioni .AAF (AedilisAdvancedFunctions) che altro non è che un pacchetto.tar di file funzioni di octave .m 
+DIM pathel AS String 'Questa variabile contiene la path dove risiedono le funzioni utilizzate da Aedilis
+   pathel = User.Home &/ ".Aedilis/Funzioni/"
+   'Imposto i parametri di Dialog in modo che possa aprire i file .AAF o Tar
+   Dialog.Path = User.Home
+   Dialog.Title = "Seleziona il file da importare"
+   Dialog.Filter = ["*.AAF", "Aedilis Archivio Funzioni", "*.tar", "Tarball"]
+   IF NOT (1 = Dialog.OpenFile()) THEN 'Se l'utente non ha premuto annulla o chiuso il form allora
+          SHELL "tar -xvf " & Dialog.Path & " -C " & pathel WAIT 'Eseguo la decompressione della cartella specificata e aspetta il termine
+          aggiorna_Click() 'Aggiorna la lista delle funzioni disponibili.
+          Message.Info("Importazione avvenuta con successo") 'Informo l'utente che è finita l'importazione
+   END IF
+
+END
+
+PUBLIC SUB Form_Resize()
+  'Impongo una dimensione minima al form.
+  IF (ME.Width < 660) THEN ME.Width = 660
+  IF (ME.Height < 550) THEN ME.Height = 550
+  
+  'Panel1 è il pannello che contiene la lista delle funzioni e Panel2
+  'Ingrandisco Panel1 in modo che occupi tutta l'altezza del form
+  Panel1.Height = ME.Height - 20
+  'Panel2 è il pannello che contiene tutti i comandi
+  'Sposto Panel2 in basso in modo che resti sul fondo di panel1
+  panel2.y = panel1.Height - 10 - panel2.Height
+  'Allungo ListaFunzioni in modo che occupi il buco creatosi fra se stesso e panel2
+  ListaFunzioni.Height = Panel2.Y - 10 - ListaFunzioni.Y
+  'Ingrandisco EditFunzione in modo che riempia la parte restante del form.
+  EditFunzione.Width = ME.Width - EditFunzione.X - 10
+  EditFunzione.Height = ME.Height - EditFunzione.Y - 10
+END

@@ -1,0 +1,90 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,42,47)
+  Text = ("Fruizione semplice")
+  Icon = Picture["Icone/wizard.gif"]
+  Border = Window.Fixed
+  { Frame3 Frame
+    MoveScaled(1,22,40,16)
+    Text = ("Categorie")
+    { Categorie CheckBox
+      MoveScaled(2,3,26,3)
+      Text = ("Dividi in categorie")
+    }
+    { TotCat CheckBox
+      MoveScaled(4,9,33,3)
+      Enabled = False
+      Text = ("Stampa il totale della categoria")
+    }
+    { CategoriaPerPagina CheckBox
+      MoveScaled(4,12,34,3)
+      Enabled = False
+      Text = ("Stampa una categoria per pagina")
+    }
+    { CatIntestazione CheckBox
+      MoveScaled(7,6,32,3)
+      Visible = False
+      Enabled = False
+      Text = ("Ristampa definizioni colonne")
+    }
+  }
+  { Frame1 Frame
+    MoveScaled(1,0,40,7)
+    Text = ("Impostazioni generiche")
+    { Copertina CheckBox
+      MoveScaled(2,3,33,3)
+      Text = ("Crea Copertina")
+    }
+    { TotComputoFondo CheckBox
+      MoveScaled(2,7,33,3)
+      Text = ("Stampa totale computo in fondo")
+      Value = CheckBox.True
+    }
+  }
+  { Frame2 Frame
+    MoveScaled(1,7,40,9)
+    Text = ("Stampa Descrizione:")
+    { DescrBreve RadioButton
+      MoveScaled(2,4,18,2)
+      Text = ("Breve")
+      Value = True
+    }
+    { DescrCompleta RadioButton
+      MoveScaled(19,4,18,2)
+      Text = ("Completa")
+    }
+  }
+  { Button9 Button
+    MoveScaled(22,39,19,7)
+    Text = ("Anteprima Fruizione")
+  }
+  { Button10 Button
+    MoveScaled(1,39,19,7)
+    Text = ("Annulla")
+  }
+  { ListaStampa ListBox
+    MoveScaled(59,1,11,26)
+    Visible = False
+    List = [("Codice"), ("Descrizione Breve"), ("Descrizione Completa"), ("Prezzo"), ("Quantit\xC3\xA0"), ("UM"), ("Costo")]
+  }
+  { ListaStampaInt ListBox
+    MoveScaled(46,1,12,26)
+    Visible = False
+    List = [("Titolo Progetto"), ("Committente"), ("Tipo di Committente"), ("Professionista"), ("Lista riassuntiva delle categorie")]
+  }
+  { ListaDati ListBox
+    MoveScaled(60,18,10,26)
+    Visible = False
+    List = [("Codice"), ("Descrizione Breve"), ("Descrizione Completa"), ("Prezzo"), ("Quantit\xC3\xA0"), ("UM"), ("Costo"), ("Offerte (numerica)"), ("Offerte (letterale)")]
+  }
+  { Frame4 Frame
+    MoveScaled(1,16,40,6)
+    Text = ("Colonna Offerte")
+    { Offerte CheckBox
+      MoveScaled(4,2,35,3)
+      Text = ("Stampa colonna offerte(num e lett)")
+      Value = CheckBox.True
+    }
+  }
+}

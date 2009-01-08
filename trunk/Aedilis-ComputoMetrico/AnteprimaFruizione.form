@@ -1,0 +1,73 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,77)
+  Text = ("Anteprima")
+  Icon = Picture["Icone/wizard.gif"]
+  { Frame1 Frame
+    MoveScaled(1,0,62,22)
+    Text = ("Output")
+    { pdf RadioButton
+      MoveScaled(2,3,9,3)
+      Text = ("Pdf")
+    }
+    { ps RadioButton
+      MoveScaled(2,6,9,3)
+      Text = ("Ps")
+    }
+    { latex RadioButton
+      MoveScaled(2,9,9,3)
+      Text = ("Latex")
+    }
+    { html RadioButton
+      MoveScaled(15,3,8,3)
+      Text = ("Html")
+    }
+    { csv RadioButton
+      MoveScaled(15,6,9,3)
+      Text = ("Csv")
+    }
+    { ViewResult CheckBox
+      MoveScaled(36,4,23,3)
+      Text = ("Visualizza il risultatato")
+    }
+    { Genera Button
+      MoveScaled(2,13,23,8)
+      Text = ("Genera")
+      Picture = Picture["Icone/fruizione.png"]
+    }
+    { Stampa RadioButton
+      MoveScaled(15,9,10,3)
+      Text = ("Stampa")
+    }
+    { Annulla Button
+      MoveScaled(37,13,23,8)
+      Text = ("Annulla")
+      Picture = Picture["Icone/esci.png"]
+    }
+  }
+  { Anteprima TableView
+    MoveScaled(1,39,62,34)
+    Header = GridView.Both
+  }
+  { Intestazione TextArea
+    MoveScaled(1,25,62,14)
+    Text = ("")
+    ReadOnly = True
+  }
+  { TotaleFondo TextBox
+    MoveScaled(1,73,62,3)
+    Text = ("")
+    Alignment = Align.Right
+  }
+  { Copertina TextLabel
+    MoveScaled(1,22,62,3)
+    Visible = False
+    Text = ("L'intestazione andr\xC3\xA0 a formare la copertina")
+    Alignment = Align.Right
+  }
+  { LineeCategorie ListBox
+    MoveScaled(53,39,10,19)
+    Visible = False
+  }
+}

@@ -1,0 +1,74 @@
+' Gambas class file
+
+PUBLIC processo AS Process 'Variabile che conterrà il descrittore del processo octave
+
+PUBLIC SUB Form_Open()
+
+  StartOctave() 'Lancio il programma
+
+END
+
+PUBLIC SUB Process_Read()
+  DIM sLine AS String 'Variabile dove viene rendirizzato l'stdout del processo
+  
+  READ #processo, sLine, - Lof(processo) 'Legge tutti i caratteri disponibili sullo stream
+  
+  Terminale.Text = Terminale.Text & sLine 'Aggiunge al nostro "terminale" i caratteri letti
+END
+
+PUBLIC SUB StartOctave()
+  
+  'Lancio il processo "octave" in modalità lettura/scrittura
+  Processo = SHELL "octave" FOR INPUT OUTPUT 
+  
+  'Sposto la directory di esecuzione di octave nella cartella dove sono salvate le funzioni di Aedilis
+  PRINT #Processo, "cd " & User.Home &/ ".Aedilis/Funzioni/"
+  'Imposto il "format short" ovvero i calcoli generano un massimo di 4 cifre decimali.
+  PRINT #Processo, "format short"
+  
+END
+
+
+PUBLIC SUB Esegui_Click()
+'Se il processo è ancora in esecuzione esegui il comando
+IF NOT (Processo.State = Process.Stopped) THEN 
+  Terminale.Text = Terminale.Text & Comando.Text & "\n" 'Scrive sul nostro "terminale" il comando come se fosse eseguito in una vera console
+  PRINT #Processo, Comando.Text 'Scrivo il comando sul descrittore del programma in questo modo finirà sul suo stdin
+  Comando.Text = "" 'Svuoto la casella contenente il comando appena mandato in esecuzione.
+ELSE 
+     'Il processo non è più in esecuzione, avviso l'utente e gli chiedo di riavviare Octave
+     Message.Info("Sembra che Octave sia interrotto.\nProva a riavviarlo con l'apposito comando")
+END IF
+END
+
+PUBLIC SUB Form_Close()
+  'Quando il form si chiude termiino il processo.
+  IF NOT (Processo.State = Process.Stopped) THEN Processo.Kill()
+
+END
+
+PUBLIC SUB Restart_Click()
+  'Se il processo è ancora in esecuzione lo termino
+  IF NOT (Processo.State = Process.Stopped) THEN Processo.Kill()
+  Terminale.Clear 'Pulisco il nostro terminale.
+  StartOctave() 'Rilancio Octave
+
+END
+
+PUBLIC SUB Form_Resize()
+  'Mi assicuro che il form non sia stato ridimensionato oltre le dimensioni limite.
+  IF (ME.Width < 560) THEN ME.Width = 560
+  IF (ME.Height < 450) THEN ME.Height = 450
+  
+  'Ridimensiono il terminale in modo da riempire il form.
+  Terminale.Width = ME.Width - 20
+  Terminale.Height = ME.Height - Terminale.Y - 10
+  
+
+END
+
+PUBLIC SUB Terminale_Change()
+  'In questo modo la casella di testo si comporta esattamente come un terminale vero.
+  Terminale.Line = Split(Terminale.Text, "\n").Count - 1
+
+END

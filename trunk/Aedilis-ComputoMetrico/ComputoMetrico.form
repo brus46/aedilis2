@@ -1,0 +1,679 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,124,109)
+  Text = ("Aedilis - Computo Metrico")
+  Icon = Picture["Icone/aedilisComputoMetrico.png"]
+  { File Menu
+    Text = ("File")
+    { Nuovo Menu
+      Text = ("Nuovo Progetto")
+      Picture = Picture["Icone/aedilisDocumentoNewMt.png"]
+    }
+    { Apri Menu
+      Text = ("Apri Progetto")
+      Picture = Picture["Icone/Apri.png"]
+    }
+    { Salva Menu
+      Text = ("Salva Progetto")
+      Picture = Picture["Icone/Ridimensionato-Salva.png"]
+    }
+    { SalvaCriptato Menu
+      Text = ("Salva con Password")
+      Picture = Picture["Icone/lucchetto.gif"]
+    }
+    { Importa Menu
+      Text = ("Importa")
+      Picture = Picture["Icone/Inporta.png"]
+    }
+    { Esporta Menu
+      Text = ("Esporta")
+      Picture = Picture["Icone/Esporta.png"]
+    }
+    { Esci Menu
+      Text = ("Esci")
+      Picture = Picture["Icone/esci.png"]
+    }
+  }
+  { Progetto Menu
+    Text = ("Progetto")
+    { PropProgetto Menu
+      Text = ("Propriet\xC3\xA0 Progetto")
+      Picture = Picture["Icone/aedilisComputoMetrico.resized.png"]
+    }
+    { EditCategorie Menu
+      Text = ("Edita Categorie")
+      Picture = Picture["Icone/Categorie.png"]
+    }
+  }
+  { Prezziari Menu
+    Text = ("Prezziari")
+    { EditPrezziari Menu
+      Text = ("Editor dei prezziari")
+      Picture = Picture["Icone/aedilisPrezziarioEdit.png"]
+    }
+    { RefreshPrezziari Menu
+      Text = ("Ricarica Prezziari")
+      Picture = Picture["Icone/aedilisPrezziarioReload.png"]
+    }
+  }
+  { Fruizione Menu
+    Text = ("Stampa Dati")
+    { FruSemplice Menu
+      Text = ("Stampa Semplice")
+      Picture = Picture["Icone/Ridimensionato-Stampa.png"]
+    }
+    { FruPers Menu
+      Text = ("Fruizione Personalizzata")
+      Picture = Picture["Icone/FruizioneComplessa.png"]
+      Visible = False
+    }
+    { WizardFruMen Menu
+      Text = ("Wizard di stampa")
+      Picture = Picture["Icone/wizard/wizard.png"]
+    }
+  }
+  { Help Menu
+    Text = ("&?")
+    { Guida Menu
+      Text = ("Guida in linea")
+      Picture = Picture["Icone/Ridimensionato-Guida.png"]
+      Shortcut = "F1"
+    }
+    { Info Menu
+      Text = ("Informazioni riguardo Aedilis-Computi")
+      Picture = Picture["Icone/Ridimensionato-Info.png"]
+    }
+  }
+  { Tab TabStrip
+    MoveScaled(0,0,122,99)
+    Count = 4
+    Index = 0
+    Text = ("Elenco Prezzi")
+    { FrameElSelElPrezzi Frame
+      MoveScaled(50,0,70,52)
+      Text = ("Elemento Selezionato")
+      { TextLabel9 TextLabel
+        MoveScaled(1,8,14,3)
+        Text = ("Descr Breve:")
+      }
+      { TextLabel10 TextLabel
+        MoveScaled(1,18,12,3)
+        Text = ("Descr Lunga:")
+      }
+      { ElDescrBreve TextArea
+        MoveScaled(1,11,30,7)
+        Text = ("")
+        ReadOnly = True
+        Wrap = True
+      }
+      { ElDescrLunga TextArea
+        MoveScaled(1,21,30,15)
+        Font = Font["+3"]
+        Text = ("")
+        ReadOnly = True
+        Wrap = True
+      }
+      { PanelDwElSelElPrezzi Panel
+        MoveScaled(3,42,35,5)
+        { ElUM TextBox
+          MoveScaled(29,0,6,5)
+          Text = ("")
+          ReadOnly = True
+        }
+        { TextLabel14 TextLabel
+          MoveScaled(22,1,4,3)
+          Text = ("UM:")
+        }
+        { ElSconto TextBox
+          MoveScaled(8,0,6,5)
+          Text = ("")
+          ReadOnly = True
+        }
+        { TextLabel13 TextLabel
+          MoveScaled(0,1,7,3)
+          Text = ("Sconto:")
+        }
+        { TextLabel32 TextLabel
+          MoveScaled(15,1,2,3)
+          Text = ("%")
+        }
+      }
+      { PanelUpElSelElPrezzi Panel
+        MoveScaled(1,3,45,5)
+        { TextLabel11 TextLabel
+          MoveScaled(0,1,7,3)
+          Text = ("Codice:")
+        }
+        { ElCodice TextBox
+          MoveScaled(7,0,17,5)
+          Text = ("")
+          ReadOnly = True
+        }
+        { TextLabel12 TextLabel
+          MoveScaled(25,1,7,3)
+          Text = ("Prezzo:")
+        }
+        { ElPrezzo TextBox
+          MoveScaled(32,0,11,5)
+          Text = ("")
+          ReadOnly = True
+        }
+        { TextLabel31 TextLabel
+          MoveScaled(43,1,2,3)
+          Text = ("\xE2\x82\xAC")
+        }
+      }
+    }
+    { FrameComandiElPrezzi Frame
+      MoveScaled(50,60,39,22)
+      Text = ("Comandi")
+      { AddElementoComputo Button
+        MoveScaled(5,3,30,6)
+        Text = ("Aggiungi al Computo Metrico")
+      }
+      { EditVoceEP Button
+        MoveScaled(5,9,30,6)
+        Text = ("Edita Voce")
+      }
+      { DeleteVoceEP Button
+        MoveScaled(5,15,30,6)
+        Text = ("Elimina Voce")
+      }
+    }
+    { SidePanelElPrezzi SidePanel
+      MoveScaled(0,0,50,82)
+      Orientation = Align.Left
+      { FrameCatElPrezzi Frame
+        MoveScaled(0,0,49,12)
+        Text = ("Categoria")
+        { CategorieElPrezzi ComboBox
+          MoveScaled(2,3,45,7)
+          Text = ("Tutte")
+          ReadOnly = True
+          List = []
+        }
+      }
+      { ListaElementiElPrezzi ListView
+        MoveScaled(0,13,49,68)
+      }
+      { Dat Frame
+        MoveScaled(-12,37,51,38)
+        Visible = False
+        Text = ("Dati(invisibile)")
+        { ListElDescr ListBox
+          MoveScaled(1,2,7,35)
+        }
+        { ListElDescrBreve ListBox
+          MoveScaled(8,2,7,35)
+        }
+        { ListElPrezzo ListBox
+          MoveScaled(15,2,7,35)
+        }
+        { ListElSconto ListBox
+          MoveScaled(22,2,7,35)
+        }
+        { ListElUM ListBox
+          MoveScaled(29,2,7,35)
+        }
+        { ListElCode ListBox
+          MoveScaled(36,2,7,35)
+        }
+        { ListElCat ListBox
+          MoveScaled(43,2,7,35)
+        }
+      }
+    }
+    Index = 1
+    Text = ("Computo Metrico")
+    { FrameCat Frame
+      MoveScaled(1,1,39,12)
+      Text = ("Categoria")
+      { CategorieCM ComboBox
+        MoveScaled(2,3,35,7)
+        Text = ("Tutte")
+        ReadOnly = True
+        List = []
+      }
+    }
+    { ListElementiCM ListView
+      MoveScaled(1,14,39,68)
+    }
+    { FrameComandiCM Frame
+      MoveScaled(96,74,35,17)
+      Text = ("Comandi")
+      { EditVoceCM Button
+        MoveScaled(3,3,30,6)
+        Text = ("Edita Voce")
+      }
+      { DeleteVoceCM Button
+        MoveScaled(3,10,30,6)
+        Text = ("Elimina Voce")
+      }
+    }
+    { FrameElSelCM Frame
+      MoveScaled(41,1,77,64)
+      Text = ("Elemento Selezionato")
+      { TextLabel1 TextLabel
+        MoveScaled(1,13,6,6)
+        Text = ("Descr Breve:")
+      }
+      { TextLabel8 TextLabel
+        MoveScaled(33,13,6,5)
+        Text = ("Descr Lunga:")
+      }
+      { TextLabel15 TextLabel
+        MoveScaled(1,4,7,3)
+        Text = ("Codice:")
+      }
+      { CMCode TextBox
+        MoveScaled(9,3,24,5)
+        Text = ("")
+        ReadOnly = True
+      }
+      { TextLabel16 TextLabel
+        MoveScaled(1,25,7,3)
+        Text = ("Prezzo:")
+      }
+      { CMPrezzo TextBox
+        MoveScaled(8,24,30,5)
+        Text = ("")
+        Alignment = Align.Right
+        ReadOnly = True
+      }
+      { TextLabel17 TextLabel
+        MoveScaled(43,25,7,3)
+        Text = ("Sconto:")
+      }
+      { CMSconto TextBox
+        MoveScaled(51,24,10,5)
+        Text = ("")
+        Alignment = Align.Right
+        ReadOnly = True
+      }
+      { Q1 TextBox
+        MoveScaled(24,61,10,5)
+        Visible = False
+        Text = ("")
+        ReadOnly = True
+      }
+      { Q3 TextBox
+        MoveScaled(24,66,10,5)
+        Visible = False
+        Text = ("")
+        ReadOnly = True
+      }
+      { Q2 TextBox
+        MoveScaled(34,61,10,5)
+        Visible = False
+        Text = ("")
+        ReadOnly = True
+      }
+      { Q4 TextBox
+        MoveScaled(34,66,10,5)
+        Visible = False
+        Text = ("")
+        ReadOnly = True
+      }
+      { TextLabel24 TextLabel
+        MoveScaled(34,3,7,6)
+        Text = ("Costo finale")
+      }
+      { CostoFinale TextBox
+        MoveScaled(40,3,33,5)
+        Text = ("")
+        Alignment = Align.Right
+        ReadOnly = True
+      }
+      { TextLabel27 TextLabel
+        MoveScaled(74,4,2,3)
+        Text = ("\xE2\x82\xAC")
+      }
+      { CMDescrBreve TextArea
+        MoveScaled(8,13,23,6)
+        Text = ("")
+        ReadOnly = True
+      }
+      { CMDescrLunga TextArea
+        MoveScaled(40,9,36,14)
+        Text = ("")
+        ReadOnly = True
+        Wrap = True
+      }
+      { CMUM TextLabel
+        MoveScaled(38,32,6,4)
+        Text = ("CMUM")
+      }
+      { TextLabel18 TextLabel
+        MoveScaled(1,31,10,5)
+        Text = ("Quantit\xC3\xA0 totale:")
+        Alignment = Align.Center
+      }
+      { TotQ TextBox
+        MoveScaled(12,31,25,5)
+        Text = ("")
+        Alignment = Align.Right
+        ReadOnly = True
+      }
+      { TextLabel28 TextLabel
+        MoveScaled(62,25,3,3)
+        Text = ("%")
+      }
+      { TextLabel29 TextLabel
+        MoveScaled(39,25,2,3)
+        Text = ("\xE2\x82\xAC")
+      }
+      { quantita TableView
+        MoveScaled(1,37,75,26)
+        Mode = Select.Single
+        Header = GridView.Vertical
+      }
+    }
+    { Frame7 Frame
+      MoveScaled(1,24,53,38)
+      Visible = False
+      Text = ("Dati(invisibile)")
+      { ListCMid ListBox
+        MoveScaled(1,2,7,35)
+      }
+      { ListCMQ2 ListBox
+        MoveScaled(19,2,7,35)
+      }
+      { ListCMQ3 ListBox
+        MoveScaled(26,2,7,35)
+      }
+      { ListCMQ4 ListBox
+        MoveScaled(33,2,7,35)
+      }
+      { ListCMQ1 ListBox
+        MoveScaled(12,2,7,35)
+      }
+      { ListQuantitaId ListBox
+        MoveScaled(8,2,4,35)
+      }
+      { ListCMDescrMis ListBox
+        MoveScaled(40,2,7,35)
+      }
+      { ListCMTot ListBox
+        MoveScaled(47,2,5,35)
+      }
+    }
+    { FrameDatiComputo Frame
+      MoveScaled(41,70,57,24)
+      Text = ("Dati Computo")
+      { TotComputo TextBox
+        MoveScaled(8,3,27,4)
+        Text = ("0")
+        ReadOnly = True
+      }
+      { TextLabel22 TextLabel
+        MoveScaled(1,3,7,3)
+        Text = ("Totale:")
+      }
+      { TextLabel25 TextLabel
+        MoveScaled(36,4,2,3)
+        Text = ("\xE2\x82\xAC")
+      }
+      { TotPerCategoria ListBox
+        MoveScaled(1,10,55,13)
+      }
+      { TextLabel26 TextLabel
+        MoveScaled(1,7,14,3)
+        Text = ("Per categoria:")
+      }
+    }
+    Index = 2
+    Text = ("Confronta Offerte")
+    { TabOfferte TabStrip
+      MoveScaled(1,14,111,72)
+      Count = 2
+      Orientation = TabStrip.Bottom
+      Index = 0
+      Text = ("Confronta elementi")
+      { TabellaOfferte TableView
+        MoveScaled(1,1,72,54)
+        Mode = Select.Single
+        Header = GridView.Both
+      }
+      Index = 1
+      Text = ("Resoconto Aziende")
+      { TableResocontoAziende TableView
+        MoveScaled(1,1,75,65)
+        Header = GridView.Horizontal
+      }
+      Index = 0
+    }
+    { AddOfferta Button
+      MoveScaled(44,2,24,11)
+      Text = ("Edita Aziende")
+      Picture = Picture["Icone/azienda.gif"]
+    }
+    { Frame1 Frame
+      MoveScaled(1,1,39,12)
+      Text = ("Categoria")
+      { CategorieOfferte ComboBox
+        MoveScaled(2,3,35,7)
+        Text = ("Tutte")
+        ReadOnly = True
+        List = []
+      }
+    }
+    { DatiOfferte GridView
+      MoveScaled(1,35,17,20)
+      Visible = False
+    }
+    { ListIdOfferte ListBox
+      MoveScaled(18,35,7,20)
+      Visible = False
+    }
+    { ExportReport Button
+      MoveScaled(69,2,24,11)
+      Text = ("Esporta report")
+      Picture = Picture["Icone/Report.gif"]
+    }
+    { ListAllIdOfferte ListBox
+      MoveScaled(25,35,7,20)
+      Visible = False
+    }
+    { Frame2 Frame
+      MoveScaled(96,0,24,13)
+      Text = ("Legenda")
+      { TextLabel19 TextLabel
+        MoveScaled(1,3,22,3)
+        Foreground = &H0000FF&
+        Text = ("Offerta vantaggiosa")
+        Alignment = Align.Center
+      }
+      { TextLabel20 TextLabel
+        MoveScaled(1,6,22,3)
+        Foreground = &HFF0000&
+        Text = ("Offerta svantaggiosa")
+        Alignment = Align.Center
+      }
+      { TextLabel21 TextLabel
+        MoveScaled(1,9,22,3)
+        Foreground = &H707070&
+        Text = ("Offerta non inserita")
+        Alignment = Align.Center
+      }
+    }
+    Index = 3
+    Text = ("Prezziari")
+    { SidePanelPrezziari SidePanel
+      MoveScaled(0,1,50,84)
+      Orientation = Align.Left
+      { ListaPrezziari ListView
+        MoveScaled(0,0,49,22)
+      }
+      { ListaElementiPrezziario ListView
+        MoveScaled(16,0,5,22)
+        Visible = False
+      }
+      { ListaVerPrezziari ListView
+        MoveScaled(21,0,5,22)
+        Visible = False
+      }
+      { ListaIDPrezziari ListBox
+        MoveScaled(26,0,7,22)
+        Visible = False
+      }
+      { PrezziarioSelezionato TreeView
+        MoveScaled(0,23,49,58)
+      }
+      { Frame4 Frame
+        MoveScaled(3,42,9,38)
+        Visible = False
+        Text = ("Dati(invisibile)")
+        { ListIdEl ListView
+          MoveScaled(2,2,6,35)
+        }
+      }
+    }
+    { FrameElSelPrezziari Frame
+      MoveScaled(50,0,57,53)
+      Text = ("Elemento Selezionato")
+      { DescrLunga TextArea
+        MoveScaled(1,21,43,25)
+        Font = Font["+3"]
+        Text = ("")
+        ReadOnly = True
+        Wrap = True
+      }
+      { PanelDwElSelPrezziari Panel
+        MoveScaled(3,46,35,5)
+        { TextLabel6 TextLabel
+          MoveScaled(0,1,7,3)
+          Text = ("Sconto:")
+        }
+        { Sconto TextBox
+          MoveScaled(8,0,6,5)
+          Text = ("")
+          ReadOnly = True
+        }
+        { TextLabel7 TextLabel
+          MoveScaled(22,1,4,3)
+          Text = ("UM:")
+        }
+        { UM TextBox
+          MoveScaled(29,0,6,5)
+          Text = ("")
+          ReadOnly = True
+        }
+        { TextLabel30 TextLabel
+          MoveScaled(15,1,2,3)
+          Text = ("%")
+        }
+      }
+      { PanelUpElSelPrezziari Panel
+        MoveScaled(1,3,45,5)
+        { TextLabel4 TextLabel
+          MoveScaled(0,1,7,3)
+          Text = ("Codice:")
+        }
+        { Codice TextBox
+          MoveScaled(7,0,17,5)
+          Text = ("")
+          ReadOnly = True
+        }
+        { TextLabel5 TextLabel
+          MoveScaled(25,1,7,3)
+          Text = ("Prezzo:")
+        }
+        { Prezzo TextBox
+          MoveScaled(32,0,11,5)
+          Text = ("")
+          ReadOnly = True
+        }
+        { TextLabel23 TextLabel
+          MoveScaled(43,1,2,3)
+          Text = ("\xE2\x82\xAC")
+        }
+      }
+      { TextLabel2 TextLabel
+        MoveScaled(1,8,14,3)
+        Text = ("Descr Breve:")
+      }
+      { TextLabel3 TextLabel
+        MoveScaled(1,18,13,3)
+        Text = ("Descr Lunga:")
+      }
+      { DescrBreve TextArea
+        MoveScaled(1,11,43,7)
+        Text = ("")
+        ReadOnly = True
+      }
+    }
+    { FrameComandiPrezziari Frame
+      MoveScaled(69,64,39,18)
+      Text = ("Comandi")
+      { AddElementoElPrezzi Button
+        MoveScaled(5,3,30,6)
+        Text = ("Aggiungi all' Elenco Prezzi")
+      }
+      { AddElementoDirComputo Button
+        MoveScaled(5,10,30,6)
+        Text = ("Aggiungi al Computo Metrico")
+      }
+    }
+    { FrameSearch Frame
+      MoveScaled(35,64,32,18)
+      Text = ("Cerca")
+      { Search TextBox
+        MoveScaled(2,3,28,4)
+        Text = ("")
+      }
+      { SearchCode RadioButton
+        MoveScaled(2,10,12,3)
+        Text = ("Nei Codici")
+        Value = True
+      }
+      { SearchDescr RadioButton
+        MoveScaled(2,14,19,3)
+        Text = ("Nelle Descrizioni")
+      }
+      { Cerca Button
+        MoveScaled(21,8,9,6)
+        Text = ("Cerca")
+      }
+    }
+    Index = 0
+  }
+  { ProjectID TextLabel
+    MoveScaled(71,0,11,4)
+    Visible = False
+    Text = ("0")
+  }
+  { Frame3 Frame
+    MoveScaled(2,90,35,8)
+    Visible = False
+    Text = ("Invisibile")
+    { PicPrezzChiuso PictureBox
+      MoveScaled(2,3,3,3)
+      Picture = Picture["Icone/prezziariochiuso.png"]
+    }
+    { PicPrezzAperto PictureBox
+      MoveScaled(7,3,3,3)
+      Picture = Picture["Icone/prezziario.png"]
+    }
+    { PicPrezzRemoto PictureBox
+      MoveScaled(12,3,3,3)
+      Picture = Picture["Icone/Internet.png"]
+    }
+    { PicPrezzUpGrade PictureBox
+      MoveScaled(17,3,3,3)
+      Picture = Picture["Icone/upgrade.gif"]
+    }
+    { PicCat PictureBox
+      MoveScaled(21,3,3,3)
+      Picture = Picture["Icone/cartella.png"]
+    }
+    { PicEl PictureBox
+      MoveScaled(25,3,3,3)
+      Picture = Picture["Icone/elemento.png"]
+    }
+    { PicIns PictureBox
+      MoveScaled(29,3,3,3)
+      Picture = Picture["Icone/ElInserito.png"]
+    }
+  }
+}

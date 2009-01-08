@@ -1,0 +1,32 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,55,11)
+  Text = ("Caricamento")
+  Icon = Picture["Icone/load.gif"]
+  Border = Window.Fixed
+  { ProgressBar1 ProgressBar
+    MoveScaled(1,0,53,5)
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(27,6,1,3)
+    Text = ("/")
+  }
+  { tot TextLabel
+    MoveScaled(28,6,26,3)
+    Text = ("0")
+    Alignment = Align.Left
+  }
+  { parziale TextBox
+    MoveScaled(1,6,26,3)
+    Background = Color.Background
+    Text = ("0")
+    Alignment = Align.Right
+    ReadOnly = True
+    Border = False
+  }
+  { Button1 Button
+    MoveScaled(44,6,10,4)
+    Text = ("Annulla")
+  }
+}

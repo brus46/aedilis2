@@ -1,0 +1,191 @@
+' Gambas class file
+
+PUBLIC moving AS Boolean 'Indica se mi sto muovendo nella lista delle pagine visitate o se sto andando fuori da essa.
+
+PUBLIC SUB MyBrowser_Click()
+  'Aggiorno la url
+  moving = FALSE
+  MyUrl.Text = MyBrowser.Link
+  GO_Click()
+END
+
+PUBLIC SUB GO_Click()
+DIM linksplittato AS String[] 'Variabile per dividere il link e capire che estensione ha il file che stai cercando di leggere
+DIM linkext AS String 'Variabile che contiene l'estensione del file che cerchi di leggere.
+DIM contatore AS Integer
+  
+
+'Se Moving è false devo aggiungere un url alla cronologia.
+IF (moving = FALSE) THEN 
+  'Se l'elemento corrente non è l'ultima pagina sulla lista.
+  IF NOT (ListPages.Index = ListPages.Count - 1) THEN 
+     ListPages.Add("") 'Aggiungo un elemento in fondo
+     FOR contatore = ListPages.Count - 2 TO ListPages.Index STEP -1
+          'Sposto tutti gli elementi dopo quello corrente in avanti per fare uno spazio
+          ListPages[contatore + 1].Text = ListPages[contatore].Text
+     NEXT 
+     'Metto la nuova path nel posto che si è liberato
+     ListPages.Current.Text = MyUrl.Text
+  ELSE 
+     ListPages.Add(MyUrl.Text)
+     'La path è già al posto giusto essendo che l'elemento corrente era l'ultimo della lista.
+     ListPages.Index = ListPages.Count - 1
+  END IF
+  ListPages.Index = ListPages.Count - 1
+END IF
+
+  'Abilito i comandi per andare avanti o indietro se serve.
+  IF (ListPages.Count > 1) THEN 
+     IF (ListPages.Index = ListPages.Count - 1) THEN 
+          Avanti.Enabled = FALSE
+     ELSE 
+          Avanti.Enabled = TRUE
+     END IF
+     IF (ListPages.Index = 0) THEN
+          Indietro.Enabled = FALSE
+     ELSE          
+          Indietro.Enabled = TRUE
+     END IF
+  END IF
+  
+
+
+  'Verifico che l'estensione non sia un'immagine, altrimenti la carico.
+  linksplittato = Split(MyUrl.Text, ".")
+  IF (linksplittato.Count > 1) THEN 
+     linkext = linksplittato[linksplittato.Count - 1]
+     linkext = Lower$(linkext) 'Il comando lower riduce tutti i caratteri in minuscolo.
+     IF ((linkext = "png") OR (linkext = "gif") OR (linkext = "jpg") OR (linkext = "jpeg") OR (linkext = "bmp")) THEN
+          PRINT "Questa sembra essere un'immagine: " & myUrl.Text
+          PictureView.Stretch = FALSE
+          'Scarico l'immagine in modo da poterla caricare
+          SHELL "wget -O /tmp/image." & linkext & " " & MyUrl.Text WAIT 
+          'Aspetto in modo che il SO abbia il tempo di finire di copiare il file
+          WAIT 1
+          'Carico l'immagine
+          TRY PictureView.Picture = Picture.Load("/tmp/image." & linkext)
+          IF ( ERROR ) THEN PictureView.Picture = NoPicture.Picture
+          'Scalo l'immagine alle sue immagini reali
+          PictureView.Width = PictureView.Picture.Width
+          PictureView.Height = PictureView.Picture.Height
+          'Scalo l'immagine in modo che ci stia nel form e in modo che non venga sformata.
+          IF (PictureView.Width > MyBrowser.Width) THEN 
+               PictureView.Width = MyBrowser.Width
+               PictureView.Height = Int((PictureView.Height * PictureView.Width) / PictureView.Picture.Width)
+               PictureView.Stretch = TRUE
+          END IF
+          IF (PictureView.Height > MyBrowser.Height) THEN 
+               PictureView.Height = MyBrowser.Height
+               PictureView.Width = Int((PictureView.Height * PictureView.Picture.Width) / PictureView.Picture.Height)
+               PictureView.Stretch = TRUE
+          END IF
+          'Centro l'immagine
+          PictureView.X = MyBrowser.X + (MyBrowser.Width - PictureView.Width) / 2
+          PictureView.Y = MyBrowser.Y + (MyBrowser.Height - PictureView.Height) / 2
+          PictureView.Visible = TRUE
+          MyBrowser.Visible = FALSE
+          MyBrowser.Path = ""
+     ELSE 
+            'Carico la path
+            MyBrowser.Path = MyUrl.Text
+            PictureView.Visible = FALSE
+            MyBrowser.Visible = TRUE 
+            
+     END IF
+  ELSE 
+     'Carico la path
+     MyBrowser.Path = MyUrl.Text
+     PictureView.Visible = FALSE
+     MyBrowser.Visible = TRUE 
+  END IF
+
+END
+
+PUBLIC SUB Home_Click()
+  'Torno alla home
+  MyBrowser.Path = Splash.Home
+  GO_Click()
+END
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+  ME.Maximized = TRUE
+  
+END
+
+PUBLIC SUB Form_Resize()
+  'Imposto la dimensione del browser
+  MyBrowser.Width = ME.Width - (2 * MyBrowser.x)
+  MyBrowser.Height = ME.Height - 40 - MyBrowser.Y
+
+  'Imposto la lunghezza della barra degli url e la posizione del comando GO
+  Go.X = ME.Width - Go.Width - 10
+  MyUrl.Width = Go.X - MyUrl.X - 10
+END
+
+PUBLIC SUB Form_Close()
+  'Se questo form viene chiuso il programma termina.
+  QUIT 
+
+END
+
+PUBLIC SUB Esci_Click()
+
+  ME.Close
+
+END
+
+PUBLIC SUB Help_Click()
+  'Apro la pagina contenente la guida di Aedilis-Help
+  MyUrl.Text = "http://www.sciallo.net/Aedilis/Guida/Aedilis-Help.html"
+  GO_Click()
+END
+
+PUBLIC SUB InfoProg_Click()
+  'Apro il form delle informazioni
+  Info.Show
+
+END
+
+PUBLIC SUB Avanti_Click()
+  'Se non è l'ultimo elemento della lista quello corrente allora posso andare avanti
+  IF NOT (ListPages.Index >= ListPages.Count - 1) THEN 
+     moving = TRUE 'Questa variabile fa in modo che la funzione Go_Click non aggiunga questa pagina in cronologia essendo già presente.
+     ListPages.Index = ListPages.Index + 1 'Sposto in avanti di uno l'elemento corrente
+     MyUrl.Text = ListPages.Current.Text 'Aggiorno l'url della barra
+     GO_Click()
+  END IF
+
+END
+
+PUBLIC SUB Indietro_Click()
+  'Se l'elemento corrente non è il primo della lista allora posso tornare indietro
+  IF NOT (ListPages.Index <= 0) THEN 
+     moving = TRUE 'Questa variabile fa in modo che la funzione Go_Click non aggiunga questa pagina in cronologia essendo già presente.
+     ListPages.Index = ListPages.Index - 1 'Sposto indietro di uno l'elemento corrente
+     MyUrl.Text = ListPages.Current.Text 'Aggiorno l'url della barra
+     GO_Click()
+  END IF
+
+END
+
+PUBLIC SUB RefreshPage_Click()
+
+  MyUrl.Text = MyBrowser.Path 'Annullo eventuali modifiche all'url
+  Moving = TRUE 'Questa variabile fa in modo che la funzione Go_Click non aggiunga questa pagina in cronologia essendo già presente.
+  GO_Click 'Ricarico
+
+END
+
+PUBLIC SUB ZoomIn_Click()
+
+  MyBrowser.Zoom = MyBrowser.Zoom + 5 'Aumento lo Zoom delle pagine html di 5
+
+END
+
+PUBLIC SUB ZoomOut_Click()
+
+  MyBrowser.Zoom = MyBrowser.Zoom - 5 'Riduco lo Zoom delle pagine html di 5
+
+END

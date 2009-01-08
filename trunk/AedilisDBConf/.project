@@ -1,0 +1,20 @@
+# Gambas Project File 2.0
+Title=Aedilis - Configuratore del DataBase
+Startup=FMain
+Icon=Icone/aedilis-db-config.png
+Version=0.0.13
+Library=gb.qt
+Library=gb.form
+Library=gb.db
+Library=gb.db.form
+Library=gb.qt.ext
+Description=Programma per la configurazione dell'accesso al database mysql da parte di Aedilis.
+Authors=Mosconi Marco
+TabSize=5
+Maintainer=MosconiMarco
+Address=brus46@gmail.com
+License=General Public Licence
+Systems=ubuntu
+Menus=Apps/Tools
+Categories=Office
+Groups=Office

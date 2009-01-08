@@ -1,0 +1,34 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,52)
+  Text = ("Info Riguardo Aedilis-Help")
+  Icon = Picture["Icone/Info.png"]
+  Border = Window.Fixed
+  { PictureBox1 PictureBox
+    MoveScaled(39,0,25,24)
+    Picture = Picture["Icone/Aedilis-Help.png"]
+    Stretch = True
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(1,1,37,9)
+    Font = Font["32"]
+    Text = ("Aedilis-Help")
+  }
+  { Chiudi Button
+    MoveScaled(49,46,14,5)
+    Text = ("Chiudi")
+  }
+  { VediLicenza Button
+    MoveScaled(49,40,14,5)
+    Text = ("Vedi Licenza")
+  }
+  { Descrizione TextArea
+    MoveScaled(1,11,37,40)
+    Background = Color.Background
+    Text = ("Descrizione")
+    ReadOnly = True
+    Wrap = True
+    Border = False
+  }
+}

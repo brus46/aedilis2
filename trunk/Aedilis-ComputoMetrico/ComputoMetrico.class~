@@ -1,0 +1,2216 @@
+' Gambas class file
+
+PUBLIC password AS String
+PUBLIC versione AS String
+PUBLIC Importing AS String
+
+PUBLIC ABORT AS Boolean
+'Array che contengono i dati del prezziario selezionato
+PUBLIC ListDescrBreve AS String[]
+PUBLIC ListDescr AS String[]
+PUBLIC ListCode AS String[]
+PUBLIC ListUM AS String[]
+PUBLIC ListPrezzo AS String[]
+PUBLIC ListSconto AS String[]
+PUBLIC listkey AS Integer[]
+
+
+PUBLIC SUB nyi()
+  
+  message.Warning("Not yet implemented")
+  
+  
+END
+
+PUBLIC SUB Refresh_Offerte()
+
+DIM contatore AS Integer
+DIM contatore2 AS Integer
+DIM contatoreQ AS Integer
+DIM RowC AS Integer
+DIM ColC AS Integer
+DIM totq AS Float
+DIM tot AS Float
+DIM costo AS Float
+DIM parziale_azienda AS Float[]
+DIM parziale_categoria AS Float
+
+  'Refresh lista
+  CleanOfferte()
+  ListIdOfferte.Clear
+  ListAllIdOfferte.Clear
+  RowC = 1
+  DatiOfferte.Rows.Count = ListCMId.Count + 1
+  parziale_azienda = [0.0]
+  parziale_azienda.Clear
+  FOR contatore = 0 TO TableResocontoAziende.Rows.Count - 1
+     parziale_azienda.Add(0)
+  NEXT 
+  parziale_categoria = 0.0
+  ColC = TabellaOfferte.Columns.Count
+  
+  IF NOT (CategorieOfferte.Index = CategorieOfferte.Count - 1) THEN 
+  
+     FOR contatore = 0 TO ListCMId.Count - 1
+     ListAllIdOfferte.Add(contatore)
+          IF (ListElCat[ListCMId[contatore].Text].Text = CategorieOfferte.Index) THEN 
+               RowC = RowC + 1
+               ListIdOfferte.Add(contatore)
+               aggiorna_tab_offerte(RowC, ColC)
+               TabellaOfferte[RowC - 1, 0].text = ListElCode[ListCMId[contatore].text].text 
+               costo = ListElPrezzo[ListCMId[contatore].Text].Text 
+               totq = 0
+                FOR contatoreQ = 0 TO ListQuantitaId.Count - 1
+                    IF (ListQuantitaId[contatoreQ].Text = contatore) THEN 
+                         IF NOT (Val(Replace$(ListCMTot[contatoreQ].Text, ".", ",")) = NULL) THEN 
+                              totq = totq + Val(Replace$(ListCMTot[contatoreQ].Text, ".", ","))                      
+                         END IF
+                    END IF
+               NEXT 
+               TabellaOfferte[RowC - 1, 1].text = Globals.Approssima((costo * totq) - ((costo * totq) * Val(ListElSconto[contatore].text) / 100), 0)
+               
+               FOR contatore2 = 0 TO DatiOfferte.Columns.Count - 1
+                    IF (DatiOfferte[contatore + 1, contatore2].Text = NULL) THEN DatiOfferte[contatore + 1, contatore2].Text = "0"
+                    TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text = DatiOfferte[contatore + 1, contatore2].Text & " €"
+                    parziale_azienda[contatore2] = parziale_azienda[contatore2] + DatiOfferte[contatore + 1, contatore2].Text
+                    IF NOT ((Val(Replace$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text, ".", ",")) = 0) OR (Val(Replace$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text, ".", ",")) = NULL)) THEN
+                         tot = (Val(Replace$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text, ".", ",")) - Val(Replace$(TabellaOfferte[RowC - 1, 1].Text, ".", ","))) * 100 / Val(Replace$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text, ".", ","))
+                         IF NOT (tot = NULL) THEN
+                              TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].Text = Globals.Approssima(tot, 0) & " %"
+                         ELSE
+                              TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].Text = "0 %"
+                         END IF
+                    ELSE 
+                         TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].Text = "0 %"
+                    END IF
+                    IF (Val(Replace$(Left$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].Text, -2), ".", ",")) > 0) THEN
+                         'Bad
+                         TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].ForeColor = Color.Red
+                    ELSE IF (Val(Replace$(Left$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].Text, -2), ".", ",")) < 0) THEN
+                         'Good
+                         TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].ForeColor = Color.Blue
+                    ELSE 
+                         TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].ForeColor = Color.Foreground
+                    END IF
+                    IF (Val(Replace$(Left$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text, -2), ".", ",")) = 0) THEN
+                         TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].ForeColor = Color.Gray
+                    END IF
+                    TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].ForeColor = TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].ForeColor 
+               NEXT 
+               parziale_categoria = parziale_categoria + TabellaOfferte[RowC - 1, 1].text
+               TabellaOfferte[RowC - 1, 1].text = TabellaOfferte[RowC - 1, 1].text & " €"
+          END IF
+  
+     NEXT 
+     TableResocontoAziende[0, 1].text = parziale_categoria & " €"
+  ELSE 
+     TableResocontoAziende[0, 1].text = TotComputo.text & " €"
+     'message.Info("Visualizzo tutti i dati")
+     FOR contatore = 0 TO ListCMId.Count - 1
+          RowC = RowC + 1
+          ListIdOfferte.Add(contatore)
+          ListAllIdOfferte.Add(contatore)
+          aggiorna_tab_offerte(RowC, ColC)
+          TabellaOfferte[RowC - 1, 0].text = ListElCode[ListCMId[contatore].text].text 
+          costo = ListElPrezzo[ListCMId[contatore].Text].Text 
+          totq = 0
+          FOR contatoreQ = 0 TO ListQuantitaId.Count - 1
+               IF (ListQuantitaId[contatoreQ].Text = contatore) THEN 
+                    IF NOT (Val(Replace$(ListCMTot[contatoreQ].Text, ".", ",")) = NULL) THEN 
+                         totq = totq + Val(Replace$(ListCMTot[contatoreQ].Text, ".", ","))                      
+                    END IF
+               END IF
+          NEXT 
+          TabellaOfferte[RowC - 1, 1].text = Globals.Approssima((costo * totq) - ((costo * totq) * Val(ListElSconto[contatore].text) / 100), 0)
+               FOR contatore2 = 0 TO DatiOfferte.Columns.Count - 1
+                    'PRINT DatiOfferte[contatore + 1, contatore2].Text & " €"
+                    IF (DatiOfferte[contatore + 1, contatore2].Text = NULL) THEN DatiOfferte[contatore + 1, contatore2].Text = "0"
+                    TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text = DatiOfferte[contatore + 1, contatore2].Text & " €"
+                    parziale_azienda[contatore2] = parziale_azienda[contatore2] + DatiOfferte[contatore + 1, contatore2].Text
+                    IF NOT ((Val(Replace$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text, ".", ",")) = 0) OR (Val(Replace$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text, ".", ",")) = NULL)) THEN
+                         tot = (Val(Replace$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text, ".", ",")) - Val(Replace$(TabellaOfferte[RowC - 1, 1].Text, ".", ","))) * 100 / Val(Replace$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text, ".", ","))
+                         IF NOT (tot = NULL) THEN
+                              TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].Text = Globals.Approssima(tot, 0) & " %"
+                         ELSE
+                              TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].Text = "0 %"
+                         END IF
+                    ELSE 
+                         TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].Text = "0 %"
+                    END IF
+                    IF (Val(Replace$(Left$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].Text, -2), ".", ",")) > 0) THEN
+                         'Bad
+                         TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].ForeColor = Color.Red
+                    ELSE IF (Val(Replace$(Left$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].Text, -2), ".", ",")) < 0) THEN
+                         'Good
+                         TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].ForeColor = Color.Blue
+                    ELSE 
+                         TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].ForeColor = Color.Foreground
+                    END IF
+                    IF (Val(Replace$(Left$(TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].Text, -2), ".", ",")) = 0) THEN
+                         TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].ForeColor = Color.Gray
+                    END IF
+                    TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 2].ForeColor = TabellaOfferte[RowC - 1, (contatore2 + 2) * 2 - 1].ForeColor 
+               NEXT 
+               TabellaOfferte[RowC - 1, 1].text = TabellaOfferte[RowC - 1, 1].text & " €"
+
+     NEXT      
+  
+  END IF
+
+  
+  FOR contatore = 1 TO TableResocontoAziende.Rows.Count - 1
+     TableResocontoAziende[contatore, 0].Text = DatiOfferte[0, contatore - 1].Text
+     TableResocontoAziende[contatore, 1].Text = parziale_azienda[contatore - 1] & " €"
+     
+     IF NOT ((parziale_azienda[contatore - 1] = 0) OR (TableResocontoAziende[0, 1].Text = "") OR (Val(TableResocontoAziende[0, 1].Text) = 0)) THEN 
+          IF NOT (Val(Replace$(TableResocontoAziende[0, 1].Text, ".", ",")) = NULL) THEN 
+               TableResocontoAziende[contatore, 2].Text = ((parziale_azienda[contatore - 1] - (Val(Replace$(TableResocontoAziende[0, 1].Text, ".", ",")))) * 100) / (Val(Replace$(TableResocontoAziende[0, 1].Text, ".", ",")))
+               TableResocontoAziende[contatore, 2].Text = Globals.Approssima(Val(Replace$(TableResocontoAziende[contatore, 2].Text, ".", ",")), 0)
+               IF (Val(Replace$(TableResocontoAziende[contatore, 2].Text, ".", ",")) > 0) THEN 
+                    TableResocontoAziende[contatore, 2].ForeColor = Color.Red
+               ELSE IF (Val(Replace$(TableResocontoAziende[contatore, 2].Text, ".", ",")) < 0) THEN 
+                    TableResocontoAziende[contatore, 2].ForeColor = Color.Blue
+               ELSE 
+                    TableResocontoAziende[contatore, 2].ForeColor = Color.Foreground
+               END IF
+          ELSE 
+               TableResocontoAziende[contatore, 2].Text = "0"     
+               TableResocontoAziende[contatore, 2].ForeColor = Color.Gray
+          END IF
+     ELSE 
+          TableResocontoAziende[contatore, 2].Text = "0"     
+          TableResocontoAziende[contatore, 2].ForeColor = Color.Gray
+     END IF 
+
+     TableResocontoAziende[contatore, 2].Text = TableResocontoAziende[contatore, 2].Text & " %"
+  NEXT 
+  
+  
+  
+  
+END
+
+
+PUBLIC SUB RefreshTotaleComputo()
+DIM contatore AS Integer
+DIM contatore_cat AS Integer
+DIM contatore_id AS Integer
+DIM totquantita AS Float
+DIM totcategoria AS Float
+DIM parziale AS Float
+DIM tot AS Float
+
+TotComputo.Text = 0
+tot = 0
+FOR contatore = 0 TO ListQuantitaId.Count - 1
+     totquantita = 1
+     'PRINT ListCMTot[contatore].Text  
+     totquantita = ListCMTot[contatore].Text  
+     
+     FOR contatore_id = 0 TO ListCMid.Count - 1
+          IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN BREAK 
+     NEXT 
+     parziale = totquantita * (ListElPrezzo[contatore_id].Text)
+     
+     IF (Val(ListElSconto[contatore_id].Text) = NULL) THEN 
+          ListElSconto[contatore_id].Text = "0"
+          PRINT "Sconto vuoto corretto con 0"
+     END IF
+     parziale = parziale - ((parziale * Val(ListElSconto[contatore_id].Text)) / 100)
+     Tot = Tot + parziale
+     
+NEXT 
+
+TotComputo.Text = Globals.Approssima(tot, 0)
+
+Totpercategoria.Clear
+FOR contatore_cat = 0 TO CategorieCM.Count - 2
+     
+     totcategoria = 0
+     FOR contatore = 0 TO ListQuantitaId.Count - 1
+          FOR contatore_id = 0 TO ListCMid.Count - 1
+               IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN BREAK 
+          NEXT 
+          IF (ListElCat[contatore_id].Text = contatore_cat) THEN 
+               totquantita = 1
+               totquantita = ListCMTot[contatore].Text
+               parziale = totquantita * ListElPrezzo[contatore_id].Text
+               parziale = parziale - ((parziale * Val(ListElSconto[contatore_id].Text)) / 100)
+               totcategoria = totcategoria + parziale
+          END IF
+     NEXT 
+     totcategoria = Globals.Approssima(totcategoria, 0)
+     Totpercategoria.Add(CategorieCM[contatore_cat].Text & " - " & totcategoria & " €")
+
+NEXT 
+
+END 
+PUBLIC SUB CleanOfferte()
+DIM contatore AS Integer
+     TabellaOfferte.Clear
+     TabellaOfferte.Rows.Count = 1
+     TabellaOfferte.Columns.Count = (DatiOfferte.Columns.Count + 2) * 2 - 1 'ultima colonna vuota per resizing
+     TabellaOfferte[0, 0].Text = "Cod."
+     TabellaOfferte[0, 0].Font = Font["bold"]
+     TabellaOfferte[0, 0].Alignment = Align.Center
+     TabellaOfferte[0, 1].Text = "Costo"
+     TabellaOfferte[0, 1].Font = Font["bold"]
+     TabellaOfferte[0, 1].Alignment = Align.Center
+     FOR contatore = 0 TO DatiOfferte.Columns.Count - 1
+          TabellaOfferte[0, (contatore + 2) * 2 - 2].Text = DatiOfferte[0, contatore].Text
+          TabellaOfferte[0, (contatore + 2) * 2 - 1].Text = "Diff %"
+          TabellaOfferte[0, (contatore + 2) * 2 - 2].Font = Font["bold"]
+          TabellaOfferte[0, (contatore + 2) * 2 - 1].Font = Font["bold"]
+          TabellaOfferte[0, (contatore + 2) * 2 - 2].Alignment = Align.Center
+          TabellaOfferte[0, (contatore + 2) * 2 - 1].Alignment = Align.Center
+     NEXT 
+     
+     RefreshTotaleComputo()
+     TableResocontoAziende.Clear
+     TableResocontoAziende.Columns.Count = 4 ' Colonna extra per il resizing
+     TableResocontoAziende.Rows.Count = (DatiOfferte.Columns.Count + 1)
+     TableResocontoAziende[0, 0].Text = "Da Computo:"
+     TableResocontoAziende[0, 0].Font = Font["bold"]
+     TableResocontoAziende[0, 0].Alignment = Align.Center
+     TableResocontoAziende[0, 1].Text = "0 €"
+     TableResocontoAziende[0, 1].Font = Font["bold"]
+     TableResocontoAziende[0, 1].Alignment = Align.Center
+     TableResocontoAziende[0, 2].Text = "Diff %"
+     TableResocontoAziende[0, 2].Font = Font["bold"]
+     TableResocontoAziende[0, 2].Alignment = Align.Center
+END
+
+PUBLIC SUB EliminaElementoOfferte(id AS Integer)
+
+DIM contatore AS Integer
+DIM contatore2 AS Integer
+DIM ContatoreCol AS Integer
+     FOR contatore = 0 TO ListAllIdOfferte.Count - 1
+          IF (ListAllIdOfferte[contatore].Text = id) THEN BREAK      
+     NEXT 
+     PRINT contatore
+     PRINT ListAllIdOfferte.Count - 2
+     FOR contatore2 = contatore TO ListAllIdOfferte.Count - 1
+          PRINT "moving"
+          FOR contatoreCol = 0 TO DatiOfferte.Columns.Count - 1
+               DatiOfferte[contatore2 + 1, contatoreCol].Text = DatiOfferte[contatore2 + 2, contatoreCol].Text 
+          NEXT 
+     NEXT 
+     DatiOfferte.Rows.Count = DatiOfferte.Rows.Count - 1
+     ListIdOfferte.Remove(contatore)
+     
+     
+  
+END
+
+
+PUBLIC SUB EliminaElementoCM(id AS Integer)
+DIM contatore AS Integer
+               EliminaElementoOfferte(listcmid[id].Text)
+               contatore = 0
+               WHILE (contatore <= ListQuantitaId.Count - 1)
+                    IF (Val(ListQuantitaId[contatore].Text) = id) THEN 
+                         ListCMDescrMis.Remove(contatore)
+                         ListCMQ1.Remove(contatore)
+                         ListCMQ2.Remove(contatore)
+                         ListCMQ3.Remove(contatore)
+                         ListCMQ4.Remove(contatore)
+                         ListCMTot.Remove(contatore)
+                         ListQuantitaId.Remove(contatore)
+                    ELSE IF (Val(ListQuantitaId[contatore].Text) > id)
+                         ListQuantitaId[contatore].Text = Val(ListQuantitaId[contatore].Text) - 1
+                         contatore = contatore + 1
+                    ELSE 
+                         contatore = contatore + 1
+                    END IF
+                    
+               WEND 
+               contatore = 0
+               WHILE (contatore <= ListCMid.Count - 1)
+                    IF (Val(ListCMid[contatore].Text) = id) THEN 
+                         ListCMid.Remove(contatore)
+                    ELSE IF (Val(ListCMid[contatore].Text) > id) THEN 
+                         ListCmId[contatore].Text = Val(ListCmId[contatore].Text) - 1
+                         contatore = contatore + 1
+                    ELSE 
+                         contatore = contatore + 1
+                    END IF
+                    
+               WEND 
+               CategorieCM_Click()
+               Refresh_Offerte()
+  
+END
+
+PUBLIC SUB EliminaElementoEP(id AS Integer)
+
+     ListElCode.Remove(id)
+     ListElDescr.Remove(id)
+     ListElDescrBreve.Remove(id)
+     ListElPrezzo.Remove(id)
+     ListElSconto.Remove(id)
+     ListElUM.Remove(id)
+     ListElCat.Remove(id)
+     
+     CategorieElPrezzi_Click()
+  
+END
+
+
+PUBLIC SUB Form_Resize()
+
+       Tab.Width = ME.Width 
+       Tab.Height = ME.Height - 25
+       
+       'ElencoPrezzi  
+       SidePanelElPrezzi.Height = Tab.Height - 40
+       ListaElementiElPrezzi.Height = SidePanelElPrezzi.Height - ListaElementiElPrezzi.Y
+       
+       FrameElSelElPrezzi.X = SidePanelElPrezzi.X + SidePanelElPrezzi.Width
+       FrameComandiElPrezzi.X = Tab.Width - FrameComandiElPrezzi.Width - 10
+       FrameComandiElPrezzi.Y = Tab.Height - FrameComandiElPrezzi.Height - 40
+       FrameElSelElPrezzi.Height = FrameComandiElPrezzi.Y - FrameElSelElPrezzi.Y - 10
+       FrameElSelElPrezzi.Width = Tab.Width - FrameElSelElPrezzi.X - 10
+          ElDescrBreve.Width = FrameElSelElPrezzi.Width - 2 * ElDescrBreve.X
+          ElDescrLunga.Width = ElDescrBreve.Width
+          PanelUpElSelElPrezzi.X = (FrameElSelElPrezzi.Width - PanelUpElSelElPrezzi.Width) / 2
+          PanelDwElSelElPrezzi.X = (FrameElSelElPrezzi.Width - PanelDwElSelElPrezzi.Width) / 2
+          PanelDwElSelElPrezzi.Y = FrameElSelElPrezzi.Height - PanelDwElSelElPrezzi.Height - 5
+          ElDescrLunga.Height = PanelDwElSelElPrezzi.Y - ElDescrLunga.Y - 5
+
+
+       'Computo
+       FrameComandiCM.X = Tab.Width - FrameComandiCM.Width - 10
+       FrameComandiCM.Y = Tab.Height - FrameComandiCM.Height - 40
+       FrameDatiComputo.Y = FrameElSelCM.Height + FrameElSelCM.Y + 10
+       FrameDatiComputo.Height = Tab.Height - FrameDatiComputo.Y - 40
+       Totpercategoria.Height = FrameDatiComputo.Height - Totpercategoria.Y - 10
+       Totpercategoria.Width = FrameDatiComputo.Width - Totpercategoria.X - 10
+       
+       FrameElSelCM.Width = Tab.Width - FrameElSelCM.X - 10 
+       quantita.Width = FrameElSelCM.Width - quantita.X - 10
+       
+       FrameCat.Width = FrameElSelCM.X - FrameCat.X - 10
+       CategorieCM.Width = FrameCat.Width - 20
+       ListElementiCM.Width = FrameCat.Width
+       ListElementiCM.Height = tab.Height - ListElementiCM.Y - 40
+       
+       'Confronta offerte
+       TabOfferte.Height = Tab.Height - TabOfferte.Y - 40
+       TabOfferte.Width = Tab.Width - TabOfferte.x - 10
+       TabellaOfferte.Height = TabOfferte.Height - TabellaOfferte.Y - 40
+       TabellaOfferte.Width = TabOfferte.Width - TabellaOfferte.x - 10
+       TableResocontoAziende.Height = TabellaOfferte.Height
+       TableResocontoAziende.Width = TabellaOfferte.Width 
+       
+       
+       'Prezziari
+       FrameComandiPrezziari.X = Tab.Width - FrameComandiPrezziari.Width - 10
+       FrameComandiPrezziari.Y = Tab.Height - FrameComandiPrezziari.Height - 40
+       FrameSearch.y = FrameComandiPrezziari.y
+       FrameSearch.x = FrameComandiPrezziari.x - FrameSearch.Width - 10
+       FrameElSelPrezziari.X = SidePanelPrezziari.X + SidePanelPrezziari.Width 
+       FrameElSelPrezziari.Width = Tab.Width - FrameElSelPrezziari.X - 10
+       FrameElSelPrezziari.Height = FrameSearch.Y - 5
+          DescrBreve.Width = FrameElSelPrezziari.Width - 2 * DescrBreve.X
+          DescrLunga.Width = DescrBreve.Width
+          PanelUpElSelPrezziari.X = (FrameElSelPrezziari.Width - PanelUpElSelPrezziari.Width) / 2
+          PanelDwElSelPrezziari.X = (FrameElSelPrezziari.Width - PanelDwElSelPrezziari.Width) / 2
+          PanelDwElSelPrezziari.Y = FrameElSelPrezziari.Height - PanelDwElSelPrezziari.Height - 5
+          DescrLunga.Height = PanelDwElSelPrezziari.Y - DescrLunga.Y - 5
+       SidePanelPrezziari.Height = tab.Height - 40
+       IF NOT (SidePanelPrezziari.Width <= 0) THEN 
+          ListaPrezziari.Width = SidePanelPrezziari.Width - 10
+          Prezziarioselezionato.Width = SidePanelPrezziari.Width - 10
+       END IF
+       Prezziarioselezionato.Height = SidePanelPrezziari.Height - Prezziarioselezionato.Y
+END
+
+PUBLIC SUB Form_Open()
+     ME.Center
+     ME.maximized = TRUE
+     RefreshPrezziari_Click()
+     versione = "1.3.1"
+     password = ""
+     CleanOfferte()
+     Aziende.ListAziende.Clear
+     Importing = ""
+END
+
+PUBLIC SUB Info_Click()
+
+Informazioni.Show  
+
+END
+
+PUBLIC SUB RefreshPrezziari_Click()
+DIM ElPrezziariFile AS File
+DIM linea AS String
+DIM splitting AS String[]
+
+     ListaPrezziari.Clear
+     ListaVerPrezziari.Clear
+     ListaElementiElPrezzi.Clear
+     ListaIdPrezziari.Clear
+     Listaelementiprezziario.Clear
+     
+     TRY ElPrezziariFile = OPEN user.Home & "/.Aedilis/ElPrezziari" FOR READ 
+     IF ERROR THEN 
+          ElPrezziariFile = OPEN user.Home & "/.Aedilis/ElPrezziari" FOR WRITE CREATE 
+
+          PRINT "il file dei prezziari non esiste"
+     ELSE 
+          WHILE NOT Eof(ElPrezziariFile)
+               LINE INPUT #ElPrezziariFile, linea
+               splitting = Split(linea, "#")
+               IF (splitting.Count >= 5) THEN 
+                    ListaPrezziari.Add(splitting[1], splitting[2], PicPrezzChiuso.Picture)
+                    Listaelementiprezziario.Add(splitting[1], splitting[4])
+                    ListaVerPrezziari.Add(splitting[1], splitting[3])
+                    ListaIdPrezziari.add(splitting[1])
+               END IF
+          WEND 
+     END IF
+
+
+     IF Connessione.Connessi = TRUE THEN 
+
+          WITH Connessione
+               .DBResult = .DBConnect.Find("ElPrezziari")  
+               WHILE (.DBResult.Available = TRUE) 
+                    IF (ListaPrezziari.Exist(.DBResult!Id)) THEN
+                         IF NOT (ListaVerPrezziari[.DBResult!Id].Text = .DBResult!Versione) THEN 
+                              ListaPrezziari[.DBResult!Id].Picture = PicPrezzUpGrade.Picture
+                         END IF
+                    ELSE 
+                         ListaPrezziari.Add(.DBResult!Id, .DBResult!Nome, PicPrezzRemoto.Picture)
+                         ListaVerPrezziari.Add(.DBResult!Id, .DBResult!Versione)
+                    END IF
+                    .DBResult.MoveNext
+               WEND 
+
+          END WITH 
+
+     END IF  
+
+END
+
+PUBLIC SUB Chiudi_Click()
+
+ME.Close  
+
+END
+
+PUBLIC SUB Salva_Click()
+
+DIM SaveFile AS File
+DIM contatore AS Integer
+DIM contatore2 AS Integer
+
+  Dialog.Filter = ["*.computo", "File di Computo di Aedilis"]
+  Dialog.Path = User.Home
+  Dialog.Title = "Salva il Progetto"
+  
+  IF NOT (Dialog.SaveFile()) THEN 
+  
+     TRY SaveFile = OPEN Dialog.Path FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          PRINT #SaveFile, "Version: " & versione
+          PRINT #SaveFile, "Using password: no"  
+          PRINT #SaveFile, "ProjectName: " & Globals.ProjectName
+          PRINT #SaveFile, "ProjectCommittente: " & Globals.ProjectCommittente
+          PRINT #SaveFile, "ProjectTipoComm: " & Globals.ProjectTipoComm
+          PRINT #SaveFile, "ProjectAutore: " & Globals.ProjectAutore
+          PRINT #SaveFile, "ProjectDicituraLavoro: " & Globals.ProjectDicituraLavoro
+          PRINT #SaveFile, "ProjectDataDocumento: " & Globals.ProjectDataDocumento
+          PRINT #SaveFile, "ProjectComune: " & Globals.ProjectComune
+          PRINT #SaveFile, "ProjectProvincia: " & Globals.ProjectProvincia
+          PRINT #SaveFile, "#Categorie#"   
+          WITH CategorieComputo
+          FOR contatore = 0 TO .Categorie.Count - 1
+               PRINT #SaveFile, .Categorie[contatore].Text
+          NEXT 
+          END WITH 
+          
+          PRINT #SaveFile, "#ElPrezzi#"
+          FOR contatore = 0 TO ListElCat.Count - 1
+          
+               PRINT #SaveFile, "@"
+               PRINT #SaveFile, ListElCode[contatore].Text
+               PRINT #SaveFile, ListElCat[contatore].Text
+               PRINT #SaveFile, ListElDescrBreve[contatore].Text
+               PRINT #SaveFile, "##END-TEXT##"
+               PRINT #SaveFile, ListElDescr[contatore].Text
+               PRINT #SaveFile, "##END-TEXT##"
+               PRINT #SaveFile, ListElPrezzo[contatore].Text
+               PRINT #SaveFile, ListElSconto[contatore].Text
+               PRINT #SaveFile, ListElUM[contatore].Text
+               
+          NEXT 
+          
+          
+          PRINT #SaveFile, "#Computo#"
+          FOR contatore = 0 TO ListCMId.Count - 1
+          
+               PRINT #SaveFile, "@"
+               PRINT #SaveFile, ListCMId[contatore].Text
+               
+               FOR contatore2 = 0 TO ListQuantitaId.Count - 1  
+                    IF (ListQuantitaId[contatore2].Text = listcmid[contatore].Text) THEN 
+                         PRINT #SaveFile, ListCMDescrMis[contatore2].Text
+                         PRINT #SaveFile, "##END-TEXT##"
+                         PRINT #SaveFile, ListCMQ1[contatore2].Text
+                         PRINT #SaveFile, ListCMQ2[contatore2].Text 
+                         PRINT #SaveFile, ListCMQ3[contatore2].Text 
+                         PRINT #SaveFile, ListCMQ4[contatore2].Text
+                         PRINT #SaveFile, ListCMTot[contatore2].Text
+                    END IF
+               NEXT 
+               PRINT #SaveFile, "-FineQuantità-"
+          NEXT        
+          PRINT #SaveFile, "#Aziende#"
+          FOR contatore = 0 TO Aziende.ListAziende.Count - 1
+               PRINT #SaveFile, Aziende.ListAziende[contatore].Text
+          NEXT 
+          PRINT #SaveFile, "#FineAziende#"
+          PRINT #SaveFile, "#Offerte#"
+          FOR contatore = 0 TO DatiOfferte.Columns.Count - 1
+               PRINT #SaveFile, "#InizioOfferta#"
+               FOR contatore2 = 0 TO DatiOfferte.Rows.Count - 1
+                    PRINT #SaveFile, DatiOfferte[contatore2, contatore].Text
+               NEXT 
+               PRINT #SaveFile, "#FineOfferta#"
+          NEXT 
+          SaveFile.Close   
+          
+          Message.Info("Salvataggio eseguito con successo!")
+     ELSE 
+     
+          message.Error("Impossibile salvare sul file selezionato")
+     
+     END IF
+  
+  END IF
+END
+
+
+PUBLIC SUB ListaPrezziari_DblClick()
+DIM ElPrezziariFile AS File
+DIM NuovoPrezziario AS File
+DIM DBresult2 AS Result
+DIM loadprezziario AS File
+
+DIM contatore AS Integer
+
+DIM linea AS String
+
+DIM tipo AS String
+
+DIM codicepadre AS String
+DIM id AS Integer
+DIM tipobool AS Boolean
+DIM codice AS String
+DIM nome AS String
+DIM descrizionebreve AS String
+DIM descrizione AS String
+DIM prezzo AS String
+DIM sconto AS String
+DIM um AS String
+DIM splitted AS String[]
+DIM AutoDescr AS Boolean
+
+DIM contatorewait AS Integer
+     
+     contatorewait = 0
+     ABORT = FALSE
+     ListDescr = [""]
+     ListDescrBreve = [""]
+     ListCode = [""]
+     ListPrezzo = [""]
+     ListSconto = [""]
+     ListUM = [""]
+     ListKey = [0]
+     
+     IF (ListaPrezziari.Current.Picture = PicPrezzRemoto.Picture) THEN 
+          IF (1 = Message.Question("Questo Prezziario dev'essere reperito dal DB.\nVuoi proseguire?", "Sì", "No")) THEN
+               INC Application.Busy
+               WITH Connessione
+                    .DBResult = .DBConnect.Find("ElPrezziari", "id=&1", ListaPrezziari.Current.Key)
+                    IF (.DBResult.Available = TRUE) THEN 
+                         id = .DBResult!Id
+                         TRY ElPrezziariFile = OPEN user.Home & "/.Aedilis/ElPrezziari" FOR WRITE APPEND 
+                         IF NOT ( ERROR ) THEN 
+                              DBresult2 = .DBConnect.Find("Prezziario" & id)
+                              PRINT #ElPrezziariFile, "#" & .DBResult!Id & "#" & .DBResult!Nome & "#" & .DBResult!Versione & "#" & DBResult2.count          
+                              TRY NuovoPrezziario = OPEN user.Home & "/.Aedilis/Prezziari/" & .DBResult!Id FOR WRITE CREATE
+                              IF NOT ( ERROR ) THEN 
+                                   
+                                   Caricamento.tot.Text = DBresult2.Count
+                                   Caricamento.Parziale.Text = 0
+                                   Caricamento.Show
+                                   WHILE (DBresult2.Available = TRUE)
+                                          PRINT #NuovoPrezziario, "#"
+                                          PRINT #NuovoPrezziario, DBResult2!IdPadre
+                                          PRINT #NuovoPrezziario, DBResult2!Id
+                                          IF (DBResult2!Tipo = FALSE) THEN 
+                                                  PRINT #NuovoPrezziario, "EL"
+                                                  PRINT #NuovoPrezziario, DBResult2!Codice & "|" & DBResult2!Prezzo & "|" & DBResult2!Sconto & "|" & DBResult2!UM
+                                                  IF (.DBResult!AutoDescr = FALSE) THEN 
+                                                       PRINT #NuovoPrezziario, DBResult2!Nome & DBResult2!DescrizioneBreve
+                                                  END IF
+                                                  PRINT #NuovoPrezziario, DBResult2!DescrizioneLunga
+                                          ELSE 
+                                                  PRINT #NuovoPrezziario, "CAT"  
+                                                  PRINT #NuovoPrezziario, DBResult2!Nome
+                                          END IF
+                                          Caricamento.Parziale.Text = Val(Caricamento.Parziale.Text) + 1
+                                        DBresult2.MoveNext
+                                   WEND 
+                                   Caricamento.Hide
+                                   RefreshPrezziari_Click()
+                              ELSE 
+                                   Message.ERROR("Impossibile scrivere su file il prezziario!")
+                              END IF
+                         
+                              ListaPrezziari[id].Picture = PicPrezzChiuso.Picture
+                              'ListaPrezziari_DblClick()
+                         END IF
+                    ELSE 
+                         Message.Error("Errore, il prezziario non è più disponibile!!!")
+                    END IF
+               END WITH 
+               DEC Application.Busy  
+          END IF
+     ELSE IF (ListaPrezziari.Current.Picture = PicPrezzUpGrade.Picture) THEN 
+
+     ELSE IF (ListaPrezziari.Current.Picture = PicPrezzChiuso.Picture) THEN 
+          INC Application.Busy
+          'Tutti immagine chiusa se aperti
+          FOR contatore = 0 TO ListaIdPrezziari.Count - 1
+               IF (ListaPrezziari[ListaIdPrezziari[contatore].Text].Picture = PicPrezzAperto.Picture) THEN
+                    ListaPrezziari[ListaIdPrezziari[contatore].Text].Picture = PicPrezzChiuso.Picture
+               END IF
+          NEXT 
+          'Metto l'immagine giusta al prezziario aperto.
+          ListaPrezziari.Current.Picture = PicPrezzAperto.Picture
+          
+          Caricamento.parziale.Text = 0
+          Caricamento.tot.Text = Listaelementiprezziario[ListaPrezziari.Current.Key].Text
+          Caricamento.Show
+          
+          
+          'Caricamento dei dati in memoria.
+          TRY loadprezziario = OPEN user.Home & "/.Aedilis/Prezziari/" & ListaPrezziari.Current.Key FOR READ 
+          IF NOT ( ERROR ) THEN 
+               Prezziarioselezionato.Clear
+
+               ListDescrBreve.Clear
+               ListDescr.Clear
+               ListPrezzo.Clear
+               ListSconto.Clear
+               ListUM.Clear
+               ListCode.Clear
+               ListIdEl.Clear
+               ListKey.Clear
+               contatore = 0
+               WHILE NOT Eof(loadprezziario)
+                      LINE INPUT #loadprezziario, linea
+                      IF (linea = "AutoDescr=TRUE") THEN 
+                         AutoDescr = TRUE
+                      ELSE IF (linea = "AutoDescr=FALSE") THEN 
+                         AutoDescr = FALSE
+                      ELSE IF (linea = "#") THEN 
+     
+                         LINE INPUT #loadprezziario, codicepadre
+
+                         LINE INPUT #loadprezziario, linea
+                         id = Val(linea)
+
+                         LINE INPUT #loadprezziario, tipo
+     
+                         IF (tipo = "EL") THEN 
+                              tipobool = FALSE
+                              LINE INPUT #loadprezziario, linea
+                              splitted = Split(linea, "|")
+                              codice = splitted[0]
+                              prezzo = splitted[1]
+                              sconto = splitted[2]
+                              um = splitted[3]
+                              IF (AutoDescr = FALSE) THEN 
+                                   LINE INPUT #loadprezziario, descrizionebreve
+                                   LINE INPUT #loadprezziario, descrizione     
+                              ELSE 
+                                   LINE INPUT #loadprezziario, descrizione     
+                                   descrizionebreve = Globals.Cut_Descr(descrizione, Connessione.LenDescrBreve)
+                              END IF
+                                   
+                         ELSE 
+                              tipobool = TRUE
+                              LINE INPUT #loadprezziario, nome
+                              descrizione = ""
+                              descrizionebreve = ""
+                              prezzo = 0
+                              sconto = 0
+                              um = ""
+                         END IF    
+
+                         IF tipobool = TRUE THEN 
+                              IF (codicepadre = -1) THEN 
+                                   Prezziarioselezionato.Add(id, nome, piccat.Picture)
+                              ELSE 
+                                   Prezziarioselezionato.Add(id, nome, piccat.Picture, codicepadre)
+                              END IF
+                              
+                              
+                         ELSE 
+                              IF (codicepadre = -1) THEN 
+                                   Prezziarioselezionato.Add(id, codice & " - " & descrizionebreve, picel.Picture) 
+                              ELSE 
+                                   Prezziarioselezionato.Add(id, codice & " - " & descrizionebreve, picel.Picture, codicepadre) 
+                              END IF    
+
+                              
+                              ListDescrBreve.Add(descrizionebreve)
+                              ListDescr.Add(descrizione)
+                              ListCode.Add(codice)
+                              ListSconto.Add(sconto)
+                              ListPrezzo.Add(prezzo)
+                              ListUM.Add(um)
+                              ListIdEl.Add(id, contatore)
+                              listkey.Add(id)
+                              nome = descrizionebreve
+                              contatore = contatore + 1
+                         END IF
+          
+
+                         Caricamento.parziale.Text = Val(Caricamento.parziale.Text) + 1
+                    END IF
+                    IF (ABORT = TRUE) THEN BREAK 
+                    contatorewait = contatorewait + 1
+                    IF (contatorewait = 153) THEN 
+                         WAIT 0.0005
+                         contatorewait = 0
+                    END IF
+               WEND 
+               IF (ABORT = TRUE) THEN 
+                    Message.Warning("Caricamento interrotto manualmente.")
+               END IF
+               Caricamento.Close
+               ComputoMetrico.Codice.Clear
+               ComputoMetrico.DescrBreve.Clear
+               ComputoMetrico.DescrLunga.Clear
+               ComputoMetrico.Prezzo.Clear
+               ComputoMetrico.Sconto.Clear
+               ComputoMetrico.UM.Clear
+               DEC Application.Busy  
+          ELSE     
+          
+               message.Error("Impossibile accedere ai file del prezziario!")
+          
+          END IF
+     END IF
+END
+
+PUBLIC SUB Guida_Click()
+'Scrivo nel file di configurazione dell'Help la path della pagina della guida per questa sezione
+DIM hfile AS File 'Questa variabile conterrà il descrittore del file di configurazione dell'help
+     TRY hfile = OPEN user.Home &/ ".Aedilis/Help" FOR WRITE CREATE 'Provo ad aprire il file di configurazione dell'help in scrittura/creazione
+     IF NOT ( ERROR ) THEN 'Se non ci sono stati errori (es. file protetto da scrittura) allora salvo la nuova path della guida
+          PRINT #hfile, "http://www.sciallo.net/Aedilis/Guida/Computo.html"
+          hfile.Close 'Chiudo il descrittore del file
+          WAIT 1 'Attendo in modo che il file possa essere scritto
+     END IF
+     
+     SHELL "aedilis-help.gambas" 'Lancio la guida
+
+END
+
+PUBLIC SUB EditPrezziari_Click()
+     Message.Info("Sarà bloccato il lavoro sui computi finchè non avrete terminato di lavorare sui prezziari.")
+     ME.Hide
+     SHELL "aedilis-editorprezziari.gambas" WAIT 
+     ME.Show  
+     RefreshPrezziari_Click()
+
+END
+
+PUBLIC SUB ListaPrezziari_Click()
+
+  
+
+END
+
+PUBLIC SUB PrezziarioSelezionato_Click()
+
+  IF (Prezziarioselezionato.Current.Picture = picel.Picture) THEN 
+  '   message.Info(Prezziarioselezionato.Current.Key)
+     codice.Text = ListCode[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
+     DescrBreve.Text = ListDescrBreve[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
+     DescrLunga.Text = ListDescr[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
+     Prezzo.Text = ListPrezzo[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
+     IF (prezzo.Text = "") THEN prezzo.Text = "0"
+     Sconto.Text = ListSconto[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
+     IF (sconto.Text = "") THEN sconto.Text = "0"
+     UM.Text = ListUM[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
+  ELSE 
+     codice.Text = ""
+     DescrBreve.Text = ""
+     DescrLunga.Text = ""
+     Prezzo.Text = ""
+     Sconto.Text = ""
+     UM.Text = ""
+  END IF
+
+END
+
+PUBLIC SUB AddElementoElPrezzi_Click()
+IF NOT (Prezziarioselezionato.Current = NULL) THEN
+  IF NOT (Prezziarioselezionato.Current.Picture = PicCat.Picture) THEN 
+     PrezziarioSelezionato_Click
+     AddElPrezzi.Descrizione.Text = DescrLunga.Text
+     AddElPrezzi.Nome.Text = codice.Text & " - " & DescrBreve.Text
+     AddElPrezzi.ValScontoPrezziario.Text = Sconto.Text
+     AddElPrezzi.ScontoSlide.Value = Val(Sconto.Text)
+     
+     AddElPrezzi.Dati.Clear
+     AddElPrezzi.Dati.Add(Codice.Text)
+     AddElPrezzi.Dati.Add(DescrBreve.Text)
+     AddElPrezzi.Dati.Add(DescrLunga.Text)
+     AddElPrezzi.Dati.Add(Prezzo.Text)
+     AddElPrezzi.Dati.Add(Sconto.Text)
+     AddElPrezzi.Dati.Add(UM.Text)
+
+     
+     AddElPrezzi.Show  
+     
+  END IF
+END IF
+END
+
+PUBLIC SUB EditCategorie_Click()
+
+  CategorieComputo.Show
+
+END
+
+PUBLIC SUB Form_Close()
+
+  QUIT 
+
+END
+
+PUBLIC SUB CategorieElPrezzi_Change()
+DIM contatore AS Integer
+DIM contatore2 AS Integer
+DIM immagine AS Picture
+  'Refresh lista
+  ListaElementiElPrezzi.Clear
+  
+  IF NOT (CategorieElPrezzi.Index = CategorieElPrezzi.Count - 1) THEN 
+  
+     FOR contatore = 0 TO ListElCat.Count - 1
+     
+          IF (ListElCat[contatore].Text = CategorieElPrezzi.Index) THEN 
+               immagine = picel.Picture
+               FOR contatore2 = 0 TO ListCMId.Count - 1
+                    IF (ListCmId[contatore2].Text = contatore) THEN 
+                         immagine = picins.Picture
+                         BREAK 
+                    END IF
+               NEXT 
+               ListaElementiElPrezzi.Add(contatore, ListElCode[contatore].Text & " - " & ListElDescrBreve[contatore].Text, immagine)     
+               
+          END IF
+  
+     NEXT 
+  
+  ELSE 
+  
+     'message.Info("Visualizzo tutti i dati")
+     FOR contatore = 0 TO ListElCat.Count - 1
+               immagine = picel.Picture
+               FOR contatore2 = 0 TO ListCMId.Count - 1
+                    IF (ListCmId[contatore2].Text = contatore) THEN 
+                         immagine = picins.Picture
+                         BREAK 
+                    END IF
+               NEXT      
+          ListaElementiElPrezzi.Add(contatore, ListElCode[contatore].Text & " - " & ListElDescrBreve[contatore].Text, immagine)
+  
+     NEXT      
+  
+  END IF
+  
+  ElCodice.Clear
+  ElDescrBreve.Clear
+  ElDescrLunga.Clear
+  ElPrezzo.Clear
+  ElSconto.Clear
+  elum.Clear
+  
+  CategorieOfferte_Click()
+END
+
+PUBLIC SUB CategorieElPrezzi_Click()
+
+  CategorieElPrezzi_Change()
+
+END
+
+PUBLIC SUB ListaElementiElPrezzi_Click()
+
+DIM el_corrente AS Integer
+
+  IF NOT (ListaElementiElPrezzi = NULL) THEN 
+     IF NOT (ListaElementiElPrezzi.Current = NULL) THEN 
+          el_corrente = ListaElementiElPrezzi.Current.Key
+          
+          ElCodice.Text = ListElCode[el_corrente].Text
+          ElDescrBreve.Text = ListElDescrBreve[el_corrente].Text
+          ElDescrLunga.Text = ListElDescr[el_corrente].Text
+          ElPrezzo.Text = ListElPrezzo[el_corrente].Text
+          ElSconto.Text = LIstElSconto[el_corrente].Text
+          ElUM.Text = LIstElUM[el_corrente].Text
+          
+          
+     END IF
+  
+  END IF
+
+END
+
+PUBLIC SUB Apri_Click()
+
+DIM OpenFile AS File
+DIM Linea AS String
+DIM contatore AS Integer
+DIM Contatore2 AS Integer
+DIM procedere AS Boolean
+DIM procedere2 AS Boolean
+DIM splitting AS String[]
+DIM Versione AS String
+DIM parziale AS Float
+DIM TmpLinea AS String
+
+  password = ""
+  
+procedere2 = FALSE
+IF (Importing = "") THEN
+  Dialog.Filter = ["*.computo", "File di Computo di Aedilis"]
+  Dialog.Path = User.Home
+  Dialog.Title = "Apri un Progetto"
+  
+  IF NOT (Dialog.OpenFile()) THEN 
+  procedere2 = TRUE
+  END IF
+ELSE 
+  Dialog.Path = Importing
+  procedere2 = TRUE
+  Importing = ""
+END IF
+  IF (procedere2 = TRUE) THEN  
+     TRY OpenFile = OPEN Dialog.Path FOR READ 
+     IF NOT ( ERROR ) THEN 
+     
+          procedere = FALSE
+          IF (ListElCat.Count = 0) THEN 
+               procedere = TRUE
+          ELSE 
+               IF (1 = message.Question("Procedendo si perderanno tutti i progressi non salvati.\nPreseguire?", "Sì", "No")) THEN
+                    procedere = TRUE
+               END IF
+          END IF
+          
+          IF (procedere = TRUE) THEN 
+
+               LINE INPUT #OpenFile, linea
+               splitting = Split(linea, ":")
+               Versione = splitting[1]
+               
+               PRINT Versione
+               
+               LINE INPUT #OpenFile, linea
+               IF ((Versione = " 1.0.0") OR (Versione = " 1.0.1") OR (Versione = " 1.1.0") OR (Versione = " 1.1.1") OR (Versione = " 1.1.2")) THEN 
+                    PRINT "OldVersion"
+                    message.Warning("Questo è un vecchio formato non più supportato!")
+               ELSE 
+               IF linea = "Using password: no" THEN 
+                         'Non Criptato
+               
+
+                         LINE INPUT #OpenFile, linea
+                         splitting = Split(linea, ":")
+                         Globals.ProjectName = Mid$(splitting[1], 2)
+
+                         LINE INPUT #OpenFile, linea
+                         splitting = Split(linea, ":")
+                         Globals.ProjectCommittente = Mid$(splitting[1], 2)
+                         
+                         LINE INPUT #OpenFile, linea
+                         splitting = Split(linea, ":")
+                         Globals.ProjectTipoComm = Mid$(splitting[1], 2)
+
+                         LINE INPUT #OpenFile, linea
+                         splitting = Split(linea, ":")
+                         Globals.ProjectAutore = Mid$(splitting[1], 2)
+                         
+                         IF NOT (versione = " 1.3.0") THEN 
+                              LINE INPUT #OpenFile, linea
+                              splitting = Split(linea, ":")
+                              Globals.ProjectDicituraLavoro = Mid$(splitting[1], 2)
+                              
+                              LINE INPUT #OpenFile, linea
+                              splitting = Split(linea, ":")
+                              Globals.ProjectDataDocumento = Mid$(splitting[1], 2)
+                              
+                              LINE INPUT #OpenFile, linea
+                              splitting = Split(linea, ":")
+                              Globals.ProjectComune = Mid$(splitting[1], 2)
+                              
+                              LINE INPUT #OpenFile, linea
+                              splitting = Split(linea, ":")
+                              Globals.ProjectProvincia = Mid$(splitting[1], 2)
+                         END IF
+               
+                         LINE INPUT #OpenFile, linea
+               
+               
+                         'PRINT linea
+                         '#Categorie#'
+                         CategorieComputo.Categorie.Clear
+                         CategorieComputo.CatProp.Clear
+                         contatore = 0
+                         REPEAT 
+                              LINE INPUT #OpenFile, linea
+                              IF NOT (linea = "#ElPrezzi#") THEN
+                                   CategorieComputo.Categorie.Add(linea)
+                                   IF contatore = 0 THEN 
+                                        CategorieComputo.CatProp.Add(0)
+                                        contatore = 1                    
+                                   ELSE 
+                                        CategorieComputo.CatProp.Add(1)                         
+                                   END IF
+                         
+                            END IF
+                         UNTIL (linea = "#ElPrezzi#")
+                         CategorieComputo.Refresh1()
+               
+               
+                         'PRINT linea
+                    
+                         ListElCode.Clear
+                         ListElCat.Clear
+                         ListElDescr.Clear
+                         ListElDescrBreve.Clear
+                         ListElPrezzo.Clear
+                         ListElSconto.Clear
+                         ListElUM.Clear
+               
+                         '#ElPrezzi#'
+                         REPEAT 
+                              LINE INPUT #OpenFile, linea
+                              IF (linea = "@") THEN
+                    
+                                   LINE INPUT #OpenFile, linea
+                                   ListElCode.Add(linea)
+                         
+                                   LINE INPUT #OpenFile, linea
+                                   ListElCat.Add(linea)
+                                   linea = "" 
+                                   TmpLinea = ""
+                                   WHILE NOT (linea = "##END-TEXT##")
+                                        LINE INPUT #OpenFile, linea
+                                        IF NOT (linea = "##END-TEXT##") THEN TmpLinea = TmpLinea & linea & "\n"
+                                   WEND       
+                                   TmpLinea = Mid$(TmpLinea, 1, Len(TmpLinea) - 1)
+                                   ListElDescrBreve.Add(TmpLinea)
+                                   'PRINT TmpLinea
+                                   linea = ""
+                                   TmpLinea = ""
+                                   WHILE NOT (linea = "##END-TEXT##")
+                                        LINE INPUT #OpenFile, linea
+                                        IF NOT (linea = "##END-TEXT##") THEN TmpLinea = TmpLinea & linea & "\n"
+                                   WEND      
+                                   TmpLinea = Mid$(TmpLinea, 1, Len(TmpLinea) - 1)
+                                   ListElDescr.Add(TmpLinea)
+                                   'PRINT TmpLinea
+                         
+                                   LINE INPUT #OpenFile, linea
+                                   'PRINT Val(linea) & linea 
+                                   ListElPrezzo.Add(linea)
+                         
+                         
+                                   LINE INPUT #OpenFile, linea
+                                   ListElSconto.Add(linea)
+                         
+                                   LINE INPUT #OpenFile, linea
+                                   ListElUM.Add(linea)
+                    
+                              END IF
+                         UNTIL (linea = "#Computo#")
+                         'CategorieElPrezzi_Click()
+               
+                         'PRINT linea
+                         ListCMId.Clear
+                         ListQuantitaId.Clear
+                         ListCMDescrMis.Clear
+                         listcmq1.Clear
+                         ListCMQ2.Clear
+                         ListCMQ3.Clear
+                         ListCMQ4.Clear
+                         ListCMTot.Clear
+                         '#Computo#'
+               
+                         REPEAT 
+                         LINE INPUT #OpenFile, linea
+                         'PRINT linea
+                         IF (linea = "@") THEN
+                    
+                                   LINE INPUT #OpenFile, linea
+                                   ListCMId.Add(linea)
+                    
+                                   WHILE NOT (linea = "-FineQuantità-")
+                                        LINE INPUT #OpenFile, linea
+                                        IF NOT (linea = "-FineQuantità-") THEN 
+                                             ListQuantitaId.Add(ListCMid[ListCMid.Count - 1].text)
+                                             TmpLinea = linea
+                                             WHILE NOT (linea = "##END-TEXT##")
+                                                  LINE INPUT #OpenFile, linea
+                                                  IF NOT (linea = "##END-TEXT##") THEN TmpLinea = TmpLinea & linea & "\n"
+                                             WEND     
+                                             TmpLinea = Mid$(TmpLinea, 1, Len(TmpLinea) - 1) 
+                                             'PRINT TmpLinea
+                                             ListCMDescrMis.Add(TmpLinea)
+                                             
+                                             LINE INPUT #OpenFile, linea
+                                             ListCMQ1.Add(linea)
+                    
+                                             LINE INPUT #OpenFile, linea
+                                             ListCMQ2.Add(linea)
+                              
+                                             LINE INPUT #OpenFile, linea
+                                             ListCMQ3.Add(linea)
+                         
+                                             LINE INPUT #OpenFile, linea
+                                             ListCMQ4.Add(linea)
+                                                  
+                                             LINE INPUT #OpenFile, linea 
+                                             ListCMTot.Add(linea)
+                                        END IF
+                                   WEND 
+                              END IF
+                         UNTIL ((linea = "#Aziende#") OR (Eof(OpenFile)))
+                         CategorieCM_Click()
+                         CategorieElPrezzi_Click()
+                         RefreshTotaleComputo()
+                         Aziende.ListAziende.Clear
+                         DatiOfferte.Clear
+                         CleanOfferte()
+                         IF NOT (versione = " 1.2.0") THEN 
+                              '#Aziende#'
+                              REPEAT 
+                                 LINE INPUT #OpenFile, linea
+                                   'PRINT linea
+                                   IF NOT (linea = "#FineAziende#") THEN
+                                        Aziende.ListAziende.Add(linea)                                        
+                                   END IF
+                              UNTIL (linea = "#FineAziende#")
+                              LINE INPUT #OpenFile, linea
+                              '#Offerte#
+                              contatore = 0
+                              Contatore2 = 0
+                              WHILE NOT (Eof(OpenFile))
+                                   LINE INPUT #OpenFile, linea
+                                   'PRINT linea
+                                   IF (linea = "#InizioOfferta#") THEN
+                                        contatore = contatore + 1
+                                        IF (DatiOfferte.Columns.Count < contatore) THEN DatiOfferte.Columns.Count = contatore
+                                        contatore2 = 0
+                                        REPEAT 
+                                             IF NOT (linea = "#FineOfferta#") THEN 
+                                                  contatore2 = contatore2 + 1
+                                                  IF (DatiOfferte.Rows.Count < Contatore2) THEN DatiOfferte.Rows.Count = Contatore2
+                                                  LINE INPUT #OpenFile, linea 
+                                                  DatiOfferte[contatore2 - 1, contatore - 1].Text = linea
+                                             END IF
+                                        UNTIL linea = "#FineOfferta#"
+                                   END IF
+                              WEND 
+                         
+                         
+                         END IF
+                         CategorieOfferte_Click()
+                    'PRINT "#END#"
+               ELSE 
+               'Criptato                 
+                    InsertPassword.pass.Text = ""
+                    InsertPassword.conferma.Text = ""
+                    InsertPassword.save = FALSE
+                    InsertPassword.Show
+                    WHILE password = ""
+                         WAIT 1
+                    WEND 
+                    IF (password = "###NONE###") THEN 
+                         PRINT "L'utente ha interrotto l'operazione di apertura."
+                    ELSE 
+                         'decriptazione
+
+                         LINE INPUT #OpenFile, linea
+                         linea = Globals.decrypt(linea, password)
+                         splitting = Split(linea, ":")
+                         Globals.ProjectName = Mid$(splitting[1], 2)
+                         
+                         LINE INPUT #OpenFile, linea
+                         linea = Globals.decrypt(linea, password)
+                         splitting = Split(linea, ":")
+                         Globals.ProjectCommittente = Mid$(splitting[1], 2)
+                              
+                         LINE INPUT #OpenFile, linea
+                         linea = Globals.decrypt(linea, password)
+                         splitting = Split(linea, ":")
+                         Globals.ProjectTipoComm = Mid$(splitting[1], 2)
+
+                         LINE INPUT #OpenFile, linea
+                         linea = Globals.decrypt(linea, password)
+                         splitting = Split(linea, ":")
+                         Globals.ProjectAutore = Mid$(splitting[1], 2)
+                         
+                         IF NOT (versione = " 1.3.0") THEN 
+                              LINE INPUT #OpenFile, linea
+                              linea = Globals.decrypt(linea, password)
+                              splitting = Split(linea, ":")
+                              Globals.ProjectDicituraLavoro = Mid$(splitting[1], 2)
+                              
+                              LINE INPUT #OpenFile, linea
+                              linea = Globals.decrypt(linea, password)
+                              splitting = Split(linea, ":")
+                              Globals.ProjectDataDocumento = Mid$(splitting[1], 2)
+                              
+                              LINE INPUT #OpenFile, linea
+                              linea = Globals.decrypt(linea, password)
+                              splitting = Split(linea, ":")
+                              Globals.ProjectComune = Mid$(splitting[1], 2)
+                              
+                              LINE INPUT #OpenFile, linea
+                              linea = Globals.decrypt(linea, password)
+                              splitting = Split(linea, ":")
+                              Globals.ProjectProvincia = Mid$(splitting[1], 2)
+                         END IF
+                    
+                         LINE INPUT #OpenFile, linea
+                         linea = Globals.decrypt(linea, password)
+
+                         '#Categorie#'
+                         CategorieComputo.Categorie.Clear
+                         CategorieComputo.CatProp.Clear
+                         contatore = 0
+                         REPEAT 
+                              LINE INPUT #OpenFile, linea
+                              linea = Globals.decrypt(linea, password)
+                              IF NOT (linea = "#ElPrezzi#") THEN
+                                   CategorieComputo.Categorie.Add(linea)
+                                   IF contatore = 0 THEN 
+                                        CategorieComputo.CatProp.Add(0)
+                                        contatore = 1                    
+                                   ELSE 
+                                        CategorieComputo.CatProp.Add(1)                         
+                                   END IF
+                              
+                            END IF
+                         UNTIL (linea = "#ElPrezzi#")
+                         CategorieComputo.Refresh1()
+               
+               
+               
+                         ListElCode.Clear
+                         ListElCat.Clear
+                         ListElDescr.Clear
+                         ListElDescrBreve.Clear
+                         ListElPrezzo.Clear
+                         ListElSconto.Clear
+                         ListElUM.Clear
+               
+                         '#ElPrezzi#'
+                         REPEAT 
+                              LINE INPUT #OpenFile, linea
+                              linea = Globals.decrypt(linea, password)
+                              IF (linea = "@") THEN
+                         
+                              LINE INPUT #OpenFile, linea
+                              linea = Globals.decrypt(linea, password)
+                              ListElCode.Add(linea)
+                         
+                              LINE INPUT #OpenFile, linea
+                              linea = Globals.decrypt(linea, password)
+                              ListElCat.Add(linea)
+                              
+
+                              linea = ""
+                              TmpLinea = ""
+                              WHILE NOT (linea = "##END-TEXT##")
+                                   LINE INPUT #OpenFile, linea
+                                   linea = Globals.decrypt(linea, password)
+                                   IF NOT (linea = "##END-TEXT##") THEN TmpLinea = TmpLinea & linea & "\n"
+                              WEND       
+
+                              TmpLinea = Mid$(TmpLinea, 1, Len(TmpLinea) - 1)
+                              ListElDescrBreve.Add(TmpLinea)
+                         
+                              linea = ""
+
+                              TmpLinea = ""
+                              WHILE NOT (linea = "##END-TEXT##")
+                                   LINE INPUT #OpenFile, linea
+                                   linea = Globals.decrypt(linea, password)
+                                   IF NOT (linea = "##END-TEXT##") THEN TmpLinea = TmpLinea & linea & "\n"
+                              WEND       
+                              TmpLinea = Mid$(TmpLinea, 1, Len(TmpLinea) - 1)
+                              ListElDescr.Add(Tmplinea)
+                         
+                              LINE INPUT #OpenFile, linea
+                              linea = Globals.decrypt(linea, password)
+                              ListElPrezzo.Add(linea)
+                         
+                              LINE INPUT #OpenFile, linea
+                              linea = Globals.decrypt(linea, password)
+                              ListElSconto.Add(linea)
+                         
+                              LINE INPUT #OpenFile, linea
+                              linea = Globals.decrypt(linea, password)
+                              ListElUM.Add(linea)
+                    
+                         END IF
+                    UNTIL (linea = "#Computo#")
+                    'CategorieElPrezzi_Click()
+               
+                    
+                    ListCMId.Clear
+                    ListQuantitaId.Clear
+                    ListCMDescrMis.Clear
+                    listcmq1.Clear
+                    ListCMQ2.Clear
+                    ListCMQ3.Clear
+                    ListCMQ4.Clear
+                    ListCMTot.Clear
+                    '#Computo#'
+               
+                    REPEAT 
+                         LINE INPUT #OpenFile, linea
+                         linea = Globals.decrypt(linea, password)
+                         'PRINT linea
+                         IF (linea = "@") THEN
+                    
+                                   LINE INPUT #OpenFile, linea
+                                   linea = Globals.decrypt(linea, password)
+                                   ListCMId.Add(linea)
+                    
+                                   WHILE NOT (linea = "-FineQuantità-")
+                                        LINE INPUT #OpenFile, linea
+                                        linea = Globals.decrypt(linea, password)
+                                        IF NOT (linea = "-FineQuantità-") THEN 
+                                             ListQuantitaId.Add(ListCMid[ListCMid.Count - 1].text)
+
+                                              TmpLinea = ""
+                                              WHILE NOT (linea = "##END-TEXT##")
+                                                  LINE INPUT #OpenFile, linea
+                                                  linea = Globals.decrypt(linea, password)
+                                                  IF NOT (linea = "##END-TEXT##") THEN TmpLinea = TmpLinea & linea & "\n"
+                                              WEND       
+                                              TmpLinea = Mid$(TmpLinea, 1, Len(TmpLinea) - 1)
+                                             
+                                             ListCMDescrMis.Add(TmpLinea)
+                                             
+                                             LINE INPUT #OpenFile, linea
+                                             linea = Globals.decrypt(linea, password)
+                                             ListCMQ1.Add(linea)
+                    
+                                             LINE INPUT #OpenFile, linea
+                                             linea = Globals.decrypt(linea, password)
+                                             ListCMQ2.Add(linea)
+                              
+                                             LINE INPUT #OpenFile, linea
+                                             linea = Globals.decrypt(linea, password)
+                                             ListCMQ3.Add(linea)
+                                             'PRINT linea
+                                             
+                                             LINE INPUT #OpenFile, linea
+                                             linea = Globals.decrypt(linea, password)
+                                             ListCMQ4.Add(linea)
+
+
+                                              LINE INPUT #OpenFile, linea
+                                              Linea = Globals.decrypt(Linea, password)
+                                              ListCMTot.Add(linea)
+                                        END IF
+                                   WEND 
+                         
+                              END IF
+                         UNTIL ((linea = "#Aziende#") OR (Eof(OpenFile)))
+                         CategorieCM_Click()
+                         CategorieElPrezzi_Change()
+                         RefreshTotaleComputo()
+                         Aziende.ListAziende.Clear
+                         DatiOfferte.Clear
+                         IF NOT (versione = " 1.2.0") THEN 
+                              '#Aziende#'
+                              REPEAT 
+                                 LINE INPUT #OpenFile, linea
+                                 Linea = Globals.decrypt(Linea, password)
+                                   'PRINT linea
+                                   IF NOT (linea = "#FineAziende#") THEN
+                                        Aziende.ListAziende.Add(linea)                                        
+                                   END IF
+                              UNTIL (linea = "#FineAziende#")
+                              LINE INPUT #OpenFile, linea
+                              Linea = Globals.decrypt(Linea, password)
+                              '#Offerte#
+                              contatore = 0
+                              Contatore2 = 0
+                              WHILE NOT (Eof(OpenFile))
+                                   LINE INPUT #OpenFile, linea
+                                   Linea = Globals.decrypt(Linea, password)
+                                   'PRINT linea
+                                   IF (linea = "#InizioOfferta#") THEN
+                                        contatore = contatore + 1
+                                        IF (DatiOfferte.Columns.Count < contatore) THEN DatiOfferte.Columns.Count = contatore
+                                        contatore2 = 0
+                                        REPEAT 
+                                             IF NOT (linea = "#FineOfferta#") THEN 
+                                                  contatore2 = contatore2 + 1
+                                                  IF (DatiOfferte.Rows.Count < Contatore2) THEN DatiOfferte.Rows.Count = Contatore2
+                                                  LINE INPUT #OpenFile, linea 
+                                                  Linea = Globals.decrypt(Linea, password)
+                                                  DatiOfferte[contatore2 - 1, contatore - 1].Text = linea
+                                             END IF
+                                        UNTIL linea = "#FineOfferta#"
+                                   END IF
+                              WEND 
+                         
+                         
+                         END IF
+                         CategorieOfferte_Click()
+                         'PRINT "#END#"
+                    END IF
+               END IF
+               END IF     
+          
+          END IF 
+          
+
+     ELSE 
+     
+          message.Error("Impossibile aprire il file selezionato")
+
+     END IF
+  
+  END IF
+
+password = ""
+
+END
+
+PUBLIC SUB ListaElementiElPrezzi_KeyPress()
+
+  ListaElementiElPrezzi_Click()
+
+END
+
+PUBLIC SUB CategorieCM_Click()
+
+DIM contatore AS Integer
+
+  ListElementiCM.Clear
+
+  IF NOT (CategorieCM.Index = CategorieCM.Count - 1) THEN 
+     'Categoria specifica
+     FOR contatore = 0 TO ListCMId.Count - 1
+          IF (CategorieCM.Index = ListElCat[ListCMId[contatore].Text].Text) THEN 
+               ListElementiCM.add(contatore, ListElCode[ListCMId[contatore].Text].Text & " - " & ListElDescrBreve[ListCMId[contatore].Text].Text, picel.Picture)
+          END IF
+     NEXT 
+  ELSE 
+     'Tutte le categorie
+     FOR contatore = 0 TO ListCMId.Count - 1
+         ListElementiCM.add(contatore, ListElCode[ListCMId[contatore].Text].Text & " - " & ListElDescrBreve[ListCMId[contatore].Text].Text)
+     NEXT 
+  
+  END IF
+
+  CostoFinale.Clear
+  cmcode.Clear
+  CMDescrBreve.Clear
+  CMDescrLunga.Clear
+  CMPrezzo.Clear
+  CMSconto.Clear
+  cmum.Text = ""
+  q1.Clear
+  q2.Clear
+  q3.Clear
+  q4.Clear
+  totq.Clear
+  quantita.Clear
+  RefreshTotaleComputo()
+  
+
+END
+
+PUBLIC SUB AddElementoComputo_Click()
+
+  IF NOT (ListaElementiElPrezzi.Current = NULL) THEN
+     AddElPrezziToComputo.Nome.Text = ListaElementiElPrezzi.Current.Text
+     AddElPrezziToComputo.Q1.Clear
+     AddElPrezziToComputo.Q2.Clear
+     AddElPrezziToComputo.Q3.Clear
+     AddElPrezziToComputo.Q4.Clear
+     AddElPrezziToComputo.UM.Text = "UM = " & listelUM[ListaElementiElPrezzi.Current.Key].Text
+     AddElPrezziToComputo.ID.Text = ListaElementiElPrezzi.Current.Key
+     AddElPrezziToComputo.Show
+     
+  END IF
+
+END
+
+PUBLIC SUB AddElementoDirComputo_Click()
+IF NOT (Prezziarioselezionato.Current = NULL) THEN
+    IF NOT (Prezziarioselezionato.Current.Picture = PicCat.Picture) THEN 
+     WITH AddDirComputo
+     .Descrizione.Text = DescrLunga.Text
+     .Nome.Text = codice.Text & " - " & DescrBreve.Text
+     .ValScontoPrezziario.Text = Sconto.Text
+     .ScontoSlide.Value = Val(Sconto.Text)
+     
+     .Q1.Clear
+     .Q2.Clear
+     .Q3.Clear
+     .Q4.Clear
+     
+     .Dati.Clear
+     .Dati.Add(Codice.Text)
+     .Dati.Add(DescrLunga.Text)
+     .Dati.Add(Prezzo.Text)
+     .Dati.Add(Sconto.Text)
+     .Dati.Add(UM.Text)
+
+     
+     .Show  
+     END WITH 
+  END IF
+END IF
+END
+
+PUBLIC SUB DeleteVoceCM_Click()
+DIM contatore AS Integer
+
+  IF NOT (ListElementiCM.Current = NULL) THEN 
+     IF (1 = message.Question("Eliminare la voce selezionata dal computo?", "Sì", "No")) THEN 
+          IF (1 = message.Question("Eliminare la voce anche dall'elenco prezzi?", "Sì", "No")) THEN
+               EliminaElementoEP(listcmid[ListElementiCM.Current.Key].Text)
+               EliminaElementoCM(ListElementiCM.Current.Key)                            
+          ELSE 
+               ListaElementiElPrezzi[listcmid[ListElementiCM.Current.Key].Text].Picture = picel.Picture
+               EliminaElementoCM(ListElementiCM.Current.Key)               
+          END IF
+     END IF
+  END IF
+
+END
+
+
+PUBLIC SUB FruPers_Click()
+
+  Fruizioni.Show
+
+END
+
+PUBLIC SUB ListElementiCM_Click()
+DIM contatore AS Integer
+DIM parziale AS Float
+DIM ContatoreRighe AS Integer
+
+IF NOT (ListElementiCM.Current = NULL) THEN 
+
+  CMCode.Text = ListElCode[ListCMid[ListElementiCM.Current.Key].Text].Text
+  CMDescrBreve.Text = ListElDescrBreve[ListCMid[ListElementiCM.Current.Key].Text].Text
+  CMDescrLunga.Text = ListElDescr[ListCMid[ListElementiCM.Current.Key].Text].Text
+  CMPrezzo.Text = ListElPrezzo[ListCMid[ListElementiCM.Current.Key].Text].Text
+  CMSconto.Text = ListElSconto[ListCMid[ListElementiCM.Current.Key].Text].Text
+  CMUM.Text = ListElUM[ListCMid[ListElementiCM.Current.Key].Text].Text
+
+  quantita.Clear
+  quantita.Columns.Count = 7
+  quantita.Rows.Count = 1
+  quantita[0, 0].Text = "Descr Misura"
+  quantita[0, 1].Text = "Parti Uguali"
+  quantita[0, 2].Text = "Larg"
+  quantita[0, 3].Text = "Lung"
+  quantita[0, 4].Text = "Prof"
+  quantita[0, 5].Text = "Tot"
+  
+  totQ.Text = 0
+  ContatoreRighe = 1
+  FOR contatore = 0 TO ListQuantitaId.Count - 1
+     IF (ListQuantitaId[contatore].Text = ListElementiCM.Current.Key) THEN 
+        quantita.Rows.Count = ContatoreRighe + 1
+         
+        q1.Text = ListCMQ1[contatore].Text
+        q2.Text = ListCMQ2[contatore].Text
+        q3.Text = ListCMQ3[contatore].Text
+        q4.Text = ListCMQ4[contatore].Text
+        
+        parziale = ListCMTot[contatore].Text
+        totq.Text = totq.Text + parziale
+        quantita[ContatoreRighe, 0].Text = ListCMDescrMis[contatore].Text
+        quantita[ContatoreRighe, 1].Text = q1.Text
+        quantita[ContatoreRighe, 2].Text = q2.Text
+        quantita[ContatoreRighe, 3].Text = q3.Text
+        quantita[ContatoreRighe, 4].Text = q4.Text
+        quantita[ContatoreRighe, 5].Text = parziale
+        
+        ContatoreRighe = ContatoreRighe + 1
+        
+     END IF
+  NEXT 
+  
+  CostoFinale.Text = totq.Text * CMPrezzo.Text
+  CostoFinale.Text = CostoFinale.Text - ((CMSconto.Text * CostoFinale.Text) / 100) 
+  CostoFinale.Text = Globals.Approssima(CostoFinale.Text, 0)
+  
+END IF
+END
+
+PUBLIC SUB CMSconto_KeyPress()
+
+  
+
+END
+
+PUBLIC SUB Nuovo_Click()
+
+     
+DIM procedere AS Boolean
+
+     
+     procedere = FALSE
+     IF (ListElCat.Count = 0) THEN 
+          procedere = TRUE
+     ELSE 
+          IF (1 = message.Question("Procedendo si perderanno tutti i progressi non salvati.\nPreseguire?", "Sì", "No")) THEN
+               procedere = TRUE
+          END IF
+     END IF
+          
+     IF (procedere = TRUE) THEN 
+          
+          'Categorie
+          CategorieComputo.Categorie.Clear
+          CategorieComputo.CatProp.Clear
+          CategorieComputo.Categorie.Add("Default")
+          CategorieComputo.CatProp.Add("0")
+          CategorieComputo.Refresh1()
+          
+          'Elenco Prezzi
+          ListaElementiElPrezzi.Clear
+          ListElDescr.Clear
+          ListElDescrBreve.Clear
+          ListElPrezzo.Clear
+          ListElSconto.Clear
+          listelum.Clear
+          ListElCode.Clear
+          listelcat.Clear   
+                 
+          ElCodice.Clear
+          ElDescrBreve.Clear
+          ElDescrLunga.Clear
+          ElPrezzo.Clear
+          ElSconto.Clear
+          ElUM.Clear          
+          
+          'Computo
+          ListElementiCM.Clear
+          listcmid.Clear
+          ListQuantitaId.Clear
+          ListCMDescrMis.Clear
+          listcmq1.Clear
+          ListCMQ2.Clear
+          ListCMQ3.Clear
+          ListCMQ4.Clear
+          ListCMTot.Clear
+
+          CMCode.Clear
+          CMDescrBreve.Clear
+          CMDescrLunga.Clear
+          CMPrezzo.Clear
+          CMSconto.Clear
+          CMUM.Text = ""
+          q1.Clear
+          q2.Clear
+          q3.Clear
+          q4.Clear
+          totq.Clear
+          quantita.Clear
+          CostoFinale.Clear
+          TotComputo.Clear
+          Totpercategoria.Clear
+          
+          CleanOfferte()
+          
+          
+          DatiOfferte.Clear
+          Aziende.ListAziende.Clear
+          CategorieOfferte_Click()
+          
+           Globals.ProjectAutore = ""
+           Globals.ProjectCommittente = ""
+           Globals.ProjectName = ""
+           Globals.ProjectTipoComm = ""
+                
+     END IF
+  
+    
+
+END
+
+PUBLIC SUB Esci_Click()
+
+  ME.Close
+
+END
+
+PUBLIC SUB PropProgetto_Click()
+
+  ProprietaProgetto.Show
+
+END
+
+PUBLIC SUB Importa_Click()
+
+  Dialog.Filter = ["*.xml", "Xml-Primus Exchange"]
+  Dialog.Title = "Seleziona il file da importare"
+  Dialog.Path = User.Home
+  IF NOT (Dialog.OpenFile()) THEN 
+     ToolImportazione.ImportXmlPwe(Dialog.Path, "/tmp/ImportedComputo.computo")
+     Importing = "/tmp/ImportedComputo.computo"
+     Apri_Click()
+  END IF
+
+END
+
+PUBLIC SUB Esporta_Click()
+
+  nyi()
+
+END
+
+
+PUBLIC SUB EditVoceCM_Click()
+DIM contatoreR AS Integer
+DIM contatoreC AS Integer
+     IF NOT (ListElementiCM.Current = NULL) THEN 
+          EditElementoCM.UM.Text = "UM = " & listelUM[ListElementiCM.Current.Key].Text
+          EditElementoCM.ID.Text = ListElementiCM.Current.Key
+          WITH EditElementoCM
+          .quantita.Rows.Count = quantita.Rows.Count
+          .quantita.Columns.Count = quantita.Columns.Count
+          FOR contatoreR = 0 TO quantita.Rows.Count - 1
+               FOR ContatoreC = 0 TO quantita.Columns.Count - 1
+                    .quantita[contatoreR, contatoreC].Text = quantita[contatoreR, contatoreC].Text
+               NEXT 
+          NEXT 
+          END WITH 
+          
+          EditElementoCM.Show
+     END IF
+END
+
+PUBLIC SUB EditVoceEP_Click()
+
+     IF NOT (ListaElementiElPrezzi.Current = NULL) THEN      
+       
+       WITH EditElementoElPrezzi
+          .Nome.Text = ListaElementiElPrezzi.Current.Text
+          .IdEl.Text = ListaElementiElPrezzi.Current.Key
+          .Code.Text = ListElCode[ListaElementiElPrezzi.Current.Key].Text
+          .Costo.Text = ListElPrezzo[ListaElementiElPrezzi.Current.Key].Text
+          '.DescrBreve.Text = ListElDescrBreve[ListaElementiElPrezzi.Current.Key].Text
+          .Descrizione.Text = ListElDescr[ListaElementiElPrezzi.Current.Key].Text
+          
+          .ScontoPer.Value = TRUE
+          .ScontoSlide.Value = ListElSconto[ListaElementiElPrezzi.Current.Key].Text
+          .Categorie.List = CategorieCM.List
+          .Categorie.Index = ListElCat[ListaElementiElPrezzi.Current.Key].Text
+          
+          .Show
+       END WITH 
+       
+     END IF
+
+END
+
+PUBLIC SUB DeleteVoceEP_Click()
+DIM procedere AS Boolean
+DIM contatore AS Integer
+
+     procedere = FALSE
+     IF NOT (ListaElementiElPrezzi.Current = NULL) THEN 
+     
+          IF (1 = message.Question("Sei sicuro di voler eliminare questo elemento?", "Sì", "No")) THEN
+               procedere = TRUE
+               'controllo se l'elemento è presente anche nel computo.
+               FOR contatore = 0 TO listcmid.Count - 1
+               
+                    IF (ListaElementiElPrezzi.Current.Key = listcmid[contatore].Text) THEN
+                         IF NOT (1 = message.Question("Eliminando questo elemento lo eliminerai anche dal computo.\nSei sicuro di voler comunque procedere?", "Sì", "No")) THEN procedere = FALSE
+                    END IF
+               
+               NEXT 
+          
+          END IF
+          
+          IF (procedere = TRUE) THEN 
+               'elimino eventuali elementi del computo associati
+               EliminaElementoCM(ListaElementiElPrezzi.Current.Key)
+               'elimino la voce
+               EliminaElementoEP(ListaElementiElPrezzi.Current.Key)
+               CategorieCM_Click()
+          END IF
+          
+     END IF
+
+END
+
+PUBLIC SUB SalvaCriptato_Click()
+DIM SaveFile AS File
+DIM contatore AS Integer
+DIM contatore2 AS Integer
+DIM word AS String
+
+IF (password = "") THEN 
+     InsertPassword.pass.Text = ""
+     InsertPassword.conferma.Text = ""
+     InsertPassword.save = TRUE
+     InsertPassword.Show
+     
+ELSE 
+
+
+  Dialog.Filter = ["*.computo", "File di Computo di Aedilis"]
+  Dialog.Path = User.Home
+  Dialog.Title = "Salva il Progetto - Con password"
+  
+  IF NOT (Dialog.SaveFile()) THEN 
+  
+     TRY SaveFile = OPEN Dialog.Path FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          PRINT #SaveFile, "Version: " & versione
+          PRINT #SaveFile, "Using password: yes"  
+          
+          word = Globals.crypt("ProjectName: " & Globals.ProjectName, password)
+          PRINT #SaveFile, word
+          word = Globals.crypt("ProjectCommittente: " & Globals.ProjectCommittente, password)
+          PRINT #SaveFile, word
+          word = Globals.crypt("ProjectTipoComm: " & Globals.ProjectTipoComm, password)
+          PRINT #SaveFile, word
+          word = Globals.crypt("ProjectAutore: " & Globals.ProjectAutore, password)
+          PRINT #SaveFile, word
+          word = Globals.crypt("ProjectDicituraLavoro: " & Globals.ProjectDicituraLavoro, password)
+          PRINT #SaveFile, word
+          word = Globals.crypt("ProjectDataDocumento: " & Globals.ProjectDataDocumento, password)
+          PRINT #SaveFile, word
+          word = Globals.crypt("ProjectComune: " & Globals.ProjectComune, password)
+          PRINT #SaveFile, word
+          word = Globals.crypt("ProjectProvincia: " & Globals.ProjectProvincia, password)
+          PRINT #SaveFile, word
+          
+          word = Globals.crypt("#Categorie#", password)
+          PRINT #SaveFile, word
+          
+          WITH CategorieComputo
+          FOR contatore = 0 TO .Categorie.Count - 1
+               
+               word = Globals.crypt(.Categorie[contatore].Text, password)
+               PRINT #SaveFile, word
+               
+          NEXT 
+          END WITH 
+               
+          word = Globals.crypt("#ElPrezzi#", password)
+          PRINT #SaveFile, word          
+
+          FOR contatore = 0 TO ListElCat.Count - 1
+               word = Globals.crypt("@", password)
+               PRINT #SaveFile, word          
+          
+               word = Globals.crypt(ListElCode[contatore].Text, password)
+               PRINT #SaveFile, word          
+
+               word = Globals.crypt(ListElCat[contatore].Text, password)
+               PRINT #SaveFile, word          
+               
+               word = Globals.crypt(ListElDescrBreve[contatore].Text, password)
+               PRINT #SaveFile, word   
+               
+               word = Globals.crypt("##END-TEXT##", password)
+               PRINT #SaveFile, word
+               
+               word = Globals.crypt(ListElDescr[contatore].Text, password)
+               PRINT #SaveFile, word          
+               
+               word = Globals.crypt("##END-TEXT##", password)
+               PRINT #SaveFile, word
+               
+               word = Globals.crypt(ListElPrezzo[contatore].Text, password)
+               PRINT #SaveFile, word          
+               
+               word = Globals.crypt(ListElSconto[contatore].Text, password)
+               PRINT #SaveFile, word          
+               
+               word = Globals.crypt(ListElUM[contatore].Text, password)
+               PRINT #SaveFile, word          
+                             
+          NEXT 
+          
+          word = Globals.crypt("#Computo#", password)
+          PRINT #SaveFile, word  
+          FOR contatore = 0 TO ListCMId.Count - 1
+          
+               word = Globals.crypt("@", password)
+               PRINT #SaveFile, word 
+               
+               word = Globals.crypt(ListCMId[contatore].Text, password)
+               PRINT #SaveFile, word 
+
+               
+               FOR contatore2 = 0 TO ListQuantitaId.Count - 1  
+                    IF (ListQuantitaId[contatore2].Text = listcmid[contatore].Text) THEN 
+                         word = Globals.crypt(ListCMDescrMis[contatore2].Text, password)
+                         PRINT #SaveFile, word 
+                         word = Globals.crypt("##END-TEXT##", password)
+                         PRINT #SaveFile, word
+                         
+                         word = Globals.crypt(ListCMQ1[contatore2].Text, password)
+                         PRINT #SaveFile, word 
+                         word = Globals.crypt(ListCMQ2[contatore2].Text, password)
+                         PRINT #SaveFile, word 
+                         word = Globals.crypt(ListCMQ3[contatore2].Text, password)
+                         PRINT #SaveFile, word 
+                         word = Globals.crypt(ListCMQ4[contatore2].Text, password)
+                         PRINT #SaveFile, word 
+                         word = Globals.crypt(ListCMTot[contatore2].Text, password)
+                         PRINT #SaveFile, word 
+                    END IF
+               NEXT 
+               word = Globals.crypt("-FineQuantità-", password)
+               PRINT #SaveFile, word 
+          NEXT        
+          
+          word = Globals.crypt("#Aziende#", password)
+          PRINT #SaveFile, word
+          FOR contatore = 0 TO Aziende.ListAziende.Count - 1
+               word = Globals.crypt(Aziende.ListAziende[contatore].Text, password)
+               PRINT #SaveFile, word
+          NEXT 
+          word = Globals.crypt("#FineAziende#", password)
+          PRINT #SaveFile, word
+          word = Globals.crypt("#Offerte#", password)
+          PRINT #SaveFile, word
+          FOR contatore = 0 TO DatiOfferte.Columns.Count - 1
+               word = Globals.crypt("#InizioOfferta#", password)
+               PRINT #SaveFile, word
+               FOR contatore2 = 0 TO DatiOfferte.Rows.Count - 1
+                    word = Globals.crypt(DatiOfferte[contatore2, contatore].Text, password)
+                    PRINT #SaveFile, word
+               NEXT 
+               word = Globals.crypt("#FineOfferta#", password)
+               PRINT #SaveFile, word
+          NEXT 
+          
+          SaveFile.Close   
+          
+          Message.Info("Salvataggio eseguito con successo!")
+     ELSE 
+     
+          message.Error("Impossibile salvare sul file selezionato")
+     
+     END IF
+  
+  END IF
+
+
+
+END IF
+password = ""
+
+END
+
+PUBLIC SUB ListaElementiElPrezzi_DblClick()
+
+  EditVoceEP_Click()
+
+END
+
+PUBLIC SUB ListElementiCM_DblClick()
+
+  ListElementiCM_Click()
+  EditVoceCM_Click()
+
+END
+
+PUBLIC SUB ListElementiCM_KeyPress()
+
+  ListaElementiElPrezzi_Click()
+
+END
+
+PUBLIC SUB ListElementiCM_KeyRelease()
+
+  ListaElementiElPrezzi_Click()
+
+END
+
+PUBLIC SUB ListaElementiElPrezzi_KeyRelease()
+
+  ListaElementiElPrezzi_Click()
+
+END
+
+
+PUBLIC SUB Cerca_Click()
+DIM NoResult AS Boolean
+DIM contatore AS Integer
+
+  NoResult = TRUE
+  IF NOT (search.Text = "") THEN 
+     PositiveMatch.risultati.Clear
+     
+     FOR contatore = 0 TO ListKey.Count - 1
+          IF (searchcode.Value = TRUE) THEN 
+               IF (ListCode[contatore] LIKE (search.Text & "*")) THEN 
+                    PositiveMatch.risultati.Add(ListKey[contatore], ListCode[contatore] & " - " & ListDescrBreve[contatore], picel.Picture)
+                    NoResult = FALSE
+               END IF
+          ELSE 
+               IF ((ListDescrBreve[contatore] LIKE (search.Text & "*")) OR (ListDescr[contatore] LIKE (search.Text & "*"))) THEN 
+                    PositiveMatch.risultati.Add(ListKey[contatore], ListCode[contatore] & " - " & ListDescrBreve[contatore], picel.Picture)
+                    NoResult = FALSE
+               END IF          
+          END IF     
+     NEXT 
+  
+  
+     IF NoResult = TRUE THEN 
+          message.Info("Nessun campo corrispondente")
+     ELSE 
+          PositiveMatch.Show
+     END IF
+  
+  ELSE 
+     message.Info("Il campo di ricerca è vuoto")
+  END IF
+  
+
+END
+
+PUBLIC SUB quantita_Click()
+
+  
+
+END
+
+PUBLIC SUB quantita_DblClick()
+
+END
+
+PUBLIC SUB quantita_Change()
+
+
+END
+
+PUBLIC SUB aggiorna_tab_offerte(RowC AS Integer, ColC AS Integer)
+  
+  TabellaOfferte.Rows.Count = RowC
+  TabellaOfferte.Columns.Count = ColC
+  TabellaOfferte.Refresh
+  
+END
+
+
+PUBLIC SUB CategorieOfferte_Click()
+     
+     EditElemento.Close
+     Refresh_Offerte()
+
+END
+
+PUBLIC SUB AddOfferta_Click()
+
+  Aziende.Show
+
+END
+
+
+
+PUBLIC SUB FruSemplice_Click()
+
+    FruizioneSemplice.Show
+
+END
+
+
+PUBLIC SUB TabellaOfferte_DblClick()
+IF NOT ((TabellaOfferte.Column < 2) OR (TabellaOfferte.Column = TabellaOfferte.Columns.Count - 1) OR (NOT (TabellaOfferte.Column MOD 2 = 0))) THEN 
+     EditElemento.Valore.Text = Left$(TabellaOfferte.Current.Text, -4)
+     EditElemento.row = TabellaOfferte.row
+     EditElemento.column = TabellaOfferte.column
+     EditElemento.Show
+END IF
+END
+
+PUBLIC SUB ExportReport_Click()
+DIM contC AS Integer
+DIM contR AS Integer
+WITH report
+  IF NOT (CategorieOfferte.Index = CategorieOfferte.count - 1) THEN 
+     .Intestazione = "Resoconto per la categoria: " & CategorieOfferte.Current.Text
+     .Intestazione2 = "Categoria: " & CategorieOfferte.Current.Text
+  ELSE 
+     .Intestazione = "Resoconto del computo metrico"
+     .Intestazione2 = "Dettagli elementi"
+  END IF
+  .Anteprima.Columns.Count = TabellaOfferte.Columns.Count  'Colonna extra per ridimensionare.
+  .Anteprima.Rows.Count = TabellaOfferte.Rows.Count
+  FOR ContC = 0 TO TabellaOfferte.Columns.Count - 2
+     FOR contr = 0 TO TabellaOfferte.Rows.Count - 1
+          .Anteprima[ContR, ContC].Text = TabellaOfferte[ContR, ContC].Text
+     NEXT 
+  NEXT 
+  .SitAziende.Columns.Count = TableResocontoAziende.Columns.Count 'Colonna extra per ridimensionare.
+  .SitAziende.Rows.Count = TableResocontoAziende.Rows.Count
+  FOR ContC = 0 TO TableResocontoAziende.Columns.Count - 2
+     FOR contr = 0 TO TableResocontoAziende.Rows.Count - 1
+          .SitAziende[ContR, ContC].Text = TableResocontoAziende[ContR, ContC].Text
+     NEXT 
+  NEXT 
+  
+  .Show
+END WITH 
+END
+
+
+PUBLIC SUB SidePanelPrezziari_Resize()
+  
+  Form_Resize()
+
+END
+
+PUBLIC SUB WizardFruMen_Click()
+
+  WizardFruizioni.Show()
+
+END
+
+
+PUBLIC SUB SidePanelElPrezzi_Resize()
+
+  Form_Resize()
+
+END

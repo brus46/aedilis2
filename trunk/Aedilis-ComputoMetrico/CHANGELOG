@@ -1,0 +1,222 @@
+* Sun Sep 30 2007 MosconiMarco <brus46@gmail.com> 0.0-61
+- Wizard funzionante.
+
+* Sat Sep 29 2007 MosconiMarco <brus46@gmail.com> 0.0-60
+- Implementazione del wizard per le fruizioni in progresso.
+
+* Fri Sep 28 2007 MosconiMarco <brus46@gmail.com> 0.0-59
+- Aggiunte etichette di € e % nel tab del prezziario e del computo metrico.
+
+* Thu Sep 27 2007 MosconiMarco <brus46@gmail.com> 0.0-58
+- Bug fixed: se non c'era nessun layout crashava.
+
+* Thu Sep 27 2007 MosconiMarco <brus46@gmail.com> 0.0-57
+- Aggiunto Wizard per le fruizioni (ancora da implementare)
+- Modificata la disposizione degli oggetti nell'elenco prezzi
+
+* Thu Sep 27 2007 MosconiMarco <brus46@gmail.com> 0.0-56
+- Aggiunto help
+- Riordinati gli elementi nei prezziari
+- Visualizzazione del solo codice fra gli elementi
+- Bug fixing (latex)
+
+* Wed Sep 26 2007 MosconiMarco <brus46@gmail.com> 0.0-55
+- Bug fixing
+
+* Wed Sep 26 2007 MosconiMarco <brus46@gmail.com> 0.0-54
+- Bug Fixing
+
+* Wed Sep 26 2007 MosconiMarco <brus46@gmail.com> 0.0-53
+- Corretti diversi Bug
+- Cambiata la lettura dei prezziari [INCOMPATIBILE CON I PREZZIARI PRECEDENTI!!]
+- Implementata l'importazione da XmlPwe
+- Aggiunti i seguienti campi alle proprietà del progetto: Dicitura di Lavoro, Data Documento, Comune, Provincia
+- Nella fruizione semplice ora non viene stampato il totale all'inizio e viene invece sempre stampato alla fine.
+
+* Tue Sep 18 2007 MosconiMarco <brus46@gmail.com> 0.0-52
+- Eliminata dalla fruizione rapida la stampa dello sconto
+- Aggiunta la possibilità di stampare la colonna per le offerte sia nella fruizione rapida che in quella personalizzata
+- Generazione tabella di riassunto della situazione aziendale
+- Esportazione della suddetta tramite report
+- Gli elementi nelle offerte vengono identificati solo tramite il loro codice.
+
+* Mon Sep 17 2007 MosconiMarco <brus46@gmail.com> 0.0-51
+- Fruizioni migliorate in html e csv
+- Fruizioni migliorate
+
+* Sun Sep 16 2007 MosconiMarco <brus46@gmail.com> 0.0-51
+- Corretti bug sulla tab offerte
+- Colore grigio quando un elemento non è ancora stato inserito
+- esportazione report in html corretto
+- aggiunta legenda
+
+* Sat Sep 15 2007 MosconiMarco <brus46@gmail.com> 0.0-50
+- implementato report on-the-go
+- Aggiunto stile e colori alla tabella del confronto offerte.
+
+* Sat Sep 15 2007 MosconiMarco <brus46@gmail.com> 0.0-47
+- salvataggio report in latex, pdf, ps, cvs implementato
+- implementata stampa report.
+
+* Sat Sep 15 2007 MosconiMarco <brus46@gmail.com> 0.0-46
+- creazione report realizzata
+- salvataggio in html implementato
+
+* Fri Sep 14 2007 MosconiMarco <brus46@gmail.com> 0.0-45
+- salvataggio delle offerte implementato
+- Corretto bug nella gestione delle offerte
+- Corretto bug eliminazione di un elemento nel computo.
+
+* Fri Sep 14 2007 MosconiMarco <brus46@gmail.com> 0.0-44
+-Implementata la gestione delle offerte.
+- Migliorate le icone
+
+* Thu Sep 13 2007 MosconiMarco <brus46@gmail.com> 0.0-43
+- Bug inserimento in ElPrezzi risolto.
+
+* Thu Sep 13 2007 MosconiMarco <brus46@gmail.com> 0.0-42
+- New Splash
+
+* Thu Sep 13 2007 MosconiMarco <brus46@gmail.com> 0.0-41
+- Migliorate le fruizioni per quel che riguarda il latex, pdf, ps, stampa (mancano ancora html e csv da migliorare)
+- Implementate le fruizioni semplici.
+- Completate le Fruizioni personalizzabili.
+
+* Tue Sep 11 2007 MosconiMarco <brus46@gmail.com> 0.0-40
+- Implementato Cut_descrizione
+- Bloccate caselle di testo delle descrizioni.
+
+* Tue Sep 11 2007 MosconiMarco <brus46@gmail.com> 0.0-39
+- Aggiunta la possibilità di avere fruizioni divise per categorie.
+
+* Tue Sep 11 2007 MosconiMarco <brus46@gmail.com> 0.0-38
+- Aggiunto il form per vedere le funzioni disponibili
+
+* Tue Sep 11 2007 MosconiMarco <brus46@gmail.com> 0.0-37
+- Aggiunta la possibilità di mettere nella fruizione il costo di un elemento scontato o non scontato (per costo di intende prezzo * quantità)
+- Possibilità di tornare indietro dopo l'anteprima.
+- Aggiunta la possibilità di spostare le colonne della fruizione.
+- Disegnata la tab Confronta offerte e appena iniziata la sua implementazione
+
+* Tue Sep 11 2007 MosconiMarco <brus46@gmail.com> 0.0-35
+- Abilitata la possibilità di editare le descrizioni complete e brevi nell'elenco prezzi
+- Modificato il formato di salvataggio onde poter contenere descrizioni su più linee. (Riesce a leggere anche i formati precedenti.)
+
+* Mon Sep 10 2007 MosconiMarco <brus46@gmail.com> 0.0-34
+- Bug fixed, sconto=NULL in inserimento da Prezziario a Computo
+
+* Sun Sep 09 2007 MosconiMarco <brus46@gmail.com> 0.0-33
+- Correzione bug latex, eliminata opzione dvi, ripristinate funzioni ps e stampa.
+
+* Sun Sep 09 2007 MosconiMarco <brus46@gmail.com> 0.0-32
+- Possibilità di stampare ed avere fruizioni i dvi
+- Corretto bug eliminazione elementi da computo e elenco prezzi
+- Corretto bug approssimazione cifre computo totale
+
+* Sun Sep 09 2007 MosconiMarco <brus46@gmail.com> 0.0-31
+- Fruizione in latex, pdf, ps perfezionata.
+
+* Sat Sep 08 2007 MosconiMarco <brus46@gmail.com> 0.0-30
+- Doppia approssimazione per prezzi e quantità
+- Bug fixed: Editazione di elementi, non presentava la corretta approssimazione.
+
+* Sat Sep 08 2007 MosconiMarco <brus46@gmail.com> 0.0-28
+- Approssimazione decisa nel file di configurazione
+
+* Sat Sep 08 2007 MosconiMarco <brus46@gmail.com> 0.0-27
+- Approssimazione dei conti alla 3° cifra decimale (se la quarta cifra decimale è maggiore o uguale di 5 viene approssimata a 10)
+- TotComputo non editabile
+
+* Fri Sep 07 2007 MosconiMarco <brus46@gmail.com> 0.0-26
+- Reimplementata Fruizione per richiesta azienda
+- Impostate le fruizioni in modo da usare i programmi selezionati nel file di configurazione
+
+* Thu Sep 06 2007 MosconiMarco <brus46@gmail.com> 0.0-25
+- EditElPrezzi implementato
+
+* Thu Sep 06 2007 MosconiMarco <brus46@gmail.com> 0.0-24
+- EditComputo implementato
+- Avviso doppio inserimento di dati da prezziario implementato
+- Fruizione anche in html e csv
+- Proprietà Progetto implementato
+
+* Thu Sep 06 2007 MosconiMarco <brus46@gmail.com> 0.0-23
+- Fruizioni parzialmente implementate
+- Output in pdf e latex da perfezionare.
+
+* Wed Sep 05 2007 MosconiMarco <brus46@gmail.com> 0.0-22
+- Form per le fruizioni disegnate
+
+* Tue Sep 04 2007 MosconiMarco <brus46@gmail.com> 0.0-21
+- New title
+
+* Tue Sep 04 2007 MosconiMarco <brus46@gmail.com> 0.0-20
+- Fruizione per Richiesta Azienda implementato
+
+* Mon Sep 03 2007 MosconiMarco <brus46@gmail.com> 0.0-19
+- Octave errors watch implemented
+
+* Mon Sep 03 2007 MosconiMarco <brus46@gmail.com> 0.0-18
+- Octave calculating system implemented :) have funny
+
+* Mon Sep 03 2007 MosconiMarco <brus46@gmail.com> 0.0-17
+- New disposition in computo
+- New names for quantity
+
+* Sun Sep 02 2007 MosconiMarco <brus46@gmail.com> 0.0-16
+- Clever revision of data-storage (faster loading of prezziari)
+- Best naming of elements
+
+* Sun Sep 02 2007 MosconiMarco <brus46@gmail.com> 0.0-14
+- Bug saving quantity-description fixed
+
+* Sun Sep 02 2007 MosconiMarco <brus46@gmail.com> 0.0-13
+- MultiQuantity implemented
+
+* Fri Aug 31 2007 MosconiMarco <brus46@gmail.com> 0.0-12
+- Search Form (for Prezziari) implemented
+
+* Wed Aug 29 2007 MosconiMarco <brus46@gmail.com> 0.0-11
+- Bug fixed, add elements to computo (quantity mustn't be null)
+
+* Tue Aug 28 2007 MosconiMarco <brus46@gmail.com> 0.0-10
+- Cripting complete :)
+
+* Tue Aug 28 2007 MosconiMarco <brus46@gmail.com> 0.0-9
+- Cripting started
+
+* Tue Aug 28 2007 MosconiMarco <brus46@gmail.com> 0.0-8
+- Computo computing completed
+- Delete categoria implemented
+- Some bug fixed
+- Change save format
+
+* Mon Aug 27 2007 MosconiMarco <brus46@gmail.com> 0.0-7
+- Delete element implemented
+- Prezziari->Computo implemented
+- Start form deleted
+- Computo computing started (must fix decimal precision)
+
+* Sun Aug 26 2007 MosconiMarco <brus46@gmail.com> 0.0-6
+- Open-Save bug fixed
+- Open at begin bug fixed
+
+* Sun Aug 26 2007 MosconiMarco <brus46@gmail.com> 0.0-5
+- Open-Save implemented
+- Download Prezziari implemented
+- Prezziari->ElencoPrezzi->Computo implemented
+- ElencoPrezzi Partially implemented
+- Computo Partially implemented
+- Categorie Implemented
+- Info-Licence Implemented
+
+* Wed Aug 01 2007 MosconiMarco <brus46@gmail.com> 0.0-4
+- Form Start minimally implemented
+- Changed Splash image.
+
+* Sun Jul 15 2007 MosconiMarco <brus46@gmail.com> 0.0-3
+- Form Resizing partially implemented
+
+* Sun Jul 15 2007 MosconiMarco <brus46@gmail.com> 0.0-2
+- Initial release
+

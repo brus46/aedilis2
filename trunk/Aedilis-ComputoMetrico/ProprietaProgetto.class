@@ -1,0 +1,76 @@
+' Gambas class file
+
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+  Nome.Text = Globals.ProjectName
+  Committente.Text = Globals.ProjectCommittente
+  TipoCommittente.Text = Globals.ProjectTipoComm
+  Autore.Text = Globals.ProjectAutore
+  DicituraLavoro.Text = Globals.ProjectDicituraLavoro
+  DataDocumento.Text = Globals.ProjectDataDocumento
+  Comune.Text = Globals.ProjectComune
+  Provincia.Text = Globals.ProjectProvincia
+
+END
+
+PUBLIC SUB Nome_Change()
+
+  Globals.ProjectName = Nome.Text
+
+END
+
+PUBLIC SUB Committente_Change()
+
+  Globals.ProjectCommittente = Committente.Text
+
+END
+
+PUBLIC SUB TipoCommittente_Change()
+
+  Globals.ProjectTipoComm = TipoCommittente.Text
+
+END
+
+PUBLIC SUB Autore_Change()
+
+  Globals.ProjectAutore = Autore.Text
+
+END
+
+PUBLIC SUB Button1_Click()
+
+  ME.Close
+
+END
+
+PUBLIC SUB Comune_Change()
+
+  Globals.ProjectComune = Comune.Text
+
+END
+
+PUBLIC SUB Provincia_Change()
+
+  Globals.ProjectProvincia = Provincia.Text
+
+END
+
+PUBLIC SUB DataDocumento_Change()
+
+  Globals.ProjectDataDocumento = DataDocumento.Text
+
+END
+
+PUBLIC SUB DicituraLavoro_Change()
+
+  Globals.ProjectDicituraLavoro = DicituraLavoro.Text
+
+END
+
+PUBLIC SUB SetOggi_Click()
+
+  DataDocumento.Text = Day(Now) & "/" & Month(Now) & "/" & Year(Now)
+
+END

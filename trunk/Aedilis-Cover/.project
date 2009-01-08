@@ -1,0 +1,21 @@
+# Gambas Project File 2.0
+Title=Aedilis-Cover
+Startup=Splash
+Icon=Immagini/Layout.png
+Version=0.0.5
+Library=gb.qt
+Library=gb.form
+Library=gb.image
+Library=gb.qt.ext
+Description=Questo pacchetto di Aedilis permette di creare i layout per le copertine e le ultime pagine dei computi.
+TabSize=5
+Translate=1
+Language=it_IT.UTF-8
+ControlPublic=1
+Maintainer=MosconiMarco
+Address=brus46@gmail.com
+License=General Public Licence
+Systems=ubuntu
+Menus=Apps/Tools
+Categories=Office
+Groups=Office
