@@ -1,0 +1,226 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,72)
+  Text = ("Importa CSV")
+  Icon = Picture["Icone/Importa.png"]
+  Border = Window.Fixed
+  { TabStrip1 TabStrip
+    MoveScaled(1,1,62,61)
+    Count = 3
+    Index = 0
+    Text = ("Impostazioni CSV")
+    { SaltaPrimeRighe CheckBox
+      MoveScaled(2,23,35,4)
+      Text = ("Salta le prime righe (Intestazione)")
+      Value = CheckBox.True
+    }
+    { RigheDaSaltare SpinBox
+      MoveScaled(37,22,10,6)
+    }
+    { TestoSep ComboBox
+      MoveScaled(27,3,10,5)
+      Font = Font["12"]
+      Text = ("''")
+      ReadOnly = True
+      List = [("''"), ("'")]
+    }
+    { CampoSep ComboBox
+      MoveScaled(27,14,10,5)
+      Font = Font["12"]
+      Text = (";")
+      ReadOnly = True
+      List = [(";"), ("."), (":")]
+    }
+    { TextLabel1 TextLabel
+      MoveScaled(3,4,20,3)
+      Text = ("Separatore di Testo:")
+    }
+    { TextLabel2 TextLabel
+      MoveScaled(3,15,20,3)
+      Text = ("Separatore di Campo:")
+    }
+    Index = 1
+    Text = ("Impostazioni Categorie")
+    { Anteprima_Cat GridView
+      MoveScaled(1,49,59,6)
+    }
+    { Frame1 Frame
+      MoveScaled(1,21,59,24)
+      Text = ("E' una categoria se:")
+      { N TextBox
+        MoveScaled(28,10,5,5)
+        Text = ("3")
+      }
+      { M TextBox
+        MoveScaled(28,3,5,5)
+        Text = ("3")
+      }
+      { Y TextBox
+        MoveScaled(28,18,5,5)
+        Text = ("3")
+      }
+      { TextLabel3 TextLabel
+        MoveScaled(26,11,2,3)
+        Text = ("N")
+      }
+      { TextLabel4 TextLabel
+        MoveScaled(26,4,2,3)
+        Text = ("M")
+      }
+      { TextLabel5 TextLabel
+        MoveScaled(26,19,2,3)
+        Text = ("Y")
+      }
+      { TextLabel6 TextLabel
+        MoveScaled(34,19,2,3)
+        Text = ("=")
+      }
+      { Cat_ValY TextBox
+        MoveScaled(36,18,21,5)
+        Text = ("CAT")
+      }
+      { Cat_NCampi RadioButton
+        MoveScaled(2,11,20,3)
+        Text = ("Ha solo N Campi")
+      }
+      { Cat_MVuoto RadioButton
+        MoveScaled(2,4,20,3)
+        Text = ("Il campo M e' vuoto")
+        Value = True
+      }
+      { Cat_YVal RadioButton
+        MoveScaled(2,19,23,3)
+        Text = ("Il campo Y e' uguale a..")
+      }
+    }
+    { Frame2 Frame
+      MoveScaled(2,1,58,19)
+      Text = ("Campi da rilevare")
+      { Cat_Codice CheckBox
+        MoveScaled(1,5,23,3)
+        Text = ("Codice")
+        Value = CheckBox.True
+      }
+      { Cat_Nome CheckBox
+        MoveScaled(1,10,23,3)
+        Text = ("Nome")
+        Value = CheckBox.True
+      }
+      { Cat_Descrizione CheckBox
+        MoveScaled(1,14,23,3)
+        Text = ("Descrizione")
+        Value = CheckBox.True
+      }
+      { TextLabel7 TextLabel
+        MoveScaled(24,2,11,3)
+        Text = ("Posizione")
+      }
+      { Cat_PosCodice SpinBox
+        MoveScaled(25,5,7,4)
+        MinValue = 1
+        Value = 1
+      }
+      { Cat_PosNome SpinBox
+        MoveScaled(25,9,7,4)
+        MinValue = 1
+        Value = 2
+      }
+      { Cat_posDescrizione SpinBox
+        MoveScaled(25,13,7,4)
+        MinValue = 1
+        Value = 3
+      }
+    }
+    { TextLabel9 TextLabel
+      MoveScaled(1,46,11,3)
+      Text = ("Anteprima:")
+    }
+    Index = 2
+    Text = ("Impostazione Elementi")
+    { Anteprima_El GridView
+      MoveScaled(1,43,59,13)
+    }
+    { Frame3 Frame
+      MoveScaled(2,1,58,37)
+      Text = ("Campi da rilevare")
+      { El_codice CheckBox
+        MoveScaled(1,5,23,3)
+        Text = ("Codice")
+        Value = CheckBox.True
+      }
+      { El_nome CheckBox
+        MoveScaled(1,11,23,3)
+        Text = ("Nome")
+        Value = CheckBox.True
+      }
+      { El_descrizione CheckBox
+        MoveScaled(1,16,23,3)
+        Text = ("Descrizione")
+        Value = CheckBox.True
+      }
+      { TextLabel8 TextLabel
+        MoveScaled(24,2,11,3)
+        Text = ("Posizione")
+      }
+      { El_Prezzo CheckBox
+        MoveScaled(1,26,23,3)
+        Text = ("Prezzo")
+        Value = CheckBox.True
+      }
+      { El_sconto CheckBox
+        MoveScaled(1,31,23,3)
+        Text = ("Sconto")
+      }
+      { El_descrizionelunga CheckBox
+        MoveScaled(1,21,23,3)
+        Text = ("Descrizione lunga")
+      }
+      { El_poscodice SpinBox
+        MoveScaled(25,5,7,4)
+        MinValue = 1
+        Value = 1
+      }
+      { El_posnome SpinBox
+        MoveScaled(25,10,7,4)
+        MinValue = 1
+        Value = 2
+      }
+      { El_posdescrizione SpinBox
+        MoveScaled(25,15,7,4)
+        MinValue = 1
+        Value = 3
+      }
+      { El_posdescrLunga SpinBox
+        MoveScaled(25,20,7,4)
+        MinValue = 1
+        Value = 4
+      }
+      { El_posPrezzo SpinBox
+        MoveScaled(25,25,7,4)
+        MinValue = 1
+        Value = 5
+      }
+      { El_posSconto SpinBox
+        MoveScaled(25,30,7,4)
+        MinValue = 1
+        Value = 6
+      }
+    }
+    { TextLabel10 TextLabel
+      MoveScaled(2,39,11,3)
+      Text = ("Anteprima:")
+    }
+    Index = 0
+  }
+  { Button1 Button
+    MoveScaled(1,63,30,8)
+    Text = ("Importa")
+    Picture = Picture["Icone/Importa.png"]
+  }
+  { Button2 Button
+    MoveScaled(33,63,30,8)
+    Text = ("Annulla")
+    Picture = Picture["Icone/Elimina.png"]
+  }
+}

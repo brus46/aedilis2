@@ -1,0 +1,17 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,41,36)
+  Text = ("")
+  Icon = Picture["Immagini/function_editor.gif"]
+  Border = Window.None
+  { PictureBox1 PictureBox
+    MoveScaled(-1,-3,44,39)
+    Picture = Picture["Immagini/sine.gif"]
+  }
+  { Timer1 #Timer
+    #X = 252
+    #Y = 0
+    Delay = 100
+  }
+}

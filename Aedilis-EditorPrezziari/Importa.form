@@ -1,0 +1,55 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,39)
+  Text = ("Importa")
+  Icon = Picture["Icone/Importa.png"]
+  Border = Window.Fixed
+  { TextLabel1 TextLabel
+    MoveScaled(1,9,15,4)
+    Text = ("Filename:")
+    Alignment = Align.Right
+  }
+  { FileName TextBox
+    MoveScaled(17,8,41,5)
+    Text = ("")
+  }
+  { SelectFile Button
+    MoveScaled(59,8,4,5)
+    Text = ("...")
+  }
+  { Import Button
+    MoveScaled(42,21,20,8)
+    Text = ("Importa")
+    Picture = Picture["Icone/Importa.png"]
+    Default = True
+  }
+  { Annulla Button
+    MoveScaled(42,30,20,8)
+    Text = ("Annulla")
+    Picture = Picture["Icone/Elimina.png"]
+  }
+  { Download Button
+    MoveScaled(2,24,31,11)
+    Text = ("Scarica nuovi prezziari")
+    Picture = Picture["Icone/Internet.png"]
+  }
+  { TextLabel2 TextLabel
+    MoveScaled(4,15,22,3)
+    Text = ("Nome nuovo prezziario:")
+  }
+  { Nome TextBox
+    MoveScaled(26,14,32,5)
+    Text = ("PrezziarioImportato")
+  }
+  { Formato ComboBox
+    MoveScaled(17,1,34,5)
+    Text = ("Prezziari Aedilis (con UM)")
+    ReadOnly = True
+    List = [("Prezziari Aedilis (con UM)"), ("Prezziari Aedilis (no UM)"), ("XML"), ("CSV")]
+  }
+  { TextLabel3 TextLabel
+    MoveScaled(7,2,9,3)
+    Text = ("Formato:")
+  }
+}

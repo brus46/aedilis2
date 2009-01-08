@@ -1,0 +1,75 @@
+' Gambas class file
+
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+
+END
+
+
+PUBLIC SUB AddEx_Click()
+DIM contatore AS Integer
+  'Aggiunge una funzione alla lista di esportazione
+  'Se la lista delle funzioni non è vuota allora ho almeno un elemento da spostare nell'altra lista
+  IF NOT (ListLayout.Current = NULL) THEN
+     FOR contatore = 0 TO ListLayoutId.Count - 1 
+          IF (ListLayoutId[contatore].Text = ListLayout.Current.key) THEN 
+               ListExportid.Add(ListLayout.Current.key)
+               ListLayoutId.Remove(contatore)
+               BREAK
+          END IF
+     NEXT 
+     ListExport.Add(ListLayout.Current.key, ListLayout.Current.text, ListLayout.Current.Picture) 'Aggiungo l'elemento selezionato alla lista delle funzioni da esportare
+     ListLayout.Remove(ListLayout.Current.Key) 'Tolgo l'elemento selezionato dalla lista delle funzioni esportabili
+  END IF
+
+END
+
+PUBLIC SUB RmEx_Click()
+DIM contatore AS Integer
+  'Aggiunge una funzione alla lista di esportazione
+  'Se la lista delle funzioni non è vuota allora ho almeno un elemento da spostare nell'altra lista
+  IF NOT (ListExport.Current = NULL) THEN
+     FOR contatore = 0 TO ListExportId.Count - 1 
+          IF (ListExportId[contatore].Text = ListExport.Current.key) THEN 
+               ListLayoutid.Add(ListExport.Current.Key)
+               ListExportId.Remove(contatore)
+               BREAK
+          END IF
+     NEXT 
+     ListLayout.Add(ListExport.Current.key, ListExport.Current.text, ListExport.Current.Picture) 'Aggiungo l'elemento selezionato alla lista delle funzioni da esportare
+     ListExport.Remove(ListExport.Current.Key) 'Tolgo l'elemento selezionato dalla lista delle funzioni esportabili
+  END IF
+
+END
+
+PUBLIC SUB Annulla_Click()
+  'Chiudo il form
+  ME.Close
+
+END
+
+PUBLIC SUB Esporta_Click()
+DIM elements AS String
+DIM pathel AS String
+DIM contatore AS Integer
+
+   pathel = User.Home &/ ".Aedilis/Layout/"
+   elements = ""
+   Dialog.Path = User.Home
+   Dialog.Title = "Seleziona il file dove salvare"
+   Dialog.Filter = ["*.AAL", "Aedilis Archivio Layout"]
+   IF NOT (1 = Dialog.SaveFile()) THEN 
+          IF (Split(Dialog.Path, ".").Count <= 1) THEN Dialog.Path = Dialog.Path & ".AAL"
+          FOR contatore = 0 TO ListExportid.Count - 1
+               elements = elements & " " & ListExport[ListExportid[contatore].Text].Text
+          NEXT 
+          'Linea per il debug, stampa a video il comando di esportazione
+          PRINT "tar -cvf " & Dialog.Path & " -C " & pathel & elements
+          SHELL "tar -cvf " & Dialog.Path & " -C " & pathel & elements WAIT 
+          Message.Info("Salvataggio avvenuto con successo")
+          ME.Close
+   END IF
+
+END

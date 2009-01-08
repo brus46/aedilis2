@@ -1,0 +1,109 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,94,79)
+  Text = ("Editor di Funzioni")
+  Icon = Picture["Immagini/function_editor.gif"]
+  { EditFunzione Editor
+    MoveScaled(26,22,67,56)
+    Highlight = Highlight.Custom
+  }
+  { FName TextBox
+    MoveScaled(44,1,27,3)
+    Text = ("")
+  }
+  { FInput TextBox
+    MoveScaled(44,9,49,3)
+    Text = ("")
+  }
+  { FOutput TextBox
+    MoveScaled(44,5,27,3)
+    Text = ("")
+  }
+  { FDescr TextBox
+    MoveScaled(44,13,49,3)
+    Text = ("")
+  }
+  { TextLabel2 TextLabel
+    MoveScaled(26,1,16,3)
+    Text = ("Nome Funzione:")
+  }
+  { TextLabel3 TextLabel
+    MoveScaled(26,19,20,3)
+    Text = ("Corpo della funzione:")
+  }
+  { TextLabel4 TextLabel
+    MoveScaled(26,9,18,3)
+    Text = ("Variabili in ingresso:")
+  }
+  { TextLabel5 TextLabel
+    MoveScaled(26,5,18,3)
+    Text = ("Variabile di ritorno:")
+  }
+  { TextLabel6 TextLabel
+    MoveScaled(26,12,17,5)
+    Text = ("Descrizione breve (una sola linea)")
+  }
+  { Panel1 Panel
+    MoveScaled(1,1,24,78)
+    Border = Border.Raised
+    { Panel2 Panel
+      MoveScaled(1,35,22,43)
+      { Aggiorna Button
+        MoveScaled(1,1,20,4.2857)
+        Text = ("Aggiorna")
+        Picture = Picture["Immagini/refresh.resized.png"]
+      }
+      { NuovaFunzione Button
+        MoveScaled(1,6,20,4.2857)
+        Text = ("Nuova Funzione")
+        Picture = Picture["Immagini/new.resized.png"]
+      }
+      { Edita Button
+        MoveScaled(1,11,20,4.2857)
+        Text = ("Edita Funzione")
+        Picture = Picture["Immagini/edit.resized.png"]
+      }
+      { EliminaFunzione Button
+        MoveScaled(1,16,20,4.2857)
+        Text = ("Elimina Funzione")
+        Picture = Picture["Immagini/trash.resized.png"]
+      }
+      { Importa Button
+        MoveScaled(1,21,20,4.2857)
+        Text = ("Importa funzioni")
+        Picture = Picture["Immagini/import.resized.png"]
+      }
+      { Esporta Button
+        MoveScaled(1,26,20,4.2857)
+        Text = ("Esporta funzioni")
+        Picture = Picture["Immagini/export1.resized.png"]
+      }
+      { Separator1 Separator
+        MoveScaled(1,31,21,1)
+      }
+      { Testa Button
+        MoveScaled(1,33,20,4.2857)
+        Text = ("Test")
+        Picture = Picture["Immagini/CrashTest.resized.png"]
+      }
+      { Salva Button
+        MoveScaled(1,38,20,4.2857)
+        Text = ("Salva")
+        Picture = Picture["Immagini/save.resized.png"]
+      }
+    }
+    { TextLabel1 TextLabel
+      MoveScaled(1,1,16,3)
+      Text = ("Lista Funzioni:")
+    }
+    { ListaFunzioni ListBox
+      MoveScaled(2,5,20,30)
+    }
+  }
+  { Guida Button
+    MoveScaled(77,1,16,7)
+    Text = ("Guida")
+    Picture = Picture["Immagini/Ridimensionato-Guida.png"]
+  }
+}

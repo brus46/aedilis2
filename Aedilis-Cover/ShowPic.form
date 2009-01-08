@@ -1,0 +1,24 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,40,42)
+  Text = ("Mostra immagine")
+  Icon = Picture["Immagini/Layout.png"]
+  { PanelPic Panel
+    MoveScaled(0,3,41,39)
+    { Anteprima PictureBox
+      MoveScaled(0,0,38,37)
+      Picture = Picture["Immagini/NoPic.png"]
+      Alignment = Align.Center
+      Border = Border.Plain
+    }
+  }
+  { Larghezza TextLabel
+    MoveScaled(1,0,19,3)
+    Text = ("TextLabel1")
+  }
+  { Altezza TextLabel
+    MoveScaled(20,0,19,3)
+    Text = ("TextLabel1")
+  }
+}

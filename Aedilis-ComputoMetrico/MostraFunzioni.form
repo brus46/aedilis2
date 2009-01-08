@@ -1,0 +1,42 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,84,47)
+  Text = ("Mostra Funzioni")
+  Icon = Picture["Icone/aedilis-funzionimatematiche.png"]
+  Border = Window.Fixed
+  { ListaFunzioni ListBox
+    MoveScaled(1,3,26,43)
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(28,2,16,3)
+    Text = ("Come si richiama?")
+  }
+  { TextLabel2 TextLabel
+    MoveScaled(28,13,19,3)
+    Text = ("Descrizione:")
+  }
+  { Descrizione TextArea
+    MoveScaled(28,17,55,16)
+    Text = ("")
+    Wrap = True
+  }
+  { Button1 Button
+    MoveScaled(56,34,27,12)
+    Text = ("Lancia l'editor")
+    Picture = Picture["Icone/aedilis-funzionimatematiche.png"]
+  }
+  { TextLabel3 TextLabel
+    MoveScaled(1,0,20,3)
+    Text = ("Lista funzioni:")
+  }
+  { HowTo TextArea
+    MoveScaled(28,5,55,8)
+    Text = ("")
+  }
+  { Button2 Button
+    MoveScaled(28,34,27,12)
+    Text = ("Chiudi")
+    Picture = Picture["Icone/esci.png"]
+  }
+}

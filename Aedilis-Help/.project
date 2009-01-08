@@ -1,0 +1,24 @@
+# Gambas Project File 2.0
+Title=Aedilis - Help
+Startup=Splash
+Icon=Icone/Aedilis-Help.png
+Version=0.0.7
+Library=gb.qt
+Library=gb.form
+Library=gb.qt.ext
+Library=gb.qt.kde
+Library=gb.qt.kde.html
+Description=Questo modulo di Aedilis è il visualizzatore per la sua guida.
+Authors=Mosconi Marco
+TabSize=5
+Translate=1
+Language=it_IT.UTF-8
+ControlPublic=1
+Maintainer=Marco Mosconi
+Address=brus46@gmail.com
+License=General Public Licence
+Systems=ubuntu
+Menus=Apps/Tools
+Categories=Office
+Groups=Office
+VCUser=brus46

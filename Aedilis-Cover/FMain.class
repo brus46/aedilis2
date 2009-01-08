@@ -1,0 +1,385 @@
+' Gambas class file
+
+PUBLIC dirty AS Boolean 'Questa variabile segnala se ci sono delle cose diverse dall'ultimo salvataggio di un file
+
+PUBLIC SUB _new()
+
+END
+
+PUBLIC SUB Sostituisci_Special_key(linea AS String) AS String
+DIM templinea AS String
+  templinea = linea
+  templinea = Replace$(templinea, "##TitoloProgetto##", "Prefabbricato - ItalAedilis")
+  templinea = Replace$(templinea, "##TitoloDocumento##", "Computo Metrico")
+  templinea = Replace$(templinea, "##Committente##", "ItalAedilis")
+  templinea = Replace$(templinea, "##TipoCommittente##", "Privato")
+  templinea = Replace$(templinea, "##Progettista##", "Mario Rossi")
+  templinea = Replace$(templinea, "##DataDocumento##", "12/12/2007")
+  templinea = Replace$(templinea, "##Comune##", "Paderno Dugnano")
+  templinea = Replace$(templinea, "##Provincia##", "Milano")
+  templinea = Replace$(templinea, "##TotaleComputo##", "240 \\EUR")
+  templinea = Replace$(templinea, "##Resoconto##", "Default - 100\\EUR \\\\Opere Idrauliche - 140\\EUR\\\\\\\\Totale - 240 \\EUR")
+  
+  templinea = Replace$(templinea, "##ImgPath##", "/tmp/Layout/")
+  RETURN templinea
+END
+
+
+PUBLIC SUB Form_Resize()
+  'Impongo una dimensione minima al form.
+  IF (ME.Width < 660) THEN ME.Width = 660
+  IF (ME.Height < 550) THEN ME.Height = 550
+  
+  'Panel1 è il pannello che contiene la lista dei layout e Panel2
+  'Ingrandisco Panel1 in modo che occupi tutta l'altezza del form
+  Panel1.Height = ME.Height 
+  'Panel2 è il pannello che contiene tutti i comandi
+  'Sposto Panel2 in basso in modo che resti sul fondo di panel1
+  panel2.y = panel1.Height - 10 - panel2.Height
+  'Allungo Listalayout in modo che occupi il buco creatosi fra se stesso e panel2
+  LayoutAll.Height = Panel2.Y - 10 - LayoutAll.Y
+  'Ingrandisco EditFunzione in modo che riempia la parte restante del form.
+  EditLayout.Width = ME.Width - EditLayout.X - 10
+  EditLayout.Height = ME.Height - EditLayout.Y - 10
+END
+
+PUBLIC SUB Form_Open()
+     ME.Center
+     ME.Maximized = TRUE
+END
+
+PUBLIC SUB Aggiorna_Click()
+'Questa funzione aggiorna la lista delle funzioni disponibili.
+DIM linea AS String  'Questa variabile serve per leggere l'output del comando "ls" dato all'interno della path dei layout
+DIM linee AS String[] 'Questa variabile conterrà le singole linee estratte dalla variabile linea splittando per il carattere speciale \n
+DIM contatore AS Integer  'Con questa variabile scorreremo tutti gli elementi di "linee"
+DIM estensione AS String[]  'Con questa variabile estrapoleremo l'estensione di ogni file presente nella path dei layout
+
+  'Lancio il comando "ls" all'interno della path dei layout e reindirizzo l'stdout su linea
+  SHELL "ls " & user.Home &/ ".Aedilis/Layout/" WAIT TO linea 
+  'Cancello la lista precedente di layout e inizio a caricare quella nuova.
+  LayoutAll.Clear
+  Layoutid.Clear
+  
+  'Estraggo i singoli elementi splittando per il carattere speciale \n
+  linee = Split(linea, "\n")
+  FOR contatore = 0 TO linee.Count - 1
+     'Ricerco l'estensione
+     estensione = Split(linee[contatore], ".")
+     IF (estensione.Count > 1) THEN 
+          'Se l'estensione è .ACL allora è un layout di copertine (AedilisCoverLayout)
+          'Se l'estensione è .ABL allora è un layout di ultima pagina (AedilisBackLayout)
+          IF (estensione[estensione.Count - 1] = "ACL") THEN 
+               Layoutid.Add(contatore)
+               LayoutAll.Add(contatore, linee[contatore], FrontPic.Picture)
+          ELSE IF (estensione[estensione.Count - 1] = "ABL") THEN 
+               Layoutid.Add(contatore)
+               LayoutAll.Add(contatore, linee[contatore], BackPic.Picture)
+          END IF
+     END IF
+  NEXT 
+  
+END
+
+PUBLIC SUB Form_Close()
+'Rimuovo i file temporanei
+  SHELL "rm -R /tmp/Layout/"
+'Se si chiude questo form termina il programma.
+  QUIT 
+
+END
+
+PUBLIC SUB LayoutAll_DblClick()
+
+  Edita_Click()
+
+END
+
+PUBLIC SUB Edita_Click()
+DIM hfile AS File
+DIM linea AS String
+DIM prosegui AS Boolean 'Questa variabile è vera solo se l'utente e tutte le condizioni necessarie sono favorevoli alla creazione di un nuovo layout
+  prosegui = TRUE 'Di defaul è vera, se ci sarà qualcosa che va in contrasto con questa affermazione essa cambierà di valore.
+  IF (dirty = TRUE) THEN 'Se il file ha subito modifiche chiedo se devo proseguire
+     IF NOT (1 = message.Question("Proseguendo cancellerai tutti i progressi fatti!", "Prosegui", "Annulla")) THEN prosegui = FALSE
+  END IF
+  IF (prosegui = TRUE) THEN 
+
+     IF NOT (LayoutAll.Current = NULL) THEN 
+          'Pulisco tutti i campi
+          ListExtraPicName.Clear
+          ListExtraPics.Clear
+          EditLayout.Clear
+          FName.Text = Left$(LayoutAll.Current.Text, -4)
+          IF (LayoutAll.Current.Picture = FrontPic.Picture) THEN 
+               Cover.Value = TRUE
+          ELSE 
+               BAck.Value = TRUE
+          END IF
+          SHELL "mkdir /tmp/Layout/"
+          SHELL "tar -xvf " & user.Home &/ ".Aedilis/Layout/" & Layoutall.Current.Text & " -C /tmp/Layout/" WAIT 'Eseguo la decompressione della cartella specificata e aspetta il termine
+          TRY hfile = OPEN "/tmp/Layout/Latex.tex" FOR READ 
+          IF NOT ( ERROR ) THEN 
+               WHILE NOT (Eof(hfile))
+                    LINE INPUT #hfile, linea
+                    EditLayout.Text = EditLayout.Text & linea & "\n"
+               WEND 
+               TRY hfile.Close
+          END IF
+          TRY hfile = OPEN "/tmp/Layout/ExtraPictures.list" FOR READ 
+          IF NOT ( ERROR ) THEN 
+               WHILE NOT (Eof(hfile))
+                    LINE INPUT #hfile, linea
+                    IF NOT (linea = "") THEN 
+                         ListExtraPicName.Add(linea)
+                         TRY ListExtraPics.Add(ListExtraPicname.Count - 1, "", Picture.Load("/tmp/Layout/" & linea))
+                         IF ( ERROR ) THEN 
+                              ListExtraPics.Add(ListExtraPicname.Count - 1, "", NoPicture.Picture)
+                         END IF
+                    END IF
+               WEND 
+               TRY hfile.Close
+          END IF
+          TRY Anteprima.Picture = Picture.Load("/tmp/Layout/Preview.png")
+          IF ( ERROR ) THEN Anteprima.Picture = NoPicture.Picture
+          
+          'Imposto Dirty a falso in quanto il file appena aperto è identico ai contenuti appena letti.
+          dirty = FALSE
+     END IF
+  END IF
+END
+
+PUBLIC SUB NuovoLayout_Click()
+'Questa funzione crea un nuova layout, ovvero libera i campi di editing.
+DIM prosegui AS Boolean 'Questa variabile è vera solo se l'utente e tutte le condizioni necessarie sono favorevoli alla creazione di un nuovo layout
+  prosegui = TRUE 'Di defaul è vera, se ci sarà qualcosa che va in contrasto con questa affermazione essa cambierà di valore.
+  IF (dirty = TRUE) THEN 'Se il file ha subito modifiche chiedo se devo proseguire
+     IF NOT (1 = message.Question("Proseguendo cancellerai tutti i progressi fatti!", "Prosegui", "Annulla")) THEN prosegui = FALSE
+  END IF
+  IF (prosegui = TRUE) THEN 
+     'Pulisco tutti i campi
+     FName.Clear
+     ListExtraPicName.Clear
+     ListExtraPics.Clear
+     EditLayout.Clear
+     'Imposto Dirty a falso in quanto il file di base è vuoto.
+     dirty = FALSE
+  END IF
+
+
+
+END
+
+PUBLIC SUB EditLayout_Change()
+  'Il file è diverso da quello salvato quindi
+  dirty = TRUE
+
+END
+
+PUBLIC SUB FName_KeyPress()
+  'Il file è diverso da quello salvato quindi
+  dirty = TRUE
+
+END
+
+
+PUBLIC SUB Cover_Click()
+  'Il file è diverso da quello salvato quindi
+  dirty = TRUE
+
+END
+
+PUBLIC SUB Back_Click()
+  'Il file è diverso da quello salvato quindi
+  dirty = TRUE
+
+END
+
+PUBLIC SUB Testa_Click()
+DIM hfile AS File
+  SHELL "mkdir /tmp/Layout/" WAIT 
+  WAIT 1
+  TRY hfile = OPEN "/tmp/Layout/Latex.tex" FOR WRITE CREATE 
+  IF NOT ( ERROR ) THEN 
+     PRINT #hfile, Sostituisci_Special_key(EditLayout.Text)
+     hfile.Close()
+     WAIT 1
+     Test.Show
+  ELSE 
+     message.Warning("Non riesco a creare il file per il test!")
+  END IF
+END
+
+
+
+
+PUBLIC SUB LoadPreview_Click()
+     IF (Dialog.path = "") THEN 
+          Dialog.Path = User.Home
+     END IF
+     Dialog.Filter = ["*.png", "PNG - Portable Network Graphics"]
+     Dialog.Title = "Seleziona una anteprima"
+     IF NOT (Dialog.OpenFile()) THEN
+          TRY Anteprima.Picture = Picture.Load(Dialog.Path)
+          IF ( ERROR ) THEN Anteprima.Picture = NoPicture.Picture
+     END IF
+END
+
+
+PUBLIC SUB Guida_Click()
+'Scrivo nel file di configurazione dell'Help la path della pagina della guida per questa sezione
+DIM hfile AS File 'Questa variabile conterrà il descrittore del file di configurazione dell'help
+     TRY hfile = OPEN user.Home &/ ".Aedilis/Help" FOR WRITE CREATE 'Provo ad aprire il file di configurazione dell'help in scrittura/creazione
+     IF NOT ( ERROR ) THEN 'Se non ci sono stati errori (es. file protetto da scrittura) allora salvo la nuova path della guida
+          PRINT #hfile, "http://www.sciallo.net/Aedilis/Guida/Aedilis-Cover.html"
+          hfile.Close 'Chiudo il descrittore del file
+          WAIT 1 'Attendo in modo che il file possa essere scritto
+     END IF
+     
+     SHELL "aedilis-help.gambas" 'Lancio la guida
+
+END
+
+PUBLIC SUB FromFilesToNames(filename AS String) AS String
+DIM splitted AS String[]
+     splitted = Split(FIlename, "/")
+     RETURN splitted[splitted.Count - 1]
+
+END
+
+
+PUBLIC SUB AddExtraPic_Click()
+
+  IF (Dialog.path = "") THEN 
+          Dialog.Path = User.Home
+  END IF
+  Dialog.Filter = ["*.png", "PNG - Portable Network Graphics"]
+  Dialog.Title = "Aggiungi un'immagine per il layout"
+  IF NOT (Dialog.OpenFile()) THEN 
+     ListExtraPicName.Add(FromFilesToNames(Dialog.Path))
+     ListExtraPics.Add(ListExtraPicname.Count - 1, "", Picture.Load(Dialog.Path))
+  END IF
+END
+
+PUBLIC SUB DelExtraPic_Click()
+
+IF NOT (ListExtraPicName.Current = NULL) THEN 
+     ListExtraPics.Remove(ListExtraPicName.Index)
+     ListExtraPicName.Remove(ListExtraPicName.Index)
+END IF
+
+END
+
+PUBLIC SUB Salva_Click()
+DIM hfile AS File
+DIM contatore AS Integer
+'DIM TempPicture AS Picture
+DIM estensione AS String
+DIM elementi AS String
+     elementi = ""
+     IF (Cover.Value = TRUE) THEN 
+          estensione = "ACL"
+     ELSE 
+          estensione = "ABL"
+     END IF
+     TRY hfile = OPEN "/tmp/Layout/Latex.tex" FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+               PRINT #hfile, EditLayout.Text
+               hfile.Close()
+                 TRY hfile = OPEN "/tmp/Layout/ExtraPictures.list" FOR WRITE CREATE 
+                 IF NOT ( ERROR ) THEN 
+                    FOR contatore = 0 TO ListExtraPicName.Count - 1
+                         PRINT #hfile, ListExtraPicName[contatore].Text
+                         elementi = elementi & " '" & ListExtraPicName[contatore].Text & "'"
+                         'TempPicture.Picture.Load(ListExtraPicFilename[contatore].Text)
+                         'TempPicture.Refresh
+                         'IF ( ERROR ) THEN 
+                              'PRINT ERROR.Text 
+                              'TempPicture.Picture = NoPicture.Picture
+                         'END IF
+                         'TempPicture.Picture.Save("/tmp/Layout/" & ListExtraPicName[contatore].Text)
+                         ListExtraPics[contatore].Picture.Save("/tmp/Layout/" & ListExtraPicName[contatore].Text)
+                         WAIT 1
+                    NEXT 
+                    hfile.Close()
+                    IF (Anteprima.Picture = NULL) THEN Anteprima.Picture = NoPicture.Picture
+                    Anteprima.Picture.Save("/tmp/Layout/Preview.png")
+                    SHELL "tar -cvf " & User.Home &/ ".Aedilis/Layout/" & FName.Text & "." & estensione & " -C /tmp/Layout Latex.tex ExtraPictures.list Preview.png" & elementi WAIT TO elementi
+ 
+                    Aggiorna_Click()
+                    dirty = FALSE
+                    message.Info("Salvataggio completato")
+                 ELSE 
+                    PRINT ERROR.Text
+                 END IF
+            ELSE 
+               PRINT ERROR.Text
+            END IF
+END
+
+PUBLIC SUB ListExtraPicName_DblClick()
+
+  IF NOT (ListExtraPicName.Current = NULL) THEN 
+     TRY ShowPic.Anteprima.Picture = ListExtraPics[ListExtraPicName.Index].Picture
+     IF ( ERROR ) THEN ShowPic.Anteprima.Picture = NoPicture.Picture
+     ShowPic.Show
+  END IF
+
+END
+
+PUBLIC SUB Anteprima_DblClick()
+
+  ShowPic.Anteprima.Picture = Anteprima.Picture
+  ShowPic.Show
+
+END
+
+PUBLIC SUB EliminaLayout_Click()
+
+IF NOT (LayoutAll.Current = NULL) THEN 
+     IF (1 = message.Question("Sei davvero sicuro di voler eliminare questo layout?", "Sì", "No")) THEN
+          SHELL "rm " & User.Home &/ ".Aedilis/Layout/" & LayoutAll.Current.Text
+          Layoutid.Remove(LayoutAll.Current.Key)
+          LayoutAll.Remove(LayoutAll.Current.Key)
+     END IF
+END IF
+
+END
+
+PUBLIC SUB Importa_Click()
+'Questa funzione importa un file di funzioni .AAL (AedilisArchivioFunzioni) che altro non è che un pacchetto.tar di Layout per aedilis
+DIM pathel AS String 'Questa variabile contiene la path dove risiedono i layout utilizzati da Aedilis
+   pathel = User.Home &/ ".Aedilis/Layout/"
+   'Imposto i parametri di Dialog in modo che possa aprire i file .AAL o Tar
+   Dialog.Path = User.Home
+   Dialog.Title = "Seleziona il file da importare"
+   Dialog.Filter = ["*.AAL", "Aedilis Archivio Layout", "*.tar", "Tarball"]
+   IF NOT (1 = Dialog.OpenFile()) THEN 'Se l'utente non ha premuto annulla o chiuso il form allora
+          SHELL "tar -xvf " & Dialog.Path & " -C " & pathel WAIT 'Eseguo la decompressione della cartella specificata e aspetta il termine
+          aggiorna_Click() 'Aggiorna la lista dei layout disponibili.
+          Message.Info("Importazione avvenuta con successo") 'Informo l'utente che è finita l'importazione
+   END IF
+
+
+
+END
+
+
+PUBLIC SUB ShowLegenda_Click()
+
+  Legenda.Show
+
+END
+
+PUBLIC SUB Esporta_Click()
+DIM contatore AS Integer
+  'Aggiorno la lista di layout del form "Exporting" e lo apro
+  Exporting.Listlayoutid.list = Layoutid.list
+  FOR contatore = 0 TO Layoutid.Count - 1
+     Exporting.ListLayout.Add(Layoutid[contatore].Text, "")
+     Exporting.ListLayout[Layoutid[contatore].Text].Text = LayoutAll[Layoutid[contatore].Text].Text
+     Exporting.ListLayout[Layoutid[contatore].Text].Picture = LayoutAll[Layoutid[contatore].Text].Picture
+  NEXT 
+  Exporting.Show
+
+END

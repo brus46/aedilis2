@@ -1,0 +1,45 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,59)
+  Text = ("Informazioni riguardo ad Aedilis-ComputoMetrico")
+  Icon = Picture["Icone/Ridimensionato-Guida.png"]
+  Border = Window.Fixed
+  { TextLabel2 TextLabel
+    MoveScaled(1,26,62,4)
+    Text = ("Versione: 0.0.52")
+  }
+  { TextLabel3 TextLabel
+    MoveScaled(1,30,62,4)
+    Text = ("Autore: Mosconi Marco")
+  }
+  { TextLabel4 TextLabel
+    MoveScaled(1,34,62,4)
+    Text = ("Licenza: GPL")
+  }
+  { Button2 Button
+    MoveScaled(48,34,15,4)
+    Text = ("Vedi Licenza")
+    Default = True
+  }
+  { Button3 Button
+    MoveScaled(52,53,11,5)
+    Text = ("Indietro")
+    Cancel = True
+  }
+  { PictureBox1 PictureBox
+    MoveScaled(23,1,19,24)
+    Picture = Picture["Icone/aedilisComputoMetrico.png"]
+    Stretch = True
+    Alignment = Align.Center
+    Border = Border.Plain
+  }
+  { TextArea1 TextArea
+    MoveScaled(1,39,62,13)
+    Background = Color.Background
+    Text = ("Questo modulo di aedilis provvede alla creazione di Computi Metrici. Questo software non ha nessuna garanzia ed \xC3\xA8 licenziato tramite la licenza GPL \"Gnu Public Licence\"")
+    ReadOnly = True
+    Wrap = True
+    Border = False
+  }
+}

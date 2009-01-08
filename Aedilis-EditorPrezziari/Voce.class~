@@ -1,0 +1,133 @@
+' Gambas class file
+
+PUBLIC nuovo AS Boolean
+PUBLIC idpadre AS Integer
+PUBLIC editPadre AS Boolean
+PUBLIC SUB Button3_Click()
+
+     ME.Hide  
+
+END
+
+PUBLIC SUB Form_Open()
+
+ME.Center  
+
+END
+
+PUBLIC SUB increase_version()
+  
+  Splash.DBResult = Splash.DBConnect.Find("ElPrezziari", "id=&1", FMain.ElencoID.List[Val(FMain.ElencoCompleto.Current.Key)])
+  Splash.DBResult = Splash.DBConnect.Exec("update ElPrezziari set Versione=&1 where id=&2", Splash.DBResult!Versione + 1, FMain.ElencoID.List[Val(FMain.ElencoCompleto.Current.Key)])           
+  
+END
+
+
+PUBLIC SUB AddEdit_Click()
+WITH Splash
+IF (nuovo = TRUE) THEN 
+     .DBResult = .DBConnect.Find("Prezziario" & id_prezziario.Text)
+     IF (.DBResult.Available = TRUE) THEN 
+          .DBResult.MoveLast
+          id.Text = .DBResult!Id + 1
+     ELSE 
+          id.Text = 1
+     END IF
+     IF (PadreDaElenco.Value = TRUE) THEN          
+          IdPadre = Val(PadriId[Padri.Index].Text)
+     ELSE IF (AutoPadre.Value = TRUE) THEN
+                
+     ELSE 
+          idpadre = -1
+     END IF
+     IF (tipo.Index = 1) THEN 
+          .DBResult = .DBConnect.Exec("insert into Prezziario" & id_prezziario.Text & " values(&1,&2,&3,&4,&5,&6,&7,&8,&9,&10)", id.Text, codice.Text, idpadre, nome.Text, descrizione.Text, descrizionecompleta.Text, um.Text, costo.Text, sconto.Text, 1)           
+          IF (idpadre = -1) THEN 
+               Fmain.CatPrezziario.Add(id.Text, codice.Text & "\t" & nome.Text, Fmain.cartpic.Picture)
+          ELSE 
+               Fmain.CatPrezziario.Add(id.Text, codice.Text & "\t" & nome.Text, Fmain.cartpic.Picture, idpadre)
+          END IF
+          'Fmain.CatPrezziario.Add(id.Text, codice.Text & "\t" & nome.Text, Fmain.cartpic.Picture, idpadre)
+     ELSE 
+          .DBResult = .DBConnect.Exec("insert into Prezziario" & id_prezziario.Text & " values(&1,&2,&3,&4,&5,&6,&7,&8,&9,&10)", id.Text, codice.Text, idpadre, nome.Text, descrizione.Text, descrizionecompleta.Text, um.Text, costo.Text, sconto.Text, 0)           
+          IF (idpadre = -1) THEN 
+               Fmain.CatPrezziario.Add(id.Text, codice.Text & "\t" & nome.Text, Fmain.elpic.Picture)
+          ELSE 
+               Fmain.CatPrezziario.Add(id.Text, codice.Text & "\t" & nome.Text, Fmain.elpic.Picture, idpadre)
+          END IF
+          'Fmain.CatPrezziario.Add(id.Text, codice.Text & "\t" & nome.Text, Fmain.elpic.Picture, idpadre)
+     END IF
+     
+     increase_version()
+     message.Info("Elemento aggiunto al prezziario")
+     Voce.Close
+ELSE 
+     IF (1 = message.Question("Sei sicuro di voler editare questa voce?", "Sì", "No")) THEN    
+     IF (2 = message.Question("Vuoi tenere il padre precedente?", "Sì", "No")) THEN 
+          editPadre = TRUE
+          IF (PadreDaElenco.Value = TRUE) THEN          
+               idpadre = Val(PadriId[Padri.Index].Text)
+          ELSE IF (AutoPadre.Value = TRUE) THEN
+                    
+          ELSE 
+               idpadre = -1
+          END IF
+     END IF
+     IF (tipo.Index = 1) THEN 
+          .DBResult = .DBConnect.Exec("update Prezziario" & id_prezziario.Text & " set codice=&2, nome=&3, descrizionebreve=&4, descrizionelunga=&5, um=&6, prezzo=&7, sconto=&8, tipo=&9, idpadre=&10 where id=&1", id.Text, codice.Text, nome.Text, descrizione.Text, descrizionecompleta.Text, um.Text, costo.Text, sconto.Text, 1, idpadre)           
+          Fmain.CatPrezziario[id.Text].Delete
+          IF (idpadre = -1) THEN 
+               Fmain.CatPrezziario.Add(id.Text, codice.Text & "\t" & nome.Text, Fmain.cartpic.Picture)
+          ELSE 
+               Fmain.CatPrezziario.Add(id.Text, codice.Text & "\t" & nome.Text, Fmain.cartpic.Picture, idpadre)
+          END IF
+'          Fmain.CatPrezziario.Add(id.Text, codice.Text & "\t" & nome.Text, Fmain.cartpic.Picture, idpadre)
+
+     ELSE 
+          .DBResult = .DBConnect.Exec("update Prezziario" & id_prezziario.Text & " set codice=&2, nome=&3, descrizionebreve=&4, descrizionelunga=&5, um=&6, prezzo=&7, sconto=&8, tipo=&9, idpadre=&10  where id=&1", id.Text, codice.Text, nome.Text, descrizione.Text, descrizionecompleta.Text, um.Text, costo.Text, sconto.Text, 0, idpadre)           
+          Fmain.CatPrezziario[id.Text].Delete
+          IF (idpadre = -1) THEN 
+               Fmain.CatPrezziario.Add(id.Text, codice.Text & "\t" & nome.Text, Fmain.elpic.Picture)
+          ELSE 
+               Fmain.CatPrezziario.Add(id.Text, codice.Text & "\t" & nome.Text, Fmain.elpic.Picture, idpadre)
+          END IF
+     END IF   
+     increase_version
+     message.Info("Elemento editato")
+     Voce.Close
+     END IF
+
+END IF  
+END WITH 
+END
+
+PUBLIC SUB Elimina(ID_del AS Integer)
+  DIM risultato AS Result
+  WITH Splash
+
+     '.DBResult = .DBConnect.EXEC("select * from Prezziario" & id_prezziario.text & " where idpadre=&1", ID_del)
+     risultato = .DBConnect.Find("Prezziario" & id_prezziario.text, "idpadre=&1", ID_del)
+     WHILE (risultato.Available = TRUE)
+          Elimina(risultato!id)
+          risultato.MoveNext
+     WEND 
+     'PRINT ID_del & " Voci da eliminare: " & risultato.Count
+     FMain.CatPrezziario.Remove(ID_del)
+     FMain.CatPrezziario.Refresh
+     risultato = .DBConnect.Exec("delete from Prezziario" & id_prezziario.text & " where id=&1", ID_del)
+     increase_version()
+     'PRINT "Eliminata voce"
+END WITH   
+
+  
+END
+
+
+PUBLIC SUB Delete_Click()
+
+IF (1 = Message.Question("Sei sicuro di voler eliminare questo elemento e tutti i suoi figli?", "Sì", "No")) THEN
+     Elimina(Val(id.Text))
+     message.Info("Voci eliminate")
+     ME.Close
+END IF
+END

@@ -1,0 +1,12 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,25,6)
+  Text = ("Sto Calcolando...")
+  Icon = Picture["Icone/load.gif"]
+  Border = Window.Fixed
+  { CalcoloT TextLabel
+    MoveScaled(1,0,23,6)
+    Text = ("Sto calcolando")
+  }
+}

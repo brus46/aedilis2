@@ -1,0 +1,43 @@
+' Gambas class file
+
+PUBLIC SUB _new()
+
+END
+
+
+
+PUBLIC SUB Form_Open()
+     ME.Center
+     
+END
+
+PUBLIC SUB PictureBox1_MouseDown()
+
+  
+
+END
+
+PUBLIC SUB Timer1_Timer()
+     Timer1.Enabled = FALSE
+     SHELL "mkdir " & User.Home &/ ".Aedilis/"
+     SHELL "mkdir " & User.Home &/ ".Aedilis/Prezziari/" 
+     
+     Globals.StartOctave()
+     
+     Connessione.LoadConfig()
+     Connessione.CheckConnection()
+     
+
+     
+     Splash.hide
+     IF (Connessione.Connessi = FALSE) THEN 
+          ComputoMetrico.Text = "Computo Metrico - DBOffline"
+     ELSE 
+          ComputoMetrico.Text = "Computo Metrico - DBOnline"
+     END IF
+     
+     Globals.ProjectName = "ComputoMetrico"
+     ComputoMetrico.Show
+     ComputoMetrico.Nuovo_click()
+     
+END

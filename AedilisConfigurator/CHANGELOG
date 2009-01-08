@@ -1,0 +1,78 @@
+* Fri Sep 28 2007 MosconiMarco <brus46@gmail.com> 0.0-33
+- Cambiato il formato dei layout
+
+* Thu Sep 27 2007 MosconiMarco <brus46@gmail.com> 0.0-32
+- Bug fixing, do la possibilità al file dei layout di essere creato.
+
+* Thu Sep 27 2007 MosconiMarco <brus46@gmail.com> 0.0-31
+- Bug fixing, aspetto che le cartelle vengano create.
+
+* Thu Sep 27 2007 MosconiMarco <brus46@gmail.com> 0.0-30
+- Creazione di due layout di base
+
+* Mon Sep 24 2007 MosconiMarco <brus46@gmail.com> 0.0-29
+- Aggiunto il tasto della guida.
+
+* Mon Sep 24 2007 MosconiMarco <brus46@gmail.com> 0.0-28
+- Commentatura e Ottimizzazione completata
+- Aggiunta immagini ai comandi di Salva ed Esci.
+
+* Mon Sep 24 2007 MosconiMarco <brus46@gmail.com> 0.0-27
+- Commentatura e Ottimizzazione del codice.
+
+* Tue Sep 11 2007 MosconiMarco <brus46@gmail.com> 0.0-26
+- Bug fixed
+
+* Tue Sep 11 2007 MosconiMarco <brus46@gmail.com> 0.0-25
+- Implementato minimo numero di caratteri ed impostato a 10.
+- Implementata la lettura della configurazione precedente per il numero di caratteri.
+
+* Tue Sep 11 2007 MosconiMarco <brus46@gmail.com> 0.0-23
+- Prevenzione di casini da parte utente nell'inserimento del numero di caratteri implementato.
+
+* Tue Sep 11 2007 MosconiMarco <brus46@gmail.com> 0.0-22
+- Possibilità di configurare il numero di caratteri massimo per la descrizione breve
+
+* Sat Sep 08 2007 MosconiMarco <brus46@gmail.com> 0.0-21
+- Nuovo look
+- Lettura della precedente configurazione se possibile.
+
+* Sat Sep 08 2007 MosconiMarco <brus46@gmail.com> 0.0-20
+- Aggiunta configurazione cifre decimali per i prezzi
+
+* Sat Sep 08 2007 MosconiMarco <brus46@gmail.com> 0.0-19
+- Aggiunta configurazione Cifre decimali
+
+* Fri Sep 07 2007 MosconiMarco <brus46@gmail.com> 0.0-18
+- Bug fixed
+
+* Fri Sep 07 2007 MosconiMarco <brus46@gmail.com> 0.0-17
+- Aggiunta scelta editor di testo
+
+* Fri Sep 07 2007 MosconiMarco <brus46@gmail.com> 0.0-16
+- Aggiunta la scelta del lettore pdf e del lettore csv
+
+* Tue Sep 04 2007 MosconiMarco <brus46@gmail.com> 0.0-15
+- New title
+
+* Tue Jul 31 2007 MosconiMarco <brus46@gmail.com> 0.0-14
+- Add AutoBackup Options
+
+* Mon Jun 25 2007 MosconiMarco <brus46@gmail.com> 0.0-13
+- Add Option Auto-ElencoPrezzi
+
+* Sun Jun 24 2007 MosconiMarco <brus46@gmail.com> 0.0-11
+- Logo Changed
+
+* Tue Jun 19 2007 MosconiMarco <brus46@gmail.com> 0.0-10
+- Cambio nome Aedile->Aedilis
+
+* Sat Jun 16 2007 MosconiMarco <brus46@gmail.com> 0.0-9
+- Aedile Adapting
+
+* Sat Jun 16 2007 MosconiMarco <brus46@gmail.com> 0.0-7
+- Bug Fixing
+
+* Sat Jun 16 2007 MosconiMarco <brus46@gmail.com> 0.0-6
+- Initial release
+

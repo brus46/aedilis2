@@ -1,0 +1,101 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,49)
+  Text = ("Aggiungi all'elenco prezzi")
+  Icon = Picture["Icone/aedilisDocumentoNew.png"]
+  Border = Window.Fixed
+  { TabStrip1 TabStrip
+    MoveScaled(1,9,62,31)
+    Count = 3
+    Index = 0
+    Text = ("Categoria")
+    { TextLabel7 TextLabel
+      MoveScaled(14,5,10,4)
+      Text = ("Categoria:")
+    }
+    { Categorie ComboBox
+      MoveScaled(29,5,26,4)
+      Text = ("Varie")
+      ReadOnly = True
+      List = [("Varie")]
+    }
+    { EditCat Button
+      MoveScaled(21,14,18,4)
+      Text = ("Edita Categorie")
+    }
+    Index = 1
+    Text = ("Sconto")
+    { ScontoPrezziario RadioButton
+      MoveScaled(2,5,26,4)
+      Text = ("Applica Sconto Prezziario")
+      Value = True
+    }
+    { ScontoPer RadioButton
+      MoveScaled(2,10,24,4)
+      Text = ("Sconto Personalizzato:")
+    }
+    { NoSconto RadioButton
+      MoveScaled(2,15,19,5)
+      Text = ("Nessuno Sconto")
+    }
+    { ScontoSlide Slider
+      MoveScaled(30,9,29,7)
+      Mark = True
+    }
+    { TextLabel2 TextLabel
+      MoveScaled(59,17,2,3)
+      Text = ("%")
+    }
+    { ScontoVal TextLabel
+      MoveScaled(49,17,9,3)
+      Text = ("0")
+      Alignment = Align.Right
+    }
+    { ValScontoPrezziario TextLabel
+      MoveScaled(30,5,4,3)
+      Text = ("0")
+      Alignment = Align.Right
+    }
+    { TextLabel1 TextLabel
+      MoveScaled(35,5,2,3)
+      Text = ("%")
+    }
+    Index = 2
+    Text = ("Descrizione")
+    { TextLabel9 TextLabel
+      MoveScaled(1,2,58,3)
+      Text = ("La descrizione breve sar\xC3\xA0 estrapolata tagliando quella estesa.")
+    }
+    { TextLabel10 TextLabel
+      MoveScaled(1,6,12,3)
+      Text = ("Estesa:")
+    }
+    { Descrizione TextArea
+      MoveScaled(1,9,59,16)
+      Text = ("")
+    }
+    Index = 0
+  }
+  { Ok Button
+    MoveScaled(1,41,29,6)
+    Text = ("Ok")
+  }
+  { Cancel Button
+    MoveScaled(34,41,29,6)
+    Text = ("Annulla")
+  }
+  { TextLabel3 TextLabel
+    MoveScaled(1,2,16,4)
+    Text = ("Hai Selezionato:")
+  }
+  { Nome TextBox
+    MoveScaled(17,1,46,5)
+    Text = ("Cod-Nome")
+    ReadOnly = True
+  }
+  { Dati ListBox
+    MoveScaled(26,6,37,3)
+    Visible = False
+  }
+}

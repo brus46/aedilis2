@@ -1,0 +1,5 @@
+//Spostarsi col terminale in questa cartella
+// cd path
+//Dare il comando per la creazione del pacchetto. PS ricordarsi di cambiare il numero della versione!!
+equivs-build aedilis-dummy
+//Crea il pacchetto

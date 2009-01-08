@@ -1,0 +1,374 @@
+' Gambas class file
+
+PUBLIC SUB _new()
+
+END
+
+PUBLIC SUB ChiudiTutteImmagini()
+DIM DBResult AS Result
+DIM contatore AS Integer
+contatore = 0
+WITH Splash
+     DBResult = .DBConnect.Find("ElPrezziari")  
+     WHILE (DBResult.Available = TRUE) 
+          ElencoCompleto[contatore].Picture = PrezzPic.Picture
+          contatore = contatore + 1
+          DBResult.MoveNext
+     WEND 
+
+END WITH 
+
+  
+END
+
+PUBLIC SUB Form_Open()
+ME.Maximized = TRUE
+ME.Center
+Refresh_Click
+END
+
+PUBLIC SUB Button4_Click()
+
+     FMain.Close  
+
+END
+
+PUBLIC SUB ImportaPrezziario_Click()
+
+       Importa.Show
+     Importa.SetFocus  
+
+END
+
+PUBLIC SUB ElencoCompleto_Click()
+
+NomePrezziario.Text = ElencoCompleto[ElencoCompleto.Current.Key].Text
+
+END
+
+PUBLIC SUB Form_Close()
+
+     Splash.Close  
+     Importa.Close
+     
+END
+
+PUBLIC SUB Refresh_Click()
+DIM contatore AS Integer
+ElencoCompleto.Clear
+ElencoID.Clear
+contatore = 0
+WITH Splash
+     .DBResult = .DBConnect.Find("ElPrezziari")  
+     WHILE (.DBResult.Available = TRUE) 
+               ElencoCompleto.Add(contatore, .DBResult!Nome & " ver: " & .DBResult!Versione, PrezzPic.Picture)
+          ElencoID.Add(.DBResult!Id)
+          contatore = contatore + 1
+          .DBResult.MoveNext
+     WEND 
+
+END WITH 
+END
+
+PUBLIC SUB NuovoPrezziario_Click()
+
+  NewPr.Show
+
+END
+
+PUBLIC SUB EliminaPrezziario_Click()
+
+IF (ElencoCompleto.Current.Selected = TRUE) THEN 
+     IF (1 = Message.Question("Sei sicuro di voler completamente rimuovere: " & ElencoCompleto[ElencoCompleto.Current.Key].Text, "Sì", "No")) THEN
+          Splash.DBConnect.Delete("ElPrezziari", "id=&1", ElencoID.List[ElencoCompleto.Current.Key])
+          Splash.DBConnect.Exec("DROP TABLE Prezziario" & ElencoID.List[ElencoCompleto.Current.Key])
+          Refresh_Click
+          CatPrezziario.Clear
+     END IF 
+END IF
+
+END
+
+PUBLIC SUB Esci_Click()
+
+     ME.Close  
+
+END
+
+PUBLIC SUB RinominaPrezziario_Click()
+
+IF (ElencoCompleto.Current.Selected = TRUE) THEN 
+
+     Splash.DBConnect.Exec("UPDATE ElPrezziari set nome=&1 where id=&2", NomePrezziario.Text, elencoid.List[ElencoCompleto.Current.key])
+     Refresh_Click
+     Message.Info("Prezziario rinominato.")
+END IF
+
+END
+
+PUBLIC SUB EsportaPrezziario_Click()
+
+
+IF (ElencoCompleto.Current.Selected = TRUE) THEN 
+     Esporta.Show  
+     ToolEsportazione.id_prezziario = ElencoID.List[ElencoCompleto.Current.Key]
+     
+END IF
+END
+
+PUBLIC SUB Guida_Click()
+DIM stringa AS string[]
+     stringa = Split(Splash.Browser, "=")
+     SHELL stringa[1] & " file:///opt/aedilis/Guida/index.html"  
+
+END
+
+PUBLIC SUB Info_Click()
+
+     Informazioni.Show  
+
+END
+
+PUBLIC SUB Backup_Click()
+
+DIM cancel AS Boolean
+     Dialog.Filter = ["*.sql", "MySql Backup Files"]
+     Dialog.Title = "Backup"
+     Dialog.Path = User.Home &/ "Backup.sql"
+     cancel = Dialog.SaveFile()
+     IF NOT (cancel = TRUE) THEN 
+          IF (Splash.DBConnect.Login = "") THEN 
+               SHELL "mysqldump --databases " & Splash.DBConnect.Name & " > " & Dialog.Path
+          ELSE 
+          
+          IF (Splash.DBConnect.Password = "") THEN 
+               SHELL "mysqldump -u " & Splash.DBConnect.User & " --databases " & Splash.DBConnect.Name & " > " & Dialog.Path
+          ELSE 
+               SHELL "mysqldump -u " & Splash.DBConnect.User & " --password=" & Splash.DBConnect.Password & " --databases " & Splash.DBConnect.Name & " > " & Dialog.Path
+          END IF
+          END IF
+          Message.Info("Backup Completato")
+     END IF  
+  
+
+END
+
+PUBLIC SUB Restore_Click()
+
+DIM cancel AS Boolean
+DIM risposta AS Integer 
+     risposta = Message.Warning("Procedendo perderai tutti i dati che non hai salvato nel backup! Vuoi procedere comunque?", "No", "Sì")
+     IF (risposta = 2) THEN 
+     Dialog.Filter = ["*.sql", "MySql Backup Files"]
+     Dialog.Title = "Backup"
+     Dialog.Path = User.Home &/ ""
+     cancel = Dialog.OpenFile()
+     IF NOT (cancel = TRUE) THEN 
+          PRINT Dialog.Path
+          IF (Splash.DBConnect.Login = "") THEN 
+               SHELL "mysql " & Splash.DBConnect.Name & " < " & Dialog.Path
+          ELSE 
+          
+          IF (Splash.DBConnect.Password = "") THEN 
+               SHELL "mysql -u " & Splash.DBConnect.User & " " & Splash.DBConnect.Name & " < " & Dialog.Path
+          ELSE 
+               SHELL "mysql -u " & Splash.DBConnect.User & " -p=" & Splash.DBConnect.Password & " " & Splash.DBConnect.Name & " < " & Dialog.Path
+          END IF
+          END IF
+          Refresh_Click
+          Message.Info("DataBase Ripristinato")
+     END IF  
+     END IF
+  
+
+END
+
+PUBLIC SUB SeeVoce_Click()
+WITH Splash
+     IF NOT (CatPrezziario.Current = NULL)  
+          
+         .DBResult = .DBConnect.Find("Prezziario" & ElencoID.List[ElencoCompleto.Current.key], "id=&1", CatPrezziario.Current.key)
+         IF (.DBResult.Available = TRUE) THEN 
+               voce.ID.Text = CatPrezziario.Current.Key
+               voce.id_prezziario.Text = ElencoID.List[ElencoCompleto.Current.Key]
+         
+               Voce.nome.Text = .DBResult!Nome
+               Voce.codice.Text = .DBResult!Codice
+'               Voce.codicepadre.Text = .DBResult!idpadre
+               PRINT .DBResult!Tipo
+               IF (.DBResult!Tipo = FALSE) THEN 
+                    Voce.tipo.Text = Voce.tipo.List[0]
+               ELSE 
+                    Voce.tipo.Text = Voce.tipo.List[1]
+               END IF
+               Voce.descrizione.Text = .DBResult!DescrizioneBreve
+               Voce.descrizionecompleta.Text = .DBResult!DescrizioneLunga
+               Voce.costo.Text = .DBResult!Prezzo
+               Voce.sconto.Text = .DBResult!Sconto
+               Voce.UM.Text = .DBResult!UM
+               Voce.Idpadre = .DBResult!IdPadre
+               Voce.nuovo = FALSE
+               Voce.Padri.Clear
+               Voce.PadriID.Clear
+               Splash.DBResult = Splash.DBConnect.Find("Prezziario" & ElencoID.List[ElencoCompleto.Current.Key], "tipo=&1", TRUE)
+               WHILE splash.dbresult.Available = TRUE
+                    Voce.Padri.Add(splash.DBResult!Codice)
+                    Voce.PadriID.Add(splash.DBResult!Id)
+                    splash.DBResult.MoveNext
+               WEND 
+               Voce.editPadre = FALSE
+               
+               Voce.AddEdit.Text = "Edita"
+               Voce.Delete.Visible = TRUE
+               Voce.Show
+         END IF
+     END IF
+END WITH 
+END
+
+PUBLIC SUB AddVoce_Click()
+
+               Voce.nome.Text = ""
+               Voce.codice.Text = ""
+               voce.id_prezziario.Text = ElencoID.List[ElencoCompleto.Current.Key]
+               Voce.tipo.Text = Voce.tipo.List[0]
+               Voce.descrizione.Text = ""
+               Voce.descrizionecompleta.Text = ""
+               Voce.costo.Text = ""
+               Voce.sconto.Text = ""
+               Voce.UM.Text = ""
+               Voce.nuovo = TRUE
+               Voce.AddEdit.Text = "Aggiungi"
+               Voce.Delete.Visible = FALSE
+               Voce.editPadre = FALSE
+               Voce.Padri.Clear
+               Voce.PadriID.Clear
+               Splash.DBResult = Splash.DBConnect.Find("Prezziario" & ElencoID.List[ElencoCompleto.Current.Key], "tipo=&1", TRUE)
+               WHILE splash.dbresult.Available = TRUE
+                    Voce.Padri.Add(splash.DBResult!Codice)
+                    Voce.PadriID.Add(splash.DBResult!Id)
+                    splash.DBResult.MoveNext
+               WEND 
+               Voce.editpadre = TRUE
+               Voce.Show  
+
+END
+
+
+PUBLIC SUB Form_Resize()
+
+     CatPrezziario.Width = FMain.Width - CatPrezziario.X - 10
+
+     CatPrezziario.Height = FMain.Height - CatPrezziario.Y - 30
+
+     ElencoCompleto.Height = FMain.Height - ElencoCompleto.Y - 30
+
+     Separator1.Height = FMain.Height - Separator1.Y - 30
+
+END
+
+PUBLIC SUB Cerca_Click()
+IF NOT (ElencoCompleto.Current.Selected = FALSE) THEN 
+WITH Splash
+     IF (cerca_what.Text = "") THEN 
+          Message.Info("Non hai messo nulla nel campo di ricerca")
+     ELSE 
+     IF (cercawhere.Index = 0) THEN 
+
+          .DBResult = .DBConnect.Find("Prezziario" & ElencoID.List[ElencoCompleto.Current.Key], "codice like &1", cerca_what.Text & "%")
+          IF (.DBResult.Available = TRUE) THEN 
+               IF (.DBResult.Count = 1) THEN 
+                    CatPrezziario[.DBResult!Id].EnsureVisible()
+                    CatPrezziario[.DBResult!Id].Selected = TRUE
+               ELSE 
+                    PositiveMatch.Show
+                    PositiveMatch.dove.Text = cercawhere.Text
+                    PositiveMatch.cosa.Text = cerca_what.Text
+                    PositiveMatch.dbresult = .dbresult
+                    PositiveMatch.id_prezz = ElencoID.List[ElencoCompleto.Current.Key]
+                    PositiveMatch.refresh_cerca()
+               END IF
+          ELSE 
+               Message.Info("Nessuna voce trovata con questo codice")
+          END IF
+
+
+     ELSE IF (cercawhere.Index = 1) THEN 
+
+          .DBResult = .DBConnect.Find("Prezziario" & ElencoID.List[ElencoCompleto.Current.Key], "nome LIKE &1 ", cerca_what.Text & "%")
+          IF (.DBResult.Available = TRUE) THEN 
+               IF (.DBResult.Count = 1) THEN 
+                    CatPrezziario[.DBResult!Id].EnsureVisible()
+                    CatPrezziario[.DBResult!Id].Selected = TRUE
+               ELSE 
+                    PositiveMatch.Show
+                    PositiveMatch.dove.Text = cercawhere.Text
+                    PositiveMatch.cosa.Text = cerca_what.Text
+                    PositiveMatch.dbresult = .dbresult
+                    PositiveMatch.id_prezz = ElencoID.List[ElencoCompleto.Current.Key]
+                    PositiveMatch.refresh_cerca()
+               END IF
+          ELSE 
+               Message.Info("Nessuna voce trovata con questo nome")
+          END IF
+     
+     END IF
+     END IF
+END WITH 
+END IF
+
+END
+
+PUBLIC SUB PrezzPic_MouseDown()
+
+  
+
+END
+
+PUBLIC SUB ElencoCompleto_DblClick()
+
+DIM Corrotto AS Boolean
+
+WITH Splash
+     Corrotto = FALSE
+     PRINT 
+     .DBResult = .DBConnect.Find("Prezziario" & ElencoID.List[ElencoCompleto.Current.Key])     
+     ChiudiTutteImmagini
+     ElencoCompleto.Current.Picture = PrezzOPENpic.Picture
+     Caricamento.tot.Text = .DBResult.Count
+     Caricamento.parziale.Text = "0"
+     Caricamento.Show  
+     CatPrezziario.Clear
+     WHILE (.DBResult.Available = TRUE)
+          IF (.DBResult!IdPadre = "-1") THEN 
+               IF (.DBResult!Tipo = TRUE) THEN 
+                    CatPrezziario.Add(.DBResult!Id, .DBResult!Nome, cartpic.Picture)
+               ELSE 
+                    CatPrezziario.Add(.DBResult!Id, .DBResult!Nome, elpic.Picture)
+               END IF
+          ELSE 
+               IF (CatPrezziario.Exist(.DBResult!IdPadre) = TRUE) THEN 
+                    IF (.DBResult!Tipo = TRUE) THEN 
+                         CatPrezziario.Add(.DBResult!Id, .DBResult!Codice & "\t\t\t" & .DBResult!Nome, cartpic.Picture, .DBResult!IdPadre)
+                    ELSE 
+                         CatPrezziario.Add(.DBResult!Id, .DBResult!Codice & "\t\t\t" & .DBResult!Nome, elpic.Picture, .DBResult!IdPadre)
+                    END IF          
+               ELSE 
+                    Corrotto = TRUE
+                    IF (.DBResult!Tipo = TRUE) THEN 
+                         CatPrezziario.Add(.DBResult!Id, .DBResult!Codice & "\t\t\t" & .DBResult!Nome, cartpic.Picture)
+                    ELSE 
+                        CatPrezziario.Add(.DBResult!Id, .DBResult!Codice & "\t\t\t" & .DBResult!Nome, elpic.Picture)
+                    END IF                    
+               END IF
+          END IF
+          .DBResult.MoveNext
+          Caricamento.parziale.Text = Val(Caricamento.parziale.Text) + 1
+     WEND 
+     NomePrezziario.Text = ElencoCompleto[ElencoCompleto.Current.Key].Text
+END WITH 
+     Caricamento.Close
+     IF (Corrotto = TRUE) THEN Message.Warning("Il prezziario è corrotto!")
+  
+
+END

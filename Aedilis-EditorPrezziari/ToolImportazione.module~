@@ -1,0 +1,648 @@
+' Gambas module file
+
+PUBLIC linea AS String
+PUBLIC hfile AS File
+PUBLIC hfile1 AS File
+
+PUBLIC codicepadre AS String
+PUBLIC id_padre AS Integer
+PUBLIC codice AS String
+PUBLIC tipo AS String
+PUBLIC tipobool AS Boolean
+PUBLIC nome AS String
+PUBLIC descrizionebreve AS String
+PUBLIC descrizione AS String
+PUBLIC prezzo AS String
+PUBLIC sconto AS String
+PUBLIC um AS String
+
+PUBLIC padri AS Integer[]
+PUBLIC padri_cod AS String[]
+
+PUBLIC id_prezziario AS Integer
+PUBLIC id AS Integer
+
+PUBLIC SUB CercaPadre()
+DIM indice AS Integer
+DIM forse_padre AS String
+DIM Splittata AS String[]
+DIM valritornato AS Integer
+
+forse_padre = codice
+valritornato = 0
+Splittata = ["1", "2", "3"]
+WHILE ((valritornato = 0) AND (Splittata.Count >= 1))
+     Splittata = Split(forse_padre, ".")
+     IF NOT (Splittata.Count = 1) THEN 
+          forse_padre = ""
+          FOR indice = 0 TO Splittata.Count - 2
+               IF NOT (indice = 0) THEN forse_padre = forse_padre & "."
+               forse_padre = forse_padre & Splittata[indice]
+          NEXT 
+          'PRINT forse_padre
+          valritornato = TrovaPadre(forse_padre)
+     ELSE 
+          valritornato = 1
+     END IF
+WEND 
+id_padre = valritornato
+END
+
+
+PUBLIC SUB TrovaPadre(codice_padre AS String) AS Integer
+DIM contatore AS Integer
+     id_padre = 0
+     IF (codice_padre = "") THEN 
+          RETURN 0
+     ELSE 
+     id_padre = 0
+     FOR contatore = padri.Count - 1 TO 0 STEP -1
+          IF (padri_cod[contatore] = codice_padre) THEN 
+               id_padre = padri[contatore]
+               BREAK 
+          END IF
+     NEXT 
+  
+  RETURN id_padre
+  END IF
+END
+
+PUBLIC SUB InserisciValori()
+WITH Splash  
+     IF (id = 0) THEN 
+          .DBResult = .DBConnect.Find("Prezziario" & id_prezziario)
+          id = .DBResult.Count + 1 
+     IF (tipobool = TRUE) THEN 
+          padri.Add(id)
+          padri_cod.add(codice)
+     END IF
+     END IF
+     'PRINT id
+     .DBResult = .DBConnect.Exec("insert into Prezziario" & id_prezziario & " values (&1,&2,&3,&4,&5,&6,&7,&8,&9,&10)", id, codice, id_padre, nome, descrizionebreve, descrizione, um, prezzo, sconto, tipobool)           
+END WITH 
+  
+END
+
+PUBLIC SUB ImportPrezziarioIntermedio()
+  
+DIM tot AS Integer
+DIM DBResult2 AS Result
+id = 0
+tot = 0
+WHILE NOT Eof(hfile1)
+  LINE INPUT #hfile1, linea
+  IF (linea = "#") THEN 
+     tot = tot + 1
+  END IF
+WEND 
+Caricamento.parziale.Text = "0"
+Caricamento.tot.Text = tot
+Caricamento.Show
+Message.Info("Elementi da elaborare= " & tot & "Premi invio per iniziare.")
+id = 0
+WHILE NOT Eof(hFile)
+  LINE INPUT #hfile, linea
+  IF (linea = "#") THEN 
+     
+     LINE INPUT #hfile, codicepadre
+     'IF (codicepadre = "0") THEN codicepadre = ""
+
+     LINE INPUT #hfile, codice
+     'PRINT linea
+     id = id + 1
+
+     LINE INPUT #hfile, tipo
+     
+     IF (tipo = "EL") THEN 
+          tipobool = FALSE
+          LINE INPUT #hfile, linea
+          LINE INPUT #hfile, nome
+          LINE INPUT #hfile, descrizionebreve
+          LINE INPUT #hfile, descrizione
+          LINE INPUT #hfile, prezzo
+          LINE INPUT #hfile, sconto
+ '         LINE INPUT #hfile, um
+
+          
+     ELSE 
+          tipobool = TRUE
+          LINE INPUT #hfile, nome
+          descrizione = ""
+          descrizionebreve = ""
+          prezzo = ""
+          sconto = ""
+          um = ""
+     END IF    
+     
+     
+     DBResult2 = Splash.DBConnect.Exec("SELECT * FROM Prezziario" & id_prezziario & " where codice=&1", codicepadre)
+     IF (DBResult2.Available = TRUE) THEN 
+          id_padre = DBResult2!id
+     ELSE 
+          id_padre = -1
+     END IF
+     Splash.DBResult = Splash.DBConnect.Exec("insert into Prezziario" & id_prezziario & " values (&1,&2,&3,&4,&5,&6,&7,&8,&9,&10)", id, codice, id_padre, nome, descrizionebreve, descrizione, um, prezzo, sconto, tipobool)           
+     Caricamento.parziale.Text = Val(Caricamento.parziale.Text) + 1
+  END IF
+WEND 
+  
+  
+END
+
+PUBLIC SUB XML_Dati()
+DIM t AS Integer
+DIM tmp AS String
+DIM contaparti AS String  
+DIM tmpsplit AS String[]
+
+descrizionebreve = ""
+LINE INPUT #hfile, tmp
+tmpsplit = Split(tmp, "" & Chr(34) & "")
+t = -1
+'PRINT tmp
+FOR EACH contaparti IN tmpsplit
+t = t + 1
+NEXT 
+SELECT CASE Trim(tmpsplit[0])
+CASE "<prdDescrizione breve=" 'caratteristiche prodotto
+  IF (tmpsplit.Count > 4) THEN 
+     'PRINT tmpsplit[1] & "~" & tmpsplit[3]
+     nome = tmpsplit[1]
+     descrizione = tmpsplit[3]
+  ELSE 
+     'PRINT tmpsplit[1]
+     nome = tmpsplit[1]
+     descrizione = ""
+  END IF
+CASE "<prdQuotazione valore=" 'valore del prodotto
+  'PRINT tmpsplit[1]
+  prezzo = tmpsplit[1]
+END SELECT 
+  Caricamento.parziale.Text = Val(Caricamento.parziale.Text) + 1
+END
+
+PUBLIC SUB ImportXML()
+DIM tot AS Integer
+DIM t AS Integer
+DIM CodeUM AS String[]
+DIM UMs AS String[]
+DIM tmp AS String
+DIM contaparti AS String  
+DIM tmpsplit AS String[]
+DIM indice AS Integer
+
+'DIM lenElementi AS Integer[]
+DIM lenpadre AS Integer
+DIM ultimipadri AS Integer[]
+DIM splitting AS String[]
+
+UMs = [""]
+CodeUM = ["0"]
+UMs.Clear
+CodeUM.Clear
+
+'lenElementi = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+ultimipadri = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+tot = 0
+INC Application.Busy
+WHILE NOT Eof(hfile1)
+  LINE INPUT #hfile1, linea
+  tot = tot + 1
+WEND 
+Caricamento.parziale.Text = "0"
+Caricamento.tot.Text = tot
+Caricamento.Show
+Message.Info("Linee da elaborare= " & tot & "Premi invio per iniziare.")
+WHILE NOT Eof(hfile)
+LINE INPUT #hfile, tmp
+tmpsplit = Split(tmp, "" & Chr(34) & "")
+t = -1
+FOR EACH contaparti IN tmpsplit
+t = t + 1
+NEXT 
+'PRINT tmp
+SELECT CASE Trim(tmpsplit[0])
+
+CASE "<unitaDiMisura unitaDiMisuraId=" 'unità di misura e simbolo
+  'PRINT tmpsplit[1] & "~" & tmpsplit[5]
+  CodeUM.Add(tmpsplit[1])
+  UMs.Add(tmpsplit[5])
+
+CASE "<przDescrizione breve=" 'tipo di Listino
+  'PRINT tmpsplit[1] 
+          nome = tmpsplit[1]
+          id_padre = -1
+          id = 1
+          codice = 1
+'          ultimacat = 1
+          tipobool = TRUE
+          descrizionebreve = ""
+          descrizione = ""
+          prezzo = 0
+          sconto = 0
+          UM = ""
+          InserisciValori 
+CASE "<prodotto prodottoId=" 'tipo di prodotto
+
+
+splitting = Split(tmpsplit[3], ".")
+IF (splitting.Count <= 0) THEN 
+     lenpadre = 0
+ELSE 
+     lenpadre = Len(tmpsplit[3]) - 1 - Len(splitting[splitting.Count - 1])
+END IF
+IF lenpadre <= 0 THEN lenpadre = 0
+'PRINT lenpadre
+  IF tmpsplit.Count > 5 THEN 
+  'PRINT tmpsplit[1] & "~" & tmpsplit[3] & "~" & tmpsplit[5]
+  'PRINT tmpsplit[4]
+     IF NOT (tmpsplit[4] = " titolo=") THEN 
+       tipobool = FALSE
+       IF NOT (tmpsplit[4] = " voce=") THEN 
+          UM = UMs[Val(tmpsplit[5]) - Val(CodeUM[0])]
+          codice = tmpsplit[3]
+          id = Val(tmpsplit[1])
+          id_padre = ultimipadri[lenpadre]
+          XML_Dati()
+          XML_Dati()
+       ELSE 
+          UM = ""
+          prezzo = 0
+          sconto = 0
+          codice = tmpsplit[3]
+          id = Val(tmpsplit[1])
+          id_padre = ultimipadri[lenpadre]
+          XML_Dati()
+       END IF
+     ELSE 
+          tipobool = TRUE
+          UM = ""
+          prezzo = 0
+          sconto = 0
+          codice = tmpsplit[3]
+          id = Val(tmpsplit[1])
+          id_padre = ultimipadri[lenpadre]
+          XML_Dati()
+     ENDIF 
+  
+ ELSE 
+   tipobool = TRUE
+   UM = ""
+   prezzo = 0
+   sconto = 0
+   codice = tmpsplit[3]
+   id = Val(tmpsplit[1])
+   id_padre = ultimipadri[lenpadre]
+   XML_Dati()
+
+
+ ENDIF
+    InserisciValori
+ultimipadri[Len(tmpsplit[3])] = id
+'PRINT Len(tmpsplit[3])
+'PRINT ultimipadri[Len(tmpsplit[3])]
+'Message.Info("Degub Wait")
+END SELECT 
+     Caricamento.parziale.Text = Val(Caricamento.parziale.Text) + 1
+     
+WEND 
+  
+DEC Application.Busy  
+END
+
+PUBLIC SUB estraicampicsv(linea AS String) AS String[]
+DIM Campi AS String[]
+DIM Contatore AS Integer
+DIM contatore2 AS Integer
+DIM splitting AS String[]
+
+Campi = Split(linea, ImportaCSV.CampoSep.Text)
+IF NOT (Campi.Count = 0) THEN 
+     FOR contatore = 0 TO campi.Count - 1
+          IF (ImportaCSV.TestoSep.Text = "'") THEN 
+               splitting = Split(Campi[contatore], ImportaCSV.TestoSep.Text)
+          ELSE 
+               splitting = Split(Campi[contatore], "\"")
+          END IF
+          'debug
+          'IF (splitting.Count > 0) THEN 
+          '     PRINT splitting[0]
+          'ELSE
+          '     PRINT "no text sep"
+          'END IF
+          
+          IF (splitting.Count >= 2) THEN 
+               Campi[contatore] = splitting[1]
+          ELSE IF (splitting.Count = 1) THEN 
+               IF NOT ((contatore = Campi.Count - 1) OR (splitting[0] = "")) THEN 
+                    Campi[Contatore] = Campi[Contatore] & Campi[Contatore + 1]
+                    FOR contatore2 = contatore + 1 TO Campi.Count - 2
+                         Campi[contatore2] = Campi[contatore2 + 1]
+                    NEXT 
+               ELSE 
+                    Campi[contatore] = splitting[0]
+               END IF
+          END IF
+     NEXT   
+     'Debug
+     'FOR contatore = 0 TO campi.Count - 1
+     '     PRINT campi[contatore]
+     'NEXT   
+END IF
+
+
+RETURN Campi
+END
+
+
+PUBLIC SUB ImportCSV()
+DIM tot AS Integer
+DIM CodeUM AS Integer[]
+DIM UMis AS String[]
+DIM Splittata AS String[]
+DIM Splittata2 AS String[]
+DIM indice AS Integer
+DIM categoria AS Boolean
+id = 0
+padri = [0]
+padri_cod = [""]
+padri.Clear
+padri_cod.Clear
+
+INC Application.Busy
+
+tot = 0
+WHILE NOT Eof(hfile1)
+  LINE INPUT #hfile1, linea
+  tot = tot + 1
+WEND 
+WITH ImportaCSV
+tot = tot - .RigheDaSaltare.Value
+Caricamento.parziale.Text = "0"
+Caricamento.tot.Text = tot
+Caricamento.Show
+Message.Info("Linee da elaborare= " & tot & "Premi invio per iniziare.")
+
+IF (.SaltaPrimeRighe.Value = TRUE) THEN 
+indice = 1
+WHILE NOT Eof(hFile)
+     IF (indice <= .RigheDaSaltare.Value) THEN 
+        LINE INPUT #hfile, linea  
+        indice = indice + 1
+     ELSE 
+          BREAK 
+     END IF
+WEND 
+
+END IF
+WHILE NOT Eof(hFile)
+  LINE INPUT #hfile, linea
+     'PRINT linea
+     
+     Splittata = estraicampicsv(linea)
+     categoria = FALSE
+     IF (.Cat_NCampi.Value = TRUE) THEN 
+          'Controllo quanti campi ha la mia linea
+          IF (Splittata.Count = Val(.N.Text)) THEN categoria = TRUE
+     ELSE IF (.Cat_MVuoto.Value = TRUE) THEN
+          'Controllo che esista l'emmesimo Campo
+          IF (Splittata.Count >= Val(.M.Text)) THEN 
+          
+               IF (Splittata[Val(.M.Text) - 1] = "") THEN 
+                    categoria = TRUE
+               END IF
+          ELSE 
+               'il campo non esiste chiedo all'utente.
+               IF (1 = Message.Question("Questa riga non ha il campo M. E' una categoria?\n" & linea, "Sì", "No")) THEN categoria = TRUE
+          END IF
+     
+     ELSE 
+          'Controllo che esista l'yesimo Campo
+          IF (Splittata.Count >= Val(.Y.Text)) THEN 
+               IF (Splittata[Val(.y.Text) - 1] = .Cat_ValY.Text) THEN categoria = TRUE
+          ELSE 
+               'il campo non esiste chiedo all'utente.
+               IF (1 = Message.Question("Questa riga non ha il campo Y. E' una categoria?\n" & linea, "Sì", "No")) THEN categoria = TRUE
+          END IF
+     
+     END IF
+          
+     tipobool = categoria
+     
+     IF (categoria = TRUE) THEN 
+          IF (.Cat_Codice.Value = TRUE) THEN 
+               codice = ""
+               IF (Splittata.Count >= .Cat_PosCodice.Value) THEN 
+                    codice = Splittata[.Cat_PosCodice.Value - 1]              
+               END IF
+               
+               
+               CercaPadre()
+               IF ((id_padre = 0) OR (Caricamento.parziale.Text = "0")) THEN id_padre = -1
+               'id_padre = -1
+          ELSE 
+               codice = ""
+               id_padre = -1
+          END IF
+          
+          nome = ""
+          IF (.Cat_Nome.Value = TRUE) THEN 
+               IF (Splittata.Count >= .Cat_Posnome.Value) THEN 
+                    nome = Splittata[.Cat_Posnome.Value - 1]
+               END IF
+          END IF
+  
+          descrizione = ""
+          IF (.Cat_Descrizione.Value = TRUE) THEN 
+               IF (Splittata.Count >= .Cat_Posdescrizione.Value) THEN 
+                    descrizione = Splittata[.Cat_Posdescrizione.Value - 1]
+               END IF
+          END IF 
+          
+          descrizionebreve = ""
+          um = ""
+          prezzo = ""
+          sconto = ""
+     ELSE 
+          IF (.El_Codice.Value = TRUE) THEN 
+               codice = ""
+               IF (Splittata.Count >= .El_PosCodice.Value) THEN 
+                    codice = Splittata[.El_PosCodice.Value - 1]              
+               END IF
+               'PRINT codice
+               
+               CercaPadre()
+               IF ((id_padre = 0) OR (Caricamento.parziale.Text = "0")) THEN id_padre = -1
+               'id_padre = -1
+          ELSE 
+               codice = ""
+               id_padre = -1
+          END IF
+     
+          nome = ""
+          IF (.El_Nome.Value = TRUE) THEN 
+               IF (Splittata.Count >= .El_Posnome.Value) THEN 
+                    nome = Splittata[.El_Posnome.Value - 1]
+               END IF
+          END IF
+          
+          descrizionebreve = ""
+          IF (.El_Descrizione.Value = TRUE) THEN 
+               IF (Splittata.Count >= .El_Posdescrizione.Value) THEN 
+                    descrizionebreve = Splittata[.El_Posdescrizione.Value - 1]
+               END IF
+          END IF 
+          
+          descrizione = ""
+          IF (.El_Descrizionelunga.Value = TRUE) THEN 
+               IF (Splittata.Count >= .El_Posdescrlunga.Value) THEN 
+                    descrizione = Splittata[.El_Posdescrlunga.Value - 1]
+               END IF
+          END IF 
+          
+          um = ""
+
+          prezzo = ""
+          IF (.El_Prezzo.Value = TRUE) THEN 
+               IF (Splittata.Count >= .El_PosPrezzo.Value) THEN 
+                    prezzo = Splittata[.El_PosPrezzo.Value - 1]
+               END IF
+          END IF
+          
+          sconto = ""          
+          IF (.El_Sconto.Value = TRUE) THEN 
+               IF (Splittata.Count >= .El_Possconto.Value) THEN 
+                    sconto = Splittata[.El_Possconto.Value - 1]
+               END IF
+          END IF
+     
+     END IF     
+          
+          
+     
+     
+      PRINT id_padre              
+     InserisciValori  
+     Caricamento.parziale.Text = Val(Caricamento.parziale.Text) + 1
+WEND 
+     DEC Application.Busy
+     Message.Info("Importazione completata")
+     
+     ImportaCSV.Close
+END WITH 
+  
+  
+END
+
+PUBLIC SUB ImportPrezziario()
+DIM tot AS Integer
+tot = 0
+WHILE NOT Eof(hfile1)
+  LINE INPUT #hfile1, linea
+  IF (linea = "#") THEN 
+     tot = tot + 1
+  END IF
+WEND 
+id = 0
+Caricamento.parziale.Text = "0"
+Caricamento.tot.Text = tot
+Message.Info("Elementi da elaborare= " & tot & "Premi invio per iniziare.")
+Caricamento.Show
+WHILE NOT Eof(hFile)
+  LINE INPUT #hfile, linea
+  IF (linea = "#") THEN 
+     
+     LINE INPUT #hfile, codicepadre
+
+     LINE INPUT #hfile, linea
+     id = Val(linea)
+
+     LINE INPUT #hfile, tipo
+     
+     IF (tipo = "EL") THEN 
+          tipobool = FALSE
+          LINE INPUT #hfile, codice
+          LINE INPUT #hfile, nome
+          LINE INPUT #hfile, descrizionebreve
+          LINE INPUT #hfile, descrizione
+          LINE INPUT #hfile, prezzo
+          LINE INPUT #hfile, sconto
+          descrizionebreve = ""
+          um = ""
+          
+     ELSE 
+          tipobool = TRUE
+          LINE INPUT #hfile, nome
+          descrizione = ""
+          descrizionebreve = ""
+          prezzo = ""
+          sconto = ""
+          um = ""
+     END IF    
+     
+     id_padre = Val(codicepadre)
+     Splash.DBResult = Splash.DBConnect.Exec("insert into Prezziario" & id_prezziario & " values (&1,&2,&3,&4,&5,&6,&7,&8,&9,&10)", id, codice, id_padre, nome, descrizionebreve, descrizione, um, prezzo, sconto, tipobool)           
+     Caricamento.parziale.Text = Val(Caricamento.parziale.Text) + 1
+  END IF
+WEND 
+END
+
+PUBLIC SUB ImportPrezziarioUM()
+DIM tot AS Integer
+tot = 0
+WHILE NOT Eof(hfile1)
+  LINE INPUT #hfile1, linea
+  IF (linea = "#") THEN 
+     tot = tot + 1
+  END IF
+WEND 
+id = 0
+Caricamento.parziale.Text = "0"
+Caricamento.tot.Text = tot
+Caricamento.Show
+Message.Info("Elementi da elaborare= " & tot & "Premi invio per iniziare.")
+WHILE NOT Eof(hFile)
+  LINE INPUT #hfile, linea
+  IF (linea = "#") THEN 
+     
+     LINE INPUT #hfile, codicepadre
+     IF (codicepadre = "0") THEN codicepadre = ""
+
+     LINE INPUT #hfile, linea
+     PRINT linea
+     id = Val(linea)
+
+     LINE INPUT #hfile, tipo
+     
+     IF (tipo = "EL") THEN 
+          tipobool = FALSE
+          LINE INPUT #hfile, codice
+          LINE INPUT #hfile, nome
+          LINE INPUT #hfile, descrizionebreve
+          LINE INPUT #hfile, descrizione
+          LINE INPUT #hfile, prezzo
+          LINE INPUT #hfile, sconto
+          LINE INPUT #hfile, um
+
+          
+     ELSE 
+          tipobool = TRUE
+          LINE INPUT #hfile, nome
+          descrizione = ""
+          descrizionebreve = ""
+          prezzo = ""
+          sconto = ""
+          um = ""
+     END IF    
+     
+     id_padre = Val(codicepadre)
+
+     Splash.DBResult = Splash.DBConnect.Exec("insert into Prezziario" & id_prezziario & " values (&1,&2,&3,&4,&5,&6,&7,&8,&9,&10)", id, codice, id_padre, nome, descrizionebreve, descrizione, um, prezzo, sconto, tipobool)           
+     Caricamento.parziale.Text = Val(Caricamento.parziale.Text) + 1
+  END IF
+WEND 
+  
+  
+  
+END

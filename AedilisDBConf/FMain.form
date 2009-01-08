@@ -1,0 +1,100 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,54,69)
+  Text = ("Configura il DB")
+  Icon = Picture["Icone/aedilis-db-config.png"]
+  { CheckAndSave Button
+    MoveScaled(7,19,40,9)
+    Text = ("Controlla e Salva")
+    Picture = Picture["Icone/Ok.png"]
+  }
+  { DBName TextBox
+    MoveScaled(16,9,37,5)
+    Text = ("Aedilis")
+  }
+  { CreaDB CheckBox
+    MoveScaled(29,15,23,3)
+    Text = ("Crealo se non esiste.")
+    Value = CheckBox.True
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(1,2,48,5)
+    Font = Font["14"]
+    Text = ("Impostazioni d'accesso a MySQL")
+  }
+  { TextLabel2 TextLabel
+    MoveScaled(3,10,12,4)
+    Text = ("Nome del DB")
+  }
+  { Chiudi Button
+    MoveScaled(36,29,17,9)
+    Text = ("Esci")
+    Picture = Picture["Icone/esci.png"]
+  }
+  { PictureBox1 PictureBox
+    MoveScaled(46,0,7,8)
+    Picture = Picture["Icone/aedilis-db-config.png"]
+    Stretch = True
+  }
+  { Frame1 Frame
+    MoveScaled(1,39,52,29)
+    Visible = False
+    Text = ("Piu Opzioni")
+    { DBHost TextBox
+      MoveScaled(14,14,37,5)
+      Text = ("localhost")
+    }
+    { DBUserName TextBox
+      MoveScaled(14,2,37,5)
+      Text = ("root")
+    }
+    { DBPass TextBox
+      MoveScaled(14,8,37,5)
+      Text = ("")
+      Password = True
+    }
+    { TextLabel3 TextLabel
+      MoveScaled(1,3,12,4)
+      Text = ("UserName")
+    }
+    { TextLabel4 TextLabel
+      MoveScaled(1,9,12,4)
+      Text = ("Password")
+    }
+    { TextLabel5 TextLabel
+      MoveScaled(1,15,12,4)
+      Text = ("Host")
+    }
+    { BackupDB Button
+      MoveScaled(1,21,24,6)
+      Text = ("Backup DB")
+    }
+    { RestoreDB Button
+      MoveScaled(27,21,24,6)
+      Text = ("Restore DB")
+    }
+  }
+  { Options Button
+    MoveScaled(1,29,16,9)
+    Text = ("Opzioni")
+    Picture = Picture["Icone/piu.png"]
+  }
+  { MorePic PictureBox
+    MoveScaled(1,15,4,4)
+    Visible = False
+    Picture = Picture["Icone/piu.png"]
+    Stretch = True
+  }
+  { LessPic PictureBox
+    MoveScaled(5,15,4,4)
+    Visible = False
+    Picture = Picture["Icone/meno.png"]
+    Stretch = True
+  }
+  { Help Button
+    MoveScaled(18,29,17,9)
+    Text = ("Help")
+    Picture = Picture["Icone/Ridimensionato-Guida.png"]
+  }
+}

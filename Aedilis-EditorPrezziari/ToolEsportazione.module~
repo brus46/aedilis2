@@ -1,0 +1,130 @@
+' Gambas module file
+
+PUBLIC hfile AS File
+
+PUBLIC id_prezziario AS Integer
+
+PUBLIC id AS Integer
+PUBLIC key AS String
+PUBLIC keypadre AS String
+PUBLIC nome AS String
+PUBLIC descrizione AS String
+PUBLIC descrizione_completa AS String
+PUBLIC costo AS String
+PUBLIC sconto AS String
+PUBLIC UM AS String
+PUBLIC tipo AS Boolean
+
+
+PUBLIC CSV_text AS String
+PUBLIC CSV_field AS String
+
+PUBLIC SUB EsportaPrezziario(tipo_out AS Integer)
+DIM DBResult2 AS Result
+
+WITH Splash
+     .DBResult = .DBConnect.Find("Prezziario" & id_prezziario)
+     WHILE (.DBResult.Available = TRUE)
+          key = .DBResult!Codice
+'          DBResult2 = .DBConnect.Find("Prezziario" & id_prezziario, "id=&1", .DBResult!idpadre)
+'          IF (DBResult2.Available = TRUE) THEN 
+          keypadre = .DBResult!Idpadre
+          id = .DBResult!Id
+          
+'          ELSE 
+'               keypadre = "0"
+'          END IF
+          
+          nome = .DBResult!Nome
+          descrizione = .DBResult!DescrizioneBreve
+          descrizione_completa = .DBResult!DescrizioneLunga
+          costo = .DBResult!Prezzo
+          sconto = .DBResult!Sconto
+          UM = .DBResult!UM
+          tipo = .DBResult!Tipo
+          IF (tipo_out = 0) THEN 
+          'Prezziario senza UM
+               scrivi_Prezziario_NOUM
+          ELSE IF (tipo_out = 1) THEN 
+          'Prezziario con UM
+               scrivi_Prezziario
+          ELSE IF (tipo_out = 2) THEN 
+          'CSV
+               scrivi_CSV
+          END IF
+          .DBResult.MoveNext
+     WEND 
+END WITH 
+END
+
+PUBLIC SUB intestazione_CSV()
+DIM stringa AS String
+     stringa = ""
+     stringa = CSV_text & "Codice" & CSV_text & CSV_field
+     stringa = stringa & CSV_text & "Nome" & CSV_text & CSV_field
+     stringa = stringa & CSV_text & "Descrizione" & CSV_text & CSV_field
+     stringa = stringa & CSV_text & "Descrizione completa" & CSV_text & CSV_field
+     stringa = stringa & CSV_text & "Prezzo" & CSV_text & CSV_field
+     stringa = stringa & CSV_text & "Sconto" & CSV_text & CSV_field
+     stringa = stringa & CSV_text & "UM" & CSV_text & CSV_field
+     stringa = stringa & CSV_text & "tipo" & CSV_text & CSV_field
+     PRINT #hfile, stringa
+  
+  
+END
+
+PUBLIC SUB scrivi_CSV()
+DIM stringa AS String
+     stringa = ""
+     stringa = CSV_text & key & CSV_text & CSV_field
+     stringa = stringa & CSV_text & nome & CSV_text & CSV_field
+     stringa = stringa & CSV_text & descrizione & CSV_text & CSV_field
+     stringa = stringa & CSV_text & descrizione_completa & CSV_text & CSV_field
+     stringa = stringa & CSV_text & costo & CSV_text & CSV_field
+     stringa = stringa & CSV_text & sconto & CSV_text & CSV_field
+     stringa = stringa & CSV_text & UM & CSV_text & CSV_field
+     stringa = stringa & CSV_text & tipo & CSV_text & CSV_field
+     PRINT #hfile, stringa
+  
+  
+END
+
+PUBLIC SUB scrivi_Prezziario_NOUM()
+  PRINT #hfile, "#"
+  PRINT #hfile, keypadre
+  PRINT #hfile, id
+  IF (tipo = FALSE) THEN 
+       PRINT #hfile, "EL"
+       PRINT #hfile, key
+       PRINT #hfile, nome
+       PRINT #hfile, descrizione
+       PRINT #hfile, descrizione_completa
+       PRINT #hfile, costo
+       PRINT #hfile, sconto
+  ELSE 
+       PRINT #hfile, "CAT"  
+       PRINT #hfile, nome
+  END IF
+  
+END
+
+PUBLIC SUB scrivi_Prezziario()
+  
+  PRINT #hfile, "#"
+  PRINT #hfile, keypadre
+  PRINT #hfile, id
+  IF (tipo = FALSE) THEN 
+       PRINT #hfile, "EL"
+       PRINT #hfile, key
+       PRINT #hfile, nome
+       PRINT #hfile, descrizione
+       PRINT #hfile, descrizione_completa
+       PRINT #hfile, costo
+       PRINT #hfile, sconto
+       PRINT #hfile, UM
+  ELSE 
+       PRINT #hfile, "CAT"  
+       PRINT #hfile, nome
+  END IF
+  
+END

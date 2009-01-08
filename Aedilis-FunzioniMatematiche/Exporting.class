@@ -1,0 +1,58 @@
+' Gambas class file
+
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+
+END
+
+
+PUBLIC SUB AddEx_Click()
+  'Aggiunge una funzione alla lista di esportazione
+  'Se la lista delle funzioni non è vuota allora ho almeno un elemento da spostare nell'altra lista
+  IF NOT (ListFunzioni.Current = NULL) THEN
+     ListExport.Add(ListFunzioni.Current.Text) 'Aggiungo l'elemento selezionato alla lista delle funzioni da esportare
+     ListFunzioni.Remove(ListFunzioni.Index) 'Tolgo l'elemento selezionato dalla lista delle funzioni esportabili
+  END IF
+
+END
+
+PUBLIC SUB RmEx_Click()
+  'Rimuove una funzione dalla lista di esportazione
+  'Se la lista delle funzioni da esportare non è vuota ho almeno un elmento da eliminare
+  IF NOT (ListExport.Current = NULL) THEN
+     ListFunzioni.Add(ListExport.Current.Text) 'Aggiungo l'elemento corrente alla lista delle funzioni esportabili
+     ListExport.Remove(ListExport.Index) 'Rimuovo l'elemento corrente dalla lista delle funzioni da esportare
+  END IF
+
+END
+
+PUBLIC SUB Annulla_Click()
+  'Chiudo il form
+  ME.Close
+
+END
+
+PUBLIC SUB Esporta_Click()
+DIM elements AS String
+DIM pathel AS String
+DIM contatore AS Integer
+
+   pathel = User.Home &/ ".Aedilis/Funzioni/"
+   elements = ""
+   Dialog.Path = User.Home
+   Dialog.Title = "Seleziona il file dove salvare"
+   Dialog.Filter = ["*.AAF", "Aedilis Archivio Funzioni"]
+   IF NOT (1 = Dialog.SaveFile()) THEN 
+          FOR contatore = 0 TO ListExport.Count - 1
+               elements = elements & " " & ListExport[contatore].Text
+          NEXT 
+          'Linea per il debug, stampa a video il comando di esportazione
+          'PRINT "tar -cvf " & Dialog.Path & ".AAF" & " -C " & pathel & elements
+          SHELL "tar -cvf " & Dialog.Path & ".AAF" & " -C " & pathel & elements WAIT 
+          Message.Info("Salvataggio avvenuto con successo")
+          ME.Close
+   END IF
+
+END

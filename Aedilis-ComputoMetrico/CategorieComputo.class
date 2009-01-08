@@ -1,0 +1,106 @@
+' Gambas class file
+
+PUBLIC SUB Form_Open()
+     ME.Center
+END
+PUBLIC SUB Refresh1()
+DIM contatore AS Integer
+
+  ElCat.Clear
+  FOR contatore = 0 TO Categorie.Count - 1
+  
+     IF (CatProp[contatore].Text = "1") THEN 
+     
+          ElCat.Add(contatore, Categorie[contatore].Text, CatPic.Picture)
+     
+     ELSE 
+     
+          ElCat.Add(contatore, Categorie[contatore].Text, CatLockedPic.Picture)
+     
+     END IF
+  
+  NEXT 
+  Refresh2()
+END
+
+PUBLIC SUB Refresh2()
+  
+  AddElPrezzi.Categorie.List = Categorie.List
+  ComputoMetrico.CategorieElPrezzi.List = Categorie.List
+  ComputoMetrico.CategorieElPrezzi.Add("Tutte")
+  ComputoMetrico.CategorieCM.List = ComputoMetrico.CategorieElPrezzi.List
+  ComputoMetrico.CategorieOfferte.List = ComputoMetrico.CategorieElPrezzi.List
+  AddDirComputo.Categorie.List = Categorie.List
+  ComputoMetrico.RefreshTotaleComputo()
+  EditElementoElPrezzi.Categorie.List = Categorie.List
+END
+
+
+PUBLIC SUB Add_Click()
+DIM id AS Integer
+
+IF NOT (NomeCat.Text = "") THEN 
+
+     Categorie.Add(NomeCat.Text)
+     CatProp.Add("1")
+     Refresh1()
+
+ENDIF 
+END
+
+PUBLIC SUB ElCat_Click()
+
+IF NOT (ElCat.Current.Selected = FALSE) THEN 
+     NomeCat.Text = ElCat.Current.Text  
+END IF
+
+END
+
+PUBLIC SUB Closing_Click()
+
+ME.Hide
+     
+END
+
+PUBLIC SUB Delete_Click()
+
+IF NOT (ElCat.Current.Selected = FALSE) THEN 
+     IF (ElCat.Current.Key = 0) THEN 
+          Message.Warning("Non puoi rimuovere la categoria di Default")
+     ELSE 
+          DeleteCategoria.Show
+          DeleteCategoria.Categorie.List = Categorie.List
+          DeleteCategoria.Categorie.Remove(ElCat.Current.Key)
+          ME.Hide
+          DeleteCategoria.DaEliminare.Text = ElCat.Current.Key
+
+     END IF
+     
+END IF  
+
+END
+
+PUBLIC SUB Edit_Click()
+
+IF NOT (ElCat.Current.Selected = FALSE) THEN 
+     IF (ElCat.Current.Key = 0) THEN 
+          Message.Warning("Non puoi editare la categoria di Default")
+     ELSE 
+          IF NOT (NomeCat.Text = "") THEN 
+               Categorie[ElCat.Current.Key].Text = NomeCat.Text
+               ElCat.Current.Text = NomeCat.Text
+               Refresh2()
+          ELSE 
+               Message.Info("Nome vuoto!")
+          END IF
+     END IF
+     
+END IF  
+
+END
+
+PUBLIC SUB Categorie_Click()
+
+  
+
+END

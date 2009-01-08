@@ -1,0 +1,399 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,71,64)
+  Text = ("Wizard di stampa")
+  Icon = Picture["Icone/wizard/wizard.png"]
+  Border = Window.Fixed
+  { WizardFru Wizard
+    MoveScaled(0,0,71,63)
+    Count = 5
+    Index = 0
+    Text = ("Step #1 - Scelta dei layout")
+    Picture = Picture["Icone/wizard/Layout.png"]
+    { TextLabel1 TextLabel
+      MoveScaled(1,2,17,4)
+      Text = ("Layout Copertina:")
+    }
+    { LayoutCopertina ComboBox
+      MoveScaled(20,1,23,4)
+      Text = ("ComboBox1")
+      ReadOnly = True
+    }
+    { TextLabel2 TextLabel
+      MoveScaled(1,25,17,5)
+      Text = ("Layout ultima pagina:")
+    }
+    { LayoutUltimaPagina ComboBox
+      MoveScaled(20,25,23,4)
+      Text = ("ComboBox1")
+      ReadOnly = True
+    }
+    { Aggiorna Button
+      MoveScaled(1,44,15,4)
+      Text = ("Aggiorna")
+    }
+    { AnteprimaCopertina PictureBox
+      MoveScaled(48,5,16,19)
+      Stretch = True
+      Border = Border.Plain
+    }
+    { TextLabel11 TextLabel
+      MoveScaled(48,1,18,3)
+      Text = ("Anteprima:")
+    }
+    { TextLabel12 TextLabel
+      MoveScaled(48,25,18,3)
+      Text = ("Anteprima:")
+    }
+    { AnteprimaUltimaPagina PictureBox
+      MoveScaled(48,29,16,19)
+      Stretch = True
+      Border = Border.Plain
+    }
+    { NoPicture PictureBox
+      MoveScaled(49,6,16,19)
+      Visible = False
+      Picture = Picture["Icone/wizard/NoPic.png"]
+      Stretch = True
+      Border = Border.Plain
+    }
+    { TextLabel13 TextLabel
+      MoveScaled(1,6,17,3)
+      Text = ("Copertina da File:")
+    }
+    { CoverFromFile TextBox
+      MoveScaled(1,9,38,4)
+      Text = ("")
+    }
+    { GetCoverFromFilePath Button
+      MoveScaled(40,9,3,4)
+      Text = ("...")
+    }
+    { TextLabel14 TextLabel
+      MoveScaled(1,32,25,3)
+      Text = ("Ultima pagina da File:")
+    }
+    { BackFromFile TextBox
+      MoveScaled(1,35,38,4)
+      Text = ("")
+    }
+    { GetBackFromFilePath Button
+      MoveScaled(40,35,3,4)
+      Text = ("...")
+    }
+    Index = 1
+    Text = ("Step #2 - Selezionare gli elementi da stampare")
+    Picture = Picture["Icone/wizard/ElementiDaStampare.png"]
+    { TextLabel3 TextLabel
+      MoveScaled(1,0,19,3)
+      Text = ("Lista dei dati:")
+    }
+    { ListaDati ListBox
+      MoveScaled(1,4,26,44)
+      List = [("Codice"), ("Descrizione Breve"), ("Descrizione Completa"), ("Prezzo"), ("Sconto"), ("UM"), ("Quantit\xC3\xA0"), ("Costo"), ("Costo(no sconto)"), ("Offerte (numerica)"), ("Offerte (letterale)")]
+    }
+    { AddDati Button
+      MoveScaled(28,19,7,7)
+      Text = ("")
+      Picture = Picture["Icone/1rightarrow.png"]
+    }
+    { RMDati Button
+      MoveScaled(28,26,7,7)
+      Text = ("")
+      Picture = Picture["Icone/1leftarrow.png"]
+    }
+    { TextLabel4 TextLabel
+      MoveScaled(36,0,19,3)
+      Text = ("Da stampare:")
+    }
+    { ListaStampa ListBox
+      MoveScaled(36,4,26,44)
+    }
+    { UpDati Button
+      MoveScaled(63,20,6,6)
+      Text = ("")
+      Picture = Picture["Icone/1uparrow.png"]
+    }
+    { DownDati Button
+      MoveScaled(63,26,6,6)
+      Text = ("")
+      Picture = Picture["Icone/1downarrow.png"]
+    }
+    { StampaDefault Button
+      MoveScaled(28,33,7,7)
+      Text = ("Default")
+    }
+    Index = 2
+    Text = ("Step #3 - Gestione categorie")
+    Picture = Picture["Icone/wizard/Categorie.png"]
+    { PanelCategorie Panel
+      MoveScaled(1,17,70,32)
+      Enabled = False
+      { ListaCat ListBox
+        MoveScaled(0,0,26,26)
+        List = []
+      }
+      { AddCat Button
+        MoveScaled(27,6,7,7)
+        Text = ("")
+        Picture = Picture["Icone/1rightarrow.png"]
+      }
+      { RmCat Button
+        MoveScaled(27,13,7,7)
+        Text = ("")
+        Picture = Picture["Icone/1leftarrow.png"]
+      }
+      { ListaStampaCat ListBox
+        MoveScaled(35,0,26,26)
+      }
+      { UpCat Button
+        MoveScaled(62,7,6,6)
+        Text = ("")
+        Picture = Picture["Icone/1uparrow.png"]
+      }
+      { DownCat Button
+        MoveScaled(62,13,6,6)
+        Text = ("")
+        Picture = Picture["Icone/1downarrow.png"]
+      }
+      { AggiornaCategorie Button
+        MoveScaled(51,27,16,4)
+        Text = ("Aggiorna Cat.")
+      }
+      { ListaCatId ListBox
+        MoveScaled(15,14,11,12)
+        Visible = False
+        List = [("Titolo Progetto"), ("Totale Computo"), ("Committente"), ("Tipo di Committente"), ("Professionista"), ("Lista riassuntiva delle categorie")]
+      }
+      { ListaStampaCatId ListBox
+        MoveScaled(50,14,11,12)
+        Visible = False
+        List = [("Titolo Progetto"), ("Totale Computo"), ("Committente"), ("Tipo di Committente"), ("Professionista"), ("Lista riassuntiva delle categorie")]
+      }
+    }
+    { Categorie CheckBox
+      MoveScaled(2,2,26,3)
+      Text = ("Dividi in categorie")
+    }
+    { CatIntestazione CheckBox
+      MoveScaled(0,-1,32,3)
+      Visible = False
+      Enabled = False
+      Text = ("Ristampa definizioni colonne")
+    }
+    { CategoriaPerPagina CheckBox
+      MoveScaled(7,8,34,3)
+      Enabled = False
+      Text = ("Stampa una categoria per pagina")
+    }
+    { TotCat CheckBox
+      MoveScaled(7,5,33,3)
+      Enabled = False
+      Text = ("Stampa il totale della categoria")
+    }
+    { SomeCategorie CheckBox
+      MoveScaled(2,13,31,3)
+      Enabled = False
+      Text = ("Stampa solo alcune categorie")
+    }
+    Index = 3
+    Text = ("Step #4 - Caratteri")
+    Picture = Picture["Icone/wizard/Font.png"]
+    { TabStrip1 TabStrip
+      MoveScaled(1,0,68,48)
+      Count = 3
+      Index = 0
+      Text = ("Testo Semplice")
+      { DimCarattereTesto ComboBox
+        MoveScaled(21,4,9,5)
+        Text = ("8")
+        ReadOnly = True
+        List = [("5"), ("7"), ("8"), ("9"), ("10"), ("12"), ("14"), ("18"), ("20"), ("24")]
+      }
+      { TextLabel5 TextLabel
+        MoveScaled(1,5,19,3)
+        Text = ("Grandezza carattere:")
+      }
+      { TextLabel26 TextLabel
+        MoveScaled(31,5,4,3)
+        Text = ("pt.")
+      }
+      { ColoreTesto ColorButton
+        MoveScaled(21,11,9,6)
+      }
+      { TextLabel27 TextLabel
+        MoveScaled(1,13,19,3)
+        Text = ("Colore carattere:")
+      }
+      { TestoGrassetto CheckBox
+        MoveScaled(45,4,15,4)
+        Font = Font["Bold"]
+        Text = ("Grassetto")
+      }
+      { TestoCorsivo CheckBox
+        MoveScaled(45,8,15,4)
+        Font = Font["Italic"]
+        Text = ("Corsivo")
+      }
+      Index = 1
+      Text = ("Intestazione Tabella")
+      { TextLabel6 TextLabel
+        MoveScaled(1,5,19,3)
+        Text = ("Grandezza carattere:")
+      }
+      { DimCarattereIntestazione ComboBox
+        MoveScaled(21,4,9,5)
+        Text = ("8")
+        ReadOnly = True
+        List = [("5"), ("7"), ("8"), ("9"), ("10"), ("12"), ("14"), ("18"), ("20"), ("24")]
+      }
+      { TextLabel25 TextLabel
+        MoveScaled(31,5,4,3)
+        Text = ("pt.")
+      }
+      { TextLabel28 TextLabel
+        MoveScaled(1,13,19,3)
+        Text = ("Colore carattere:")
+      }
+      { ColoreIntestazione ColorButton
+        MoveScaled(21,11,9,6)
+      }
+      { IntestazioneCorsivo CheckBox
+        MoveScaled(45,8,15,4)
+        Font = Font["Italic"]
+        Text = ("Corsivo")
+      }
+      { IntestazioneGrassetto CheckBox
+        MoveScaled(45,4,15,4)
+        Font = Font["Bold"]
+        Text = ("Grassetto")
+      }
+      Index = 2
+      Text = ("Titoli")
+      { DimCarattereTitolo ComboBox
+        MoveScaled(21,4,9,5)
+        Text = ("8")
+        ReadOnly = True
+        List = [("5"), ("7"), ("8"), ("9"), ("10"), ("12"), ("14"), ("18"), ("20"), ("24")]
+      }
+      { TextLabel23 TextLabel
+        MoveScaled(1,5,19,3)
+        Text = ("Grandezza carattere:")
+      }
+      { TextLabel24 TextLabel
+        MoveScaled(31,5,4,3)
+        Text = ("pt.")
+      }
+      { TextLabel29 TextLabel
+        MoveScaled(1,13,19,3)
+        Text = ("Colore carattere:")
+      }
+      { ColoreTitolo ColorButton
+        MoveScaled(21,11,9,6)
+      }
+      { TitoloCorsivo CheckBox
+        MoveScaled(45,8,15,4)
+        Font = Font["Italic"]
+        Text = ("Corsivo")
+      }
+      { TitoloGrassetto CheckBox
+        MoveScaled(45,4,15,4)
+        Font = Font["Bold"]
+        Text = ("Grassetto")
+      }
+      Index = 0
+    }
+    Index = 4
+    Text = ("Step #5 - Bordo pagina")
+    Picture = Picture["Icone/wizard/BordiFoglio.png"]
+    { TextLabel7 TextLabel
+      MoveScaled(5,5,14,3)
+      Text = ("Bordo alto:")
+    }
+    { TextLabel8 TextLabel
+      MoveScaled(5,11,14,3)
+      Visible = False
+      Text = ("Bordo basso:")
+    }
+    { TextLabel9 TextLabel
+      MoveScaled(5,17,14,3)
+      Text = ("Bordo sinistra:")
+    }
+    { TextLabel10 TextLabel
+      MoveScaled(5,23,14,3)
+      Visible = False
+      Text = ("Bordo destra:")
+    }
+    { TopBordo TextBox
+      MoveScaled(21,4,9,5)
+      Text = ("10")
+    }
+    { DownBordo TextBox
+      MoveScaled(21,10,9,5)
+      Visible = False
+      Text = ("0")
+    }
+    { LeftBordo TextBox
+      MoveScaled(21,16,9,5)
+      Text = ("0")
+    }
+    { RightBordo TextBox
+      MoveScaled(21,22,9,5)
+      Visible = False
+      Text = ("-25")
+    }
+    { TextLabel15 TextLabel
+      MoveScaled(31,5,7,3)
+      Text = ("mm")
+    }
+    { TextLabel16 TextLabel
+      MoveScaled(31,11,7,3)
+      Visible = False
+      Text = ("mm")
+    }
+    { TextLabel17 TextLabel
+      MoveScaled(31,17,7,3)
+      Text = ("mm")
+    }
+    { TextLabel18 TextLabel
+      MoveScaled(31,23,7,3)
+      Visible = False
+      Text = ("mm")
+    }
+    { TextLabel19 TextLabel
+      MoveScaled(2,33,18,3)
+      Text = ("Larghezza textzone:")
+    }
+    { TextWidth TextBox
+      MoveScaled(21,32,9,5)
+      Text = ("19")
+    }
+    { TextLabel20 TextLabel
+      MoveScaled(31,33,7,3)
+      Text = ("cm")
+    }
+    { TextLabel21 TextLabel
+      MoveScaled(3,39,17,3)
+      Text = ("Altezza textzone:")
+    }
+    { TextHeight TextBox
+      MoveScaled(21,38,9,5)
+      Text = ("25")
+    }
+    { TextLabel22 TextLabel
+      MoveScaled(31,39,7,3)
+      Text = ("cm")
+    }
+    { Verticale RadioButton
+      MoveScaled(47,33,18,3)
+      Text = ("Foglio Verticale")
+    }
+    { Orizzontale RadioButton
+      MoveScaled(47,37,19,3)
+      Text = ("Foglio Orizzontale")
+      Value = True
+    }
+    Index = 0
+  }
+}

@@ -1,0 +1,113 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,46)
+  Text = ("Edita Elemento Elenco Prezzi")
+  Icon = Picture["Icone/aedilisDocumentoEdit.png"]
+  Border = Window.Fixed
+  { TextLabel3 TextLabel
+    MoveScaled(1,2,16,4)
+    Text = ("Hai Selezionato:")
+  }
+  { Nome TextBox
+    MoveScaled(17,1,46,5)
+    Text = ("Cod-Nome")
+    ReadOnly = True
+  }
+  { TabStrip1 TabStrip
+    MoveScaled(1,7,62,31)
+    Count = 5
+    Index = 0
+    Text = ("Codice")
+    { TextLabel4 TextLabel
+      MoveScaled(12,11,9,4)
+      Text = ("Codice:")
+    }
+    { Code TextBox
+      MoveScaled(21,10,29,5)
+      Text = ("")
+    }
+    Index = 1
+    Text = ("Costo")
+    { TextLabel5 TextLabel
+      MoveScaled(12,11,9,4)
+      Text = ("Prezzo:")
+    }
+    { Costo TextBox
+      MoveScaled(21,10,29,5)
+      Text = ("")
+    }
+    { TextLabel1 TextLabel
+      MoveScaled(51,11,4,3)
+      Text = ("\xE2\x82\xAC")
+    }
+    Index = 2
+    Text = ("Sconto")
+    { ScontoPer RadioButton
+      MoveScaled(2,6,24,4)
+      Text = ("Sconto Personalizzato:")
+      Value = True
+    }
+    { NoSconto RadioButton
+      MoveScaled(2,16,19,5)
+      Text = ("Nessuno Sconto")
+    }
+    { ScontoSlide Slider
+      MoveScaled(30,5,29,7)
+      Mark = True
+    }
+    { TextLabel2 TextLabel
+      MoveScaled(59,13,2,3)
+      Text = ("%")
+    }
+    { ScontoVal TextLabel
+      MoveScaled(49,13,9,3)
+      Text = ("0")
+      Alignment = Align.Right
+    }
+    Index = 3
+    Text = ("Categoria")
+    { TextLabel7 TextLabel
+      MoveScaled(14,6,10,4)
+      Text = ("Categoria:")
+    }
+    { Categorie ComboBox
+      MoveScaled(29,5,26,4)
+      Text = ("Varie")
+      ReadOnly = True
+      List = [("Varie")]
+    }
+    { EditCat Button
+      MoveScaled(21,14,18,4)
+      Text = ("Edita Categorie")
+    }
+    Index = 4
+    Text = ("Descrizione")
+    { TextLabel9 TextLabel
+      MoveScaled(1,2,58,3)
+      Text = ("La descrizione breve sar\xC3\xA0 estrapolata tagliando quella estesa.")
+    }
+    { TextLabel10 TextLabel
+      MoveScaled(1,6,12,3)
+      Text = ("Estesa:")
+    }
+    { Descrizione TextArea
+      MoveScaled(1,9,59,16)
+      Text = ("")
+    }
+    Index = 0
+  }
+  { Cancel Button
+    MoveScaled(34,39,29,6)
+    Text = ("Annulla")
+  }
+  { Ok Button
+    MoveScaled(1,39,29,6)
+    Text = ("Ok")
+  }
+  { IdEl TextLabel
+    MoveScaled(1,0,6,3)
+    Visible = False
+    Text = ("IdEl")
+  }
+}

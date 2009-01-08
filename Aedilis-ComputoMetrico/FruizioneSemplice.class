@@ -1,0 +1,300 @@
+' Gambas class file
+
+
+PUBLIC SUB AResize(ColC AS Integer, RowC AS Integer) 
+  
+  AnteprimaFruizione.Anteprima.Columns.Count = ColC
+  AnteprimaFruizione.Anteprima.Rows.Count = RowC
+  
+END
+
+PUBLIC SUB Insert(ColC AS Integer, RowC AS Integer, Linea AS String) 
+  'PRINT Colc & " / " & RowC & " = " & Linea
+  AnteprimaFruizione.Anteprima[RowC, ColC].Text = Linea
+  
+END
+
+PUBLIC SUB InserisciRiga(Contatore1 AS Integer, RowC AS Integer)
+DIM Contatore AS Integer
+DIM Contatore2 AS Integer
+DIM parziale AS Float
+DIM ContatoreQ AS Integer
+
+     WITH ComputoMetrico
+          Contatore2 = 0
+          FOR Contatore = 0 TO ListaStampa.Count - 1
+               SELECT ListaStampa[Contatore].Text
+               CASE "Codice"
+                    Insert(Contatore2, RowC - 1, .ListElCode[Contatore1].Text)
+                    Contatore2 = Contatore2 + 1
+               CASE "Descrizione Breve"
+                    Insert(Contatore2, RowC - 1, .ListElDescrBreve[Contatore1].Text)
+                    Contatore2 = Contatore2 + 1
+               CASE "Descrizione Completa"
+                    Insert(Contatore2, RowC - 1, .ListElDescr[Contatore1].Text)
+                    Contatore2 = Contatore2 + 1
+               CASE "Prezzo"
+                    Insert(Contatore2, RowC - 1, .ListElPrezzo[Contatore1].Text & " €")
+                    Contatore2 = Contatore2 + 1
+               CASE "Sconto"   
+                    Insert(Contatore2, RowC - 1, .ListElSconto[Contatore1].Text & " %")
+                    Contatore2 = Contatore2 + 1
+               CASE "UM"   
+                    Insert(Contatore2, RowC - 1, .ListElUM[Contatore1].Text)
+                    Contatore2 = Contatore2 + 1
+               CASE "Quantità"   
+                    parziale = 0
+                    FOR contatoreQ = 0 TO .ListQuantitaId.Count - 1
+                         IF (.ListQuantitaId[ContatoreQ].Text = .ListCmId[contatore1].Text) THEN 
+                              parziale = parziale + .ListCMTot[contatoreQ].Text            
+                         END IF
+                    NEXT 
+                    parziale = Globals.Approssima(parziale, 1)
+                    Insert(Contatore2, RowC - 1, parziale)
+                    Contatore2 = Contatore2 + 1
+               CASE "Costo"   
+                    parziale = 0
+                    FOR contatoreQ = 0 TO .ListQuantitaId.Count - 1
+                         IF (.ListQuantitaId[ContatoreQ].Text = .ListCmId[contatore1].Text) THEN 
+                              parziale = parziale + .ListCMTot[contatoreQ].Text            
+                         END IF
+                    NEXT 
+                    parziale = parziale * .ListElPrezzo[Contatore1].Text
+                    parziale = parziale - (parziale * .ListElSconto[Contatore1].Text) / 100
+                    parziale = Globals.Approssima(parziale, 0)
+                    Insert(Contatore2, RowC - 1, parziale & " €")
+                    Contatore2 = Contatore2 + 1
+               CASE "Costo(no sconto)"   
+                    parziale = 0
+                    FOR contatoreQ = 0 TO .ListQuantitaId.Count - 1
+                         IF (.ListQuantitaId[ContatoreQ].Text = .ListCmId[contatore1].Text) THEN 
+                              parziale = parziale + .ListCMTot[contatoreQ].Text            
+                         END IF
+                    NEXT 
+                    parziale = parziale * .ListElPrezzo[Contatore1].Text                    
+                    parziale = Globals.Approssima(parziale, 0)
+                    Insert(Contatore2, RowC - 1, parziale)
+                    Contatore2 = Contatore2 + 1
+               CASE "Offerte (numerica)" OR "Offerte (letterale)"
+                    Insert(Contatore2, RowC - 1, "")
+                    Contatore2 = Contatore2 + 1
+               END SELECT             
+          NEXT 
+     END WITH
+
+END 
+PUBLIC SUB Categorie_Click()
+
+  
+  TotCat.enabled = categorie.Value
+  CategoriaPerPagina.Enabled = categorie.Value
+  CatIntestazione.Enabled = categorie.Value
+
+END
+
+PUBLIC SUB Form_Open()
+
+  ListaStampa.List = ListaDati.List
+
+  ME.Center
+
+END
+
+PUBLIC SUB Button9_Click()
+
+
+DIM linea AS String
+
+DIM Contatore1 AS Integer
+DIM Contatore2 AS Integer
+DIM ContatoreCat AS Integer
+
+DIM Contatore AS Integer
+DIM RowC AS Integer
+DIM ColC AS Integer
+
+DIM parziale AS Float
+DIM ContatoreQ AS Integer
+
+
+CatIntestazione.Value = CategoriaPerPagina.Value
+CatIntestazione.Value = categorie.Value
+WITH ComputoMetrico
+'Intestazione
+     IF (DescrBreve.Value = TRUE) THEN 
+          ListaStampa.Remove(2)
+     ELSE 
+          ListaStampa.Remove(1)
+     END IF
+     IF (Offerte.Value = FALSE) THEN 
+          ListaStampa.Remove(ListaStampa.Count - 1)
+          ListaStampa.Remove(ListaStampa.Count - 1)
+     END IF
+     AnteprimaFruizione.Anteprima.Clear
+     AnteprimaFruizione.Intestazione.Clear
+     AnteprimaFruizione.LineeCategorie.Clear
+     AnteprimaFruizione.TotaleFondo.Clear
+     AnteprimaFruizione.Copertina.Visible = FALSE
+     AnteprimaFruizione.LargeCol1 = 1
+     AnteprimaFruizione.LargeCol2 = -1
+     AResize(ColC, RowC)
+     
+     FOR Contatore = 0 TO ListaStampaInt.Count - 1
+          
+          SELECT ListaStampaInt[Contatore].Text
+               CASE "Titolo Progetto"
+                    linea = "Titolo Progetto: " & Globals.ProjectName
+               CASE "Totale Computo"
+                    linea = "Totale Computo: " & ComputoMetrico.TotComputo.text & " €"
+               CASE "Committente"
+                    linea = "Committente: " & Globals.ProjectCommittente
+               CASE "Tipo di Committente"
+                    linea = "Tipo Committente: " & Globals.ProjectTipoComm
+               CASE "Professionista"
+                    linea = "Professionista: " & Globals.ProjectAutore
+               CASE "Lista riassuntiva delle categorie"
+                    linea = "Riassunto computo per categorie:"
+                    FOR contatore1 = 0 TO .TotPerCategoria.Count - 1
+                         AnteprimaFruizione.Intestazione.Text = AnteprimaFruizione.Intestazione.Text & linea & "\n"
+                         linea = .TotPerCategoria[Contatore1].Text
+                    NEXT 
+          END SELECT 
+           AnteprimaFruizione.Intestazione.Text = AnteprimaFruizione.Intestazione.Text & linea & "\n"
+     NEXT   
+
+     ColC = ListaStampa.Count
+     RowC = 0
+     
+     ColC = ColC + 1 
+     AResize(ColC, RowC)
+
+
+     
+IF (categorie.Value = FALSE) THEN 
+
+     IF NOT (ColC = 1) THEN 
+          Contatore2 = 0 'Colonna
+          RowC = RowC + 1
+          AResize(ColC, RowC)
+          FOR Contatore = 0 TO ListaStampa.Count - 1     
+               SELECT ListaStampa[Contatore].Text
+                    CASE "Quantità"
+                         Insert(Contatore2, RowC - 1, "Q. tot")
+                    CASE "Offerte (numerica)"
+                         Insert(Contatore2, RowC - 1, "Off.(num)")
+                    CASE "Offerte (letterale)"
+                         Insert(Contatore2, RowC - 1, "Off.(lett)")
+                    DEFAULT 
+                         Insert(Contatore2, RowC - 1, ListaStampa[Contatore].Text)
+               END SELECT 
+               Contatore2 = Contatore2 + 1
+          NEXT      
+     END IF
+     
+     FOR Contatore1 = 0 TO .ListCMId.Count - 1
+          IF (ListaStampa.Count > 0) THEN
+               RowC = RowC + 1
+               AResize(ColC, RowC)
+          END IF 
+     
+          InserisciRiga(Contatore1, RowC)
+
+     NEXT 
+ELSE 
+     IF (CatIntestazione.Value = FALSE) THEN 
+          IF NOT (ColC = 1) THEN 
+               Contatore2 = 0 'Colonna
+               RowC = RowC + 1
+               AResize(ColC, RowC)
+               FOR Contatore = 0 TO ListaStampa.Count - 1     
+                    SELECT ListaStampa[Contatore].Text
+                         CASE "Quantità"
+                              Insert(Contatore2, RowC - 1, "Q. tot")
+                         CASE "Offerte (numerica)"
+                              Insert(Contatore2, RowC - 1, "Off.(num)")
+                         CASE "Offerte (letterale)"
+                              Insert(Contatore2, RowC - 1, "Off.(lett)")
+                         DEFAULT 
+                              Insert(Contatore2, RowC - 1, ListaStampa[Contatore].Text)
+                    END SELECT 
+                    Contatore2 = Contatore2 + 1
+               NEXT      
+          END IF
+     END IF
+     
+     FOR ContatoreCat = 0 TO .CategorieCM.Count - 2
+     
+          RowC = RowC + 1
+          IF (colC = 0) THEN colC = 1
+          AResize(ColC, RowC)
+          IF (TotCat.Value = TRUE) THEN 
+               .CategorieCM_Click()
+               Insert(0, RowC - 1, .TotPerCategoria[ContatoreCat].Text)
+          ELSE 
+               Insert(0, RowC - 1, .CategorieCM[ContatoreCat].Text)
+          END IF
+          AnteprimaFruizione.LineeCategorie.Add(RowC - 1)
+          IF (CatIntestazione.Value = TRUE) THEN 
+          IF NOT (ColC = 1) THEN 
+               Contatore2 = 0 'Colonna
+               RowC = RowC + 1
+               AResize(ColC, RowC)
+               FOR Contatore = 0 TO ListaStampa.Count - 1     
+                    SELECT ListaStampa[Contatore].Text
+                         CASE "Quantità"
+                              Insert(Contatore2, RowC - 1, "Q. tot")
+                         CASE "Offerte (numerica)"
+                              Insert(Contatore2, RowC - 1, "Off.(num)")
+                         CASE "Offerte (letterale)"
+                              Insert(Contatore2, RowC - 1, "Off.(lett)")
+                         DEFAULT 
+                              Insert(Contatore2, RowC - 1, ListaStampa[Contatore].Text)
+                    END SELECT 
+                    Contatore2 = Contatore2 + 1
+               NEXT      
+          END IF
+          END IF
+     
+          FOR Contatore1 = 0 TO .ListCMId.Count - 1
+               IF (ContatoreCat = .ListElCat[Contatore1].Text) THEN 
+                    IF (ListaStampa.Count > 0) THEN
+                         RowC = RowC + 1
+                         AResize(ColC, RowC)
+                    END IF 
+     
+                    InserisciRiga(Contatore1, RowC)
+               END IF
+          NEXT 
+     
+     NEXT 
+     AnteprimaFruizione.LineeCategorie.Add(RowC)
+END IF
+
+  AnteprimaFruizione.Copertina.Visible = Copertina.Enabled
+  IF (TotComputoFondo.Value = FALSE) THEN 
+     AnteprimaFruizione.TotaleFondo.Text = ""
+  ELSE
+      AnteprimaFruizione.TotaleFondo.Text = ComputoMetrico.TotComputo.Text & " €"
+  END IF
+
+  AnteprimaFruizione.FastFruizione = TRUE
+  AnteprimaFruizione.categorie = categorie.Value
+  AnteprimaFruizione.UnaCatUnaPag = CategoriaPerPagina.Value
+  AnteprimaFruizione.ristampaintestazione = CatIntestazione.Value
+  AnteprimaFruizione.Show
+  ME.Hide
+END WITH 
+
+END
+
+PUBLIC SUB Button10_Click()
+
+  ME.Close
+
+END
+
+PUBLIC SUB DescrCompleta_Click()
+
+  
+
+END

@@ -1,0 +1,32 @@
+' Gambas class file
+
+PUBLIC row AS Integer
+PUBLIC column AS Integer
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+
+END
+
+PUBLIC SUB Button1_Click()
+
+WITH ComputoMetrico
+     IF (valore.Text = NULL) THEN 
+          .DatiOfferte[Val(.ListIdOfferte[row - 1].Text) + 1, (column - 2) / 2].Text = "0"
+          .TabellaOfferte[row, column].Text = "0 €"
+          .Refresh_Offerte()
+          ME.Close
+     ELSE IF (Val(valore.Text) = NULL) THEN 
+          Message.Warning("Valore incompatibile!")
+          valore.SelectAll()
+     ELSE 
+          .DatiOfferte[Val(.ListIdOfferte[row - 1].Text) + 1, (column - 2) / 2].Text = valore.Text 
+          .TabellaOfferte[row, column].Text = valore.Text & " €"
+          .Refresh_Offerte()
+          ME.Close
+     END IF
+END WITH 
+
+
+END

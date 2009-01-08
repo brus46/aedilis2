@@ -1,0 +1,322 @@
+' Gambas module file
+
+PUBLIC id AS Integer
+PUBLIC DebugMode AS Boolean
+
+PUBLIC ElencoCategorie AS Integer[]
+
+PUBLIC ElencoIdElPrezzi AS Integer[]
+PUBLIC ElencoAziende AS String[]
+PUBLIC ElencoOfferte1 AS Float[]
+PUBLIC ElencoOfferte2 AS Float[]
+PUBLIC ElencoOfferte3 AS Float[]
+PUBLIC ElencoOfferte4 AS Float[]
+
+
+PUBLIC SUB DEBUG(Linea AS String)
+  IF (DebugMode = TRUE) THEN 
+     PRINT Linea
+  END IF
+END
+
+PUBLIC SUB StringCorrection(linea AS String) AS String
+DIM TempLine AS String
+  TempLine = Linea
+  TempLine = Replace$(TempLine, "&apos;", "'")
+  TempLine = Replace$(TempLine, "&quot;", "\"")
+  RETURN TempLine
+END
+
+
+PUBLIC SUB Cut_After_Xml(Linea AS String, XmlKey AS String) AS String
+'Questa funzione taglia la stringa al termine della prima TagXml=XmlKey
+DIM TempLine AS String 'Questa variabile serve per contenere la stringa da ritornare
+DIM Splitted AS String[] 'Questa variabile conterrà la linea divisa
+
+     Splitted = Split(Replace$(Linea, "</" & XmlKey & ">", "\n"), "\n")
+     IF (Splitted.Count > 1) THEN 
+          'PRINT Splitted[0]
+          TempLine = Right$(Linea, - (Len(Splitted[0]) + Len("</" & XmlKey & ">")))
+     ELSE 
+          TempLine = ""
+     END IF
+     RETURN TempLine
+END 
+PUBLIC SUB Get_Xml_Content(Linea AS String, XmlKey AS String) AS String
+'Questa funzione trova il contenuto della prima TagXml corrispondente ad XmlKey
+DIM TempLine AS String 'Questa variabile serve per contenere la stringa da ritornare
+DIM Splitted AS String[] 'Questa variabile conterrà la linea divisa
+
+     Splitted = Split(Replace$(Linea, "</" & XmlKey & ">", "\n"), "\n")
+     'Debug("Dopo la prima splittata ho: " & Splitted.Count & " elementi")
+     IF (Splitted.count > 1) THEN 
+          TempLine = Splitted[0]
+          'Debug(TempLine)
+          Splitted = Split(Replace$(TempLine, "<" & XmlKey & ">", "\n"), "\n")
+          'Debug("Dopo la seconda splittata ho: " & Splitted.Count & " elementi")
+          IF (Splitted.count > 1) THEN 
+               TempLine = Splitted[1]
+          ELSE 
+               TempLine = ""
+          END IF
+     ELSE 
+          TempLine = ""
+     END IF
+     
+     RETURN TempLine
+END 
+PUBLIC SUB Get_Xml_ID(Linea AS String, XmlKey AS String) AS String
+'Questa funzione trova il contenuto della prima TagXml corrispondente ad XmlKey
+DIM TempLine AS String 'Questa variabile serve per contenere la stringa da ritornare
+DIM Splitted AS String[] 'Questa variabile conterrà la linea divisa
+
+     Splitted = Split(Replace$(Linea, "</" & XmlKey & ">", "\n"), "\n")
+     'Debug("Dopo la prima splittata ho: " & Splitted.Count & " elementi")
+     IF (Splitted.count > 1) THEN 
+          TempLine = Splitted[0]
+          'Debug(TempLine)
+          Splitted = Split(Replace$(TempLine, "<" & XmlKey, "\n"), "\n")
+          'Debug("Dopo la seconda splittata ho: " & Splitted.Count & " elementi")
+          IF (Splitted.count > 1) THEN 
+               TempLine = Splitted[1]
+               id = Get_id(TempLine)
+               Splitted = Split(Replace$(TempLine, ">", "\n"), "\n")
+               IF (Splitted.count > 1) THEN 
+                    TempLine = Right$(TempLine, - Len(Splitted[0]) - 1)
+               ELSE 
+                    TempLine = ""
+               END IF
+          ELSE 
+               TempLine = ""
+          END IF
+     ELSE 
+          TempLine = ""
+     END IF
+     
+     RETURN TempLine
+END 
+
+PUBLIC SUB Get_id(Linea AS String) AS Integer
+DIM id AS Integer
+DIM Splitted AS String[]
+       
+       Splitted = Split(Linea, "\"")
+       IF (Splitted.Count > 2) THEN 
+          id = Val(Splitted[1])
+       ELSE 
+          id = -1
+       END IF
+       
+       RETURN id
+END
+
+PUBLIC SUB Get_Categorie(AllFile AS String, hfile AS File) AS Boolean
+DIM TempLine AS String
+     
+     TempLine = Get_Xml_ID(AllFile, "DGSuperCategorieItem")
+     IF NOT (TempLine = "") THEN 
+          TempLine = StringCorrection(Get_Xml_Content(TempLine, "DesSintetica"))
+Debug("Categoria: id =" & id & " nome= " & TempLine)
+          
+          PRINT #hfile, TempLine
+          RETURN TRUE
+     ELSE 
+          RETURN FALSE
+     END IF
+
+END 
+
+PUBLIC SUB Get_ElPrezzi(AllFile AS String, hfile AS File) AS Boolean
+DIM TempLine AS String
+DIM DescrBreve AS String
+     
+     TempLine = Get_Xml_ID(AllFile, "EPItem")
+     IF NOT (TempLine = "") THEN 
+          DEBUG("ElPrezzi: id =" & id)
+          ElencoIdElPrezzi.add(id)
+          PRINT #hfile, "@"
+          'Codice
+          PRINT #hfile, Get_Xml_Content(TempLine, "Tariffa")
+          'Categoria???
+          PRINT #hfile, Get_Xml_Content(TempLine, "TipoEP")
+          'Descrizione Breve
+          DescrBreve = Get_Xml_Content(TempLine, "DesBreve")
+          IF NOT (DescrBreve = "") THEN 
+               PRINT #hfile, StringCorrection(DescrBreve)
+          ELSE 
+               PRINT #hfile, StringCorrection(Get_Xml_Content(TempLine, "DesRidotta"))
+          END IF
+          PRINT #hfile, "##END-TEXT##"
+          'Descrizione Completa
+          PRINT #hfile, StringCorrection(Get_Xml_Content(TempLine, "DesEstesa"))
+          PRINT #hfile, "##END-TEXT##"      
+          'Prezzo
+          PRINT #hfile, Get_Xml_Content(TempLine, "Prezzo1")
+          'Sconto
+          PRINT #hfile, "0"
+          'UM
+          PRINT #hfile, Get_Xml_Content(TempLine, "UnMisura")
+          'Offerte
+          ElencoOfferte1.Add(Get_Xml_Content(TempLine, "Prezzo2"))
+          ElencoOfferte2.Add(Get_Xml_Content(TempLine, "Prezzo3"))
+          ElencoOfferte3.Add(Get_Xml_Content(TempLine, "Prezzo4"))
+          ElencoOfferte4.Add(Get_Xml_Content(TempLine, "Prezzo5"))
+          RETURN TRUE
+     ELSE 
+          RETURN FALSE
+     END IF
+
+END 
+
+PUBLIC SUB Get_Quantita_Computo(AllFile AS String, hfile AS file) AS Boolean
+DIM TempLine AS String
+DIM quantita AS String
+     TempLine = Get_Xml_ID(AllFile, "RGItem")
+     IF NOT (TempLine = "") THEN 
+          PRINT #hfile, Get_Xml_Content(TempLine, "Descrizione")
+          PRINT #hfile, "##END-TEXT##"
+          quantita = Get_Xml_Content(TempLine, "PartiUguali")
+          IF (quantita = "") THEN quantita = "0"
+          PRINT #hfile, quantita
+
+          quantita = Get_Xml_Content(TempLine, "Larghezza")
+          IF (quantita = "") THEN quantita = "0"
+          PRINT #hfile, quantita
+          
+          quantita = Get_Xml_Content(TempLine, "Lunghezza")
+          IF (quantita = "") THEN quantita = "0"
+          PRINT #hfile, quantita
+          
+          quantita = Get_Xml_Content(TempLine, "HPeso")
+          IF (quantita = "") THEN quantita = "0"
+          PRINT #hfile, quantita
+          
+          quantita = Get_Xml_Content(TempLine, "Quantita")
+          IF (quantita = "") THEN quantita = "0"
+          PRINT #hfile, quantita
+          
+          PRINT #hfile, "-FineQuantità-"
+          RETURN TRUE
+     ELSE 
+          RETURN FALSE
+     END IF
+  
+  
+END
+
+PUBLIC SUB SearchId(id AS Integer) AS Integer
+DIM contatore AS Integer
+  FOR contatore = 0 TO ElencoIdElPrezzi.Count - 1
+     IF (ElencoIdElPrezzi[contatore] = id) THEN RETURN contatore
+  NEXT 
+  
+END
+
+
+PUBLIC SUB Get_ComputoMetrico(AllFile AS String, hfile AS File) AS Boolean
+DIM TempLine AS String
+     
+     TempLine = Get_Xml_ID(AllFile, "VCItem")
+     IF NOT (TempLine = "") THEN 
+          DEBUG("Computo: id =" & id)
+          PRINT #hfile, "@"
+          PRINT #hfile, SearchId(id)
+          
+          TempLine = Cut_After_Xml(TempLine, "IDSbCat")
+          WHILE (Get_Quantita_Computo(TempLine, hfile) = TRUE) 
+               TempLine = Cut_After_Xml(TempLine, "RGItem")
+               WAIT 0.001
+          WEND     
+          RETURN TRUE
+     ELSE 
+          RETURN FALSE
+     END IF
+
+END 
+
+
+
+
+PUBLIC SUB ImportXmlPwe(InPath AS String, OutPath AS String) 
+DIM hfile AS file 'Questa variabile conterrà il descrittore del file da esaminare.
+DIM AllFile AS String 'Questa variabile conterrà tutto il contenuto del file
+DIM TempLine AS String 'Questa variabile è destinata ad essere usata come buffer per la lettura da file
+  
+  DebugMode = FALSE
+  
+  TRY hfile = OPEN InPath FOR READ 'Provo ad aprire il file
+  IF NOT ( ERROR ) THEN  'Se non ci sono stati errori (es. il file non esiste)
+DEBUG("Inizio importazione")
+     AllFile = ""
+     WHILE NOT (Eof(hfile))
+          LINE INPUT #hfile, TempLine
+          AllFile = AllFile & TempLine
+     WEND 
+     hfile.Close
+     
+     TRY hfile = OPEN OutPath FOR WRITE CREATE 
+     IF NOT ( ERROR ) THEN 
+          'Dati di progetto
+          PRINT "CopyRight: " & Get_Xml_Content(AllFile, "CopyRight")
+          
+          'Intestazione del file
+          PRINT #hfile, "Version: 1.3.1"
+          PRINT #hfile, "Using password: no"
+          PRINT #hfile, "ProjectName: Computo Importato da Primus"
+          PRINT #hfile, "ProjectCommittente: "
+          PRINT #hfile, "ProjectTipoComm: "
+          PRINT #hfile, "ProjectAutore: "
+          PRINT #hfile, "ProjectDicituraLavoro: "
+          PRINT #hfile, "ProjectDataDocumento: "
+          PRINT #hfile, "ProjectComune: " & Get_Xml_Content(AllFile, "Comune")
+          PRINT #hfile, "ProjectProvincia: " & Get_Xml_Content(AllFile, "Provincia")
+          
+          'Categorie
+          PRINT #hfile, "#Categorie#"
+          ElencoCategorie = [0]
+          ElencoCategorie.Clear
+          WHILE (Get_Categorie(AllFile, hfile) = TRUE) 
+               AllFile = Cut_After_Xml(AllFile, "DGSuperCategorieItem")
+               WAIT 0.001
+          WEND      
+DEBUG("Fine categorie")
+
+          'ElencoPrezzi
+          PRINT #hfile, "#ElPrezzi#"
+          ElencoIdElPrezzi = [0]
+          ElencoIdElPrezzi.Clear
+          ElencoOfferte1 = [0.0]
+          ElencoOfferte1.Clear
+          ElencoOfferte2 = [0.0]
+          ElencoOfferte2.Clear
+          ElencoOfferte3 = [0.0]
+          ElencoOfferte3.Clear
+          ElencoOfferte4 = [0.0]
+          ElencoOfferte4.Clear
+          
+          WHILE (Get_ElPrezzi(AllFile, hfile) = TRUE) 
+               AllFile = Cut_After_Xml(AllFile, "EPItem")
+               WAIT 0.001
+          WEND     
+DEBUG("Fine ElPrezzi")    
+ 
+          'Computo Metrico
+          PRINT #hfile, "#Computo#"
+          WHILE (Get_ComputoMetrico(AllFile, hfile) = TRUE) 
+               AllFile = Cut_After_Xml(AllFile, "VCItem")
+               WAIT 0.001
+          WEND    
+          
+          'Aziende
+          PRINT #hfile, "#Aziende#"
+          
+          PRINT #hfile, "#FineAziende#"
+          'Offerte
+          PRINT #hfile, "#Offerte#"
+          
+          PRINT #hfile, "#FineOfferte#"
+DEBUG("Fine computo")
+     END IF
+  END IF
+END
+

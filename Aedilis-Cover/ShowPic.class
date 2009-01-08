@@ -1,0 +1,29 @@
+' Gambas class file
+
+
+PUBLIC SUB Form_Resize()
+   PanelPic.Width = ME.Width 
+   PanelPic.Height = ME.Height - PanelPic.Y 
+   WAIT 0.1
+WITH Anteprima
+  .Stretch = FALSE
+  Larghezza.Text = "Larg: " & .Picture.Width & " px"
+  Altezza.Text = "Alt: " & .Picture.Height & " px"
+  .Width = .Picture.Width
+  .Height = .Picture.Height
+  'Scalo l'immagine in modo che ci stia nel form e in modo che non venga sformata.
+          IF (.Width > PanelPic.Width) THEN 
+               .Width = PanelPic.Width
+               .Height = Int((.Height * .Width) / .Picture.Width)
+               .Stretch = TRUE
+          END IF
+          IF (.Height > PanelPic.Height) THEN 
+               .Height = PanelPic.Height
+               .Width = Int((.Height * .Picture.Width) / .Picture.Height)
+               .Stretch = TRUE
+          END IF
+          'Centro l'immagine
+          .X = (PanelPic.Width - .Width) / 2
+          .Y = (PanelPic.Height - .Height) / 2
+  END WITH 
+END

@@ -1,0 +1,158 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,113,85)
+  Text = ("Editor Prezziari")
+  Icon = Picture["Icone/Modifica.png"]
+  { File Menu
+    Text = ("File")
+    { Backup Menu
+      Text = ("Crea file di Backup")
+      Picture = Picture["Icone/Ridimensionato-Salva.png"]
+    }
+    { Restore Menu
+      Text = ("Carica file di Backup")
+      Picture = Picture["Icone/Apri.png"]
+    }
+    { Stampa Menu
+      Text = ("Stampa")
+      Picture = Picture["Icone/Ridimensionato-Stampa.png"]
+    }
+    { Esci Menu
+      Text = ("Esci")
+      Picture = Picture["Icone/esci.png"]
+      Shortcut = "Alt+F4"
+    }
+  }
+  { Prezziari Menu
+    Text = ("Prezziari")
+    { NuovoPrezziario Menu
+      Text = ("Nuovo Prezziario")
+      Picture = Picture["Icone/Nuovo.png"]
+      Shortcut = "Ctrl+N"
+    }
+    { EliminaPrezziario Menu
+      Text = ("Elimina Prezziario")
+      Picture = Picture["Icone/Elimina.png"]
+      Shortcut = "Del"
+    }
+    { ImportaPrezziario Menu
+      Text = ("Importa Prezziario")
+      Picture = Picture["Icone/Importa.png"]
+      Shortcut = "Ctrl+I"
+    }
+    { EsportaPrezziario Menu
+      Text = ("EsportaPrezziario")
+      Picture = Picture["Icone/Esporta.png"]
+      Shortcut = "Ctrl+E"
+    }
+    { Refresh Menu
+      Text = ("Ricarica Prezziari")
+      Picture = Picture["Icone/aedilisPrezziarioReload.png"]
+      Shortcut = "Ctrl+R"
+    }
+  }
+  { aiuto Menu
+    Text = ("?")
+    { Guida Menu
+      Text = ("Guida")
+      Picture = Picture["Icone/Ridimensionato-Guida.png"]
+      Shortcut = "F1"
+    }
+    { Info Menu
+      Text = ("Info riguardo EditorPrezziari")
+      Picture = Picture["Icone/7075-Tatice-Aide.png"]
+      Shortcut = "Alt+F3"
+    }
+  }
+  { ElencoCompleto ListView
+    MoveScaled(1,5,28,75)
+  }
+  { Separator1 Separator
+    MoveScaled(29,0,1,80)
+  }
+  { CatPrezziario TreeView
+    MoveScaled(30,13,82,67)
+  }
+  { TextLabel2 TextLabel
+    MoveScaled(1,1,26,3)
+    Text = ("Elenco prezziari disponibili:")
+  }
+  { ElencoID ListBox
+    MoveScaled(16,5,11,7)
+    Visible = False
+  }
+  { cartpic PictureBox
+    MoveScaled(2,25,3,4)
+    Visible = False
+    Picture = Picture["Icone/cartella.png"]
+  }
+  { elpic PictureBox
+    MoveScaled(5,25,3,4)
+    Visible = False
+    Picture = Picture["Icone/elemento.png"]
+  }
+  { PrezzOPENPic PictureBox
+    MoveScaled(8,25,3,4)
+    Visible = False
+    Picture = Picture["Icone/prezziario.png"]
+  }
+  { PrezzPic PictureBox
+    MoveScaled(11,25,3,4)
+    Visible = False
+    Picture = Picture["Icone/prezziariochiuso.png"]
+  }
+  { TabStrip1 TabStrip
+    MoveScaled(30,0,62,12)
+    Count = 3
+    Index = 0
+    Text = ("Edita Voci")
+    { AddVoce Button
+      MoveScaled(4,2,21,4)
+      Text = ("Aggiungi Voce")
+    }
+    { SeeVoce Button
+      MoveScaled(37,2,21,4)
+      Text = ("Visualizza/Edita Voce")
+    }
+    Index = 1
+    Text = ("Rinomina")
+    { TextLabel1 TextLabel
+      MoveScaled(1,3,15,3)
+      Text = ("Nome Prezziario")
+    }
+    { NomePrezziario TextBox
+      MoveScaled(16,1,27,6)
+      Text = ("")
+    }
+    { RinominaPrezziario Button
+      MoveScaled(44,1,17,6)
+      Text = ("Rinomina")
+    }
+    Index = 2
+    Text = ("Cerca")
+    { TextLabel3 TextLabel
+      MoveScaled(1,3,7,3)
+      Text = ("Cerca:")
+    }
+    { cerca_what TextBox
+      MoveScaled(7,1,20,6)
+      Text = ("")
+    }
+    { TextLabel4 TextLabel
+      MoveScaled(28,3,3,3)
+      Text = ("fra")
+    }
+    { cercawhere ComboBox
+      MoveScaled(31,1,11,6)
+      Text = ("i codici")
+      ReadOnly = True
+      List = [("i codici"), ("i nomi")]
+    }
+    { Cerca Button
+      MoveScaled(46,1,14,6)
+      Text = ("Cerca!")
+    }
+    Index = 0
+  }
+}

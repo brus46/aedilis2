@@ -1,0 +1,156 @@
+' Gambas module file
+
+PUBLIC DBConnect AS Connection
+PUBLIC DBResult AS Result
+PUBLIC Browser AS String
+PUBLIC CsvReader AS String
+PUBLIC PdfReader AS String
+PUBLIC EditorTesto AS String
+PUBLIC CifreDecimali AS Integer
+PUBLIC CifreDecimaliPrezzi AS Integer
+PUBLIC LenDescrBreve AS Integer
+PUBLIC Connessi AS Boolean
+
+PUBLIC SUB CheckConnection()
+DIM ConfFile AS File
+DIM linea AS String
+
+DBConnect = NEW Connection
+
+TRY ConfFile = OPEN user.Home & "/.Aedilis/DBConfig" FOR READ 
+  IF ERROR THEN 
+     Message.Info("Primo Avvio, lancio il software di configurazione del database")
+     SHELL "aedilisdbconf.gambas"
+     
+  ELSE 
+     LINE INPUT #ConfFile, DBConnect.Host
+     LINE INPUT #ConfFile, DBConnect.Login
+     LINE INPUT #ConfFile, DBConnect.Password
+     LINE INPUT #ConfFile, DBConnect.Name
+     LINE INPUT #ConfFile, DBConnect.Type
+     
+     TRY DBConnect.Open
+     IF ( ERROR ) THEN 
+          Message.Info("Impossibile raggiungere il db.\nIn questa sessione sarà impossibile aggiornare i prezziari")
+          Connessi = FALSE
+     ELSE 
+          CheckTables
+          Connessi = TRUE
+     END IF
+  END IF
+  
+END
+
+PUBLIC SUB CheckTables()
+DIM DBTable AS Table
+DIM esiste AS Boolean
+     esiste = DBConnect.Tables.Exist("ElPrezziari")
+     IF (esiste = FALSE) THEN 
+          DBTable = DBConnect.Tables.Add("ElPrezziari")
+          DBTable.Fields.Add("Id", gb.Integer)
+          DBTable.Fields.Add("Nome", gb.String)
+          DBTable.Fields.Add("Versione", gb.Integer)
+          DBTable.Update
+          DBTable.PrimaryKey.Add("Id")
+          DBResult = DBConnect.Exec("ALTER TABLE ElPrezziari ADD PRIMARY KEY(id)")
+     END IF
+     DBResult = DBConnect.Find("ElPrezziari")
+     
+     IF (DBResult.Fields.Count = 2) THEN 
+          DBConnect.Exec("ALTER TABLE `ElPrezziari` ADD `Versione` INT NOT NULL")
+          DBResult = DBConnect.Exec("update ElPrezziari set versione=&1", 1)           
+     END IF
+     IF (DBResult.Fields.Count <= 3) THEN 
+          DBConnect.Exec("ALTER TABLE `ElPrezziari` ADD `Lock` BOOL NOT NULL")
+          DBResult = DBConnect.Exec("update ElPrezziari set Lock=FALSE")           
+     END IF
+     IF (DBResult.Fields.Count <= 4) THEN 
+          DBConnect.Exec("ALTER TABLE `ElPrezziari` ADD `AutoDescr` BOOL NOT NULL")
+          DBResult = DBConnect.Exec("update ElPrezziari set AutoDescr=FALSE")           
+     END IF
+     
+  
+  
+END
+
+PUBLIC SUB ErrorConfig()
+  
+     Message.Info("File di configurazione corrotto o antiquato.")
+     SHELL "aedilisconfigurator.gambas" WAIT 
+     LoadConfig()
+     
+END
+
+
+PUBLIC SUB LoadConfig()
+DIM ConfFile AS File
+DIM linea AS String
+DIM splitted AS String[]
+
+
+Browser = "none"
+TRY ConfFile = OPEN user.Home & "/.Aedilis/Config" FOR READ 
+  IF ERROR THEN 
+     Message.Info("Primo Avvio, lancio il software di configurazione")
+     SHELL "aedilisconfigurator.gambas"
+  ELSE 
+     LINE INPUT #ConfFile, linea
+     splitted = Split(linea, "=")
+     IF NOT (splitted[0] = "browser") THEN 
+          ErrorConfig()
+     ELSE 
+          Browser = splitted[1]
+          LINE INPUT #ConfFile, linea
+          splitted = Split(linea, "=")
+          IF NOT (splitted[0] = "pdf") THEN 
+               ErrorConfig()
+          ELSE 
+               PdfReader = splitted[1]
+               LINE INPUT #ConfFile, linea
+               splitted = Split(linea, "=")
+               IF NOT (splitted[0] = "csv") THEN 
+                    ErrorConfig()
+               ELSE 
+                    CsvReader = splitted[1]
+                    LINE INPUT #ConfFile, linea
+                    splitted = Split(linea, "=")
+                    IF NOT (splitted[0] = "editortesto") THEN 
+                         ErrorConfig()
+                    ELSE 
+                         EditorTesto = splitted[1]
+                         LINE INPUT #ConfFile, linea
+                         splitted = Split(linea, "=")
+                         IF NOT (splitted[0] = "cifredecimali") THEN 
+                              ErrorConfig()
+                         ELSE 
+                              CifreDecimali = splitted[1]
+                              LINE INPUT #ConfFile, linea
+                              splitted = Split(linea, "=")
+                              IF NOT (splitted[0] = "cifredecimaliprezzi") THEN 
+                                   ErrorConfig()
+                              ELSE 
+                                   CifreDecimaliPrezzi = splitted[1]
+                                   LINE INPUT #ConfFile, linea
+                                   splitted = Split(linea, "=")
+                                   IF NOT (splitted[0] = "LenDescrBreve") THEN 
+                                        ErrorConfig()
+                                   ELSE 
+                                        LenDescrBreve = splitted[1]
+                                   END IF
+                              END IF
+                         END IF
+                    END IF
+               END IF
+          END IF
+     END IF
+     PRINT "Browser = " & Browser
+     PRINT "Pdf = " & PdfReader
+     PRINT "Csv = " & CsvReader
+     PRINT "Editor di testo = " & EditorTesto
+     PRINT "Cf decimali = " & CifreDecimali
+     PRINT "Cf decimali prezzi = " & CifreDecimaliPrezzi
+     PRINT "Len Descr Breve = " & LenDescrBreve
+  END IF
+  
+  
+END

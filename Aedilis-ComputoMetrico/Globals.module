@@ -1,0 +1,233 @@
+' Gambas module file
+
+PUBLIC ProjectName AS String
+PUBLIC ProjectCommittente AS String
+PUBLIC ProjectTipoComm AS String
+PUBLIC ProjectAutore AS String
+PUBLIC ProjectDicituraLavoro AS String
+PUBLIC ProjectDataDocumento AS String
+PUBLIC ProjectComune AS String
+PUBLIC ProjectProvincia AS String
+
+
+PUBLIC Version AS String
+
+PUBLIC Terminale AS String
+
+PUBLIC processo AS Process
+
+PUBLIC SUB crypt(word AS String, pass AS String) AS String
+DIM chars AS String[]
+DIM charspass AS String[]
+DIM wordcript AS String
+DIM Contatore AS Integer
+DIM Contatore2 AS Integer
+DIM temp_string AS String
+     
+     chars = [""]
+     charspass = [""]
+     chars.Clear
+     charspass.Clear
+     
+     'PRINT "-----------------"
+     FOR Contatore = 1 TO Len(word)
+          temp_string = Right$(word, Contatore)
+          temp_string = Left$(temp_string)
+          chars.Add(temp_string)    
+          'PRINT chars[Contatore - 1]
+     NEXT 
+     'PRINT "-----------------"
+     FOR Contatore = 1 TO Len(pass)
+          temp_string = Right$(pass, Contatore)
+          temp_string = Left$(temp_string)
+          charspass.Add(temp_string) 
+          'PRINT charspass[Contatore - 1]      
+     NEXT      
+     
+     IF (Len(word) > Len(pass)) THEN
+          Contatore2 = 0
+          FOR Contatore = 0 TO Len(word) - 1
+               IF (Contatore2 = Len(pass)) THEN Contatore2 = 0
+               IF (Contatore = 0) THEN 
+                    wordcript = (Asc(chars[Contatore]) + Asc(charspass[Contatore2]))
+               ELSE 
+                    wordcript = wordcript & "," & (Asc(chars[Contatore]) + Asc(charspass[Contatore2]))
+               END IF
+               'PRINT chars[Contatore] & " + " & charspass[Contatore2]
+               'PRINT (Asc(chars[Contatore]) + Asc(charspass[Contatore2]))
+               Contatore2 = Contatore2 + 1
+          NEXT 
+     ELSE 
+          FOR Contatore = 0 TO Len(word) - 1
+               IF (Contatore = 0) THEN 
+                    wordcript = (Asc(chars[Contatore]) + Asc(charspass[Contatore]))
+               ELSE 
+                    wordcript = wordcript & "," & (Asc(chars[Contatore]) + Asc(charspass[Contatore]))
+               END IF
+          NEXT 
+     END IF
+     
+     RETURN wordcript     
+END
+
+PUBLIC SUB decrypt(wordcript AS String, pass AS String) AS String
+DIM word AS String
+DIM charscrypt AS String[]
+DIM charspass AS String[]
+DIM Contatore AS Integer
+DIM Contatore2 AS Integer
+DIM temp_string AS String
+
+
+     charscrypt = Split(wordcript, ",")
+     charspass = [""]
+     charspass.Clear
+
+     FOR Contatore = 1 TO Len(pass)
+          temp_string = Right$(pass, Contatore)
+          temp_string = Left$(temp_string)
+          charspass.Add(temp_string)          
+     NEXT     
+     
+     word = ""
+     'PRINT charscrypt.Length
+     'PRINT Len(pass)
+     IF (charscrypt.Count > Len(pass)) THEN 
+          Contatore2 = 0
+          FOR Contatore = 0 TO charscrypt.Count - 1
+               IF (Contatore2 = Len(pass)) THEN Contatore2 = 0
+               word = Chr$(Val(charscrypt[Contatore]) - Asc(charspass[Contatore2])) & word
+               Contatore2 = Contatore2 + 1
+          NEXT 
+     ELSE 
+          FOR Contatore = 0 TO charscrypt.Count - 1
+               word = Chr$(Val(charscrypt[Contatore]) - Asc(charspass[Contatore])) & word
+          NEXT 
+          
+          
+     END IF
+
+  'PRINT word
+  RETURN word
+  
+  
+END
+
+
+PUBLIC SUB Process_Read()
+
+  DIM sLine AS String
+  
+  READ #processo, sLine, - Lof(processo)
+  
+  Terminale = Terminale & sLine
+  'PRINT sLine;
+END
+
+PUBLIC SUB StartOctave()
+  SHELL "mkdir " & User.Home &/ ".Aedilis/Funzioni/"
+  Processo = SHELL "octave" FOR READ WRITE
+  
+  PRINT #Processo, "cd " & User.Home &/ ".Aedilis/Funzioni/"
+  PRINT #Processo, "format short"
+END
+
+PUBLIC SUB Math(Comando AS String) AS Float
+  
+  DIM linea AS String
+
+  DIM splitted AS String[]
+  DIM Contatore AS Integer
+   Terminale = ""
+
+   IF (Processo.State = process.Stopped) THEN StartOctave()
+   PRINT #Processo, Comando
+   Process_read()
+   splitted = [""]
+   Calcolo.Show
+   Calcolo.CalcoloT.Text = "Sto calcolando "
+   Contatore = 0
+   WHILE NOT (splitted.Count > 1)
+     splitted = Split(Terminale, "=")
+     WAIT 0.1
+     Calcolo.CalcoloT.Text = Calcolo.CalcoloT.Text & "."
+     Contatore = Contatore + 1
+     IF (contatore > 100) THEN 
+          PRINT "Over-time"
+          Processo.Kill()
+          Splash.timer1_timer()
+          BREAK 
+          
+     END IF
+   WEND 
+   Calcolo.Close
+   splitted = Split(Terminale, "=")
+   IF (splitted.Count <= 1) THEN 
+     RETURN 0
+   ELSE 
+     RETURN Mid$(splitted[1], 2)
+   END IF
+END 
+
+PUBLIC SUB Approssima(numero AS Float, op AS Integer) AS Float
+  DIM togli_decimali AS Integer
+  DIM approx AS Integer
+  DIM val_ritorno AS Float
+  DIM fattore_moltiplicativo AS Integer
+  DIM num_cifre_decimali AS Integer
+  
+  IF (op = 0) THEN
+     num_cifre_decimali = Connessione.CifreDecimaliPrezzi
+  ELSE IF (op = 1) THEN 
+     num_cifre_decimali = Connessione.CifreDecimali
+  ELSE 
+     num_cifre_decimali = 4
+  END IF
+  
+  IF (num_cifre_decimali = 0) THEN 
+     val_ritorno = Int(numero)
+  ELSE
+  
+     IF (num_cifre_decimali = 1) THEN 
+          fattore_moltiplicativo = 10
+     ELSE IF (num_cifre_decimali = 2) THEN 
+          fattore_moltiplicativo = 100
+     ELSE IF (num_cifre_decimali = 3) THEN 
+          fattore_moltiplicativo = 1000
+     ELSE IF (num_cifre_decimali = 4) THEN 
+          fattore_moltiplicativo = 10000  
+     END IF
+     togli_decimali = Int(numero * fattore_moltiplicativo)
+     approx = Int(numero * fattore_moltiplicativo * 10) - (togli_decimali * 10)
+     val_ritorno = togli_decimali / fattore_moltiplicativo
+     IF (approx >= 5) THEN val_ritorno = val_ritorno + (1 / fattore_moltiplicativo)
+  END IF
+  
+
+
+     RETURN val_ritorno
+END 
+
+PUBLIC SUB Cut_Descr(Stringa AS String, MaxChar AS Integer) AS String
+
+DIM TempLine AS String
+DIM TempLine2 AS String
+DIM Contatore AS Integer
+
+  IF (Len(Stringa) <= MaxChar) THEN 
+     RETURN Stringa
+  ELSE 
+    TempLine = Left$(Stringa, Int(Len(Stringa) / 2))
+    TempLine2 = Right$(Stringa, Int(Len(Stringa) / 2))
+    'PRINT TempLine
+    'PRINT TempLine2
+    WHILE ((2 * Len(TempLine)) > MaxChar - 3)
+          TempLine = Left$(TempLine, Len(TempLine) - 1)
+          TempLine2 = Right$(TempLine2, Len(TempLine2) - 1)
+    WEND 
+    TempLine = TempLine & "..." & TempLine2
+    RETURN TempLine
+  END IF
+  
+END
+

@@ -1,0 +1,263 @@
+' Gambas class file
+
+PUBLIC DBConnect AS Connection 'Questa variabile rappresenterà la connessione con il database MySql
+PUBLIC DBResult AS Result
+
+PUBLIC SUB _new()
+
+END
+
+PUBLIC SUB CheckTables()
+DIM DBTable AS Table
+DIM esiste AS Boolean
+     esiste = DBConnect.Tables.Exist("ElPrezziari")
+     IF (esiste = FALSE) THEN 
+          DBTable = DBConnect.Tables.Add("ElPrezziari")
+          DBTable.Fields.Add("Id", gb.Integer)
+          DBTable.Fields.Add("Nome", gb.String)
+          DBTable.Fields.Add("Versione", gb.Integer)
+          DBTable.Update
+          DBTable.PrimaryKey.Add("Id")
+          DBResult = DBConnect.Exec("ALTER TABLE ElPrezziari ADD PRIMARY KEY(id)")
+     END IF
+     DBResult = DBConnect.Find("ElPrezziari")
+     IF (DBResult.Fields.Count = 2) THEN 
+          DBConnect.Exec("ALTER TABLE `ElPrezziari` ADD `Versione` INT NOT NULL")
+          DBResult = DBConnect.Exec("update ElPrezziari set versione=&1", 1)           
+     END IF
+     IF (DBResult.Fields.Count <= 3) THEN 
+          DBConnect.Exec("ALTER TABLE `ElPrezziari` ADD `Lock` BOOL NOT NULL") 
+     END IF
+     IF (DBResult.Fields.Count <= 4) THEN 
+          DBConnect.Exec("ALTER TABLE `ElPrezziari` ADD `AutoDescr` BOOL NOT NULL")
+     END IF
+
+
+END 
+
+PUBLIC SUB Form_Open()
+'Carica la precedente configurazione del database se esiste
+DIM ConfFile AS File 'Questa variabile conterrà il descrittore del file di configurazione del database
+SHELL "mkdir " & user.Home &/ ".Aedilis" 'Crea la cartella dove dovrebbe esserci il file di configurazione (se esiste già non fa nulla)
+TRY ConfFile = OPEN user.Home & "/.Aedilis/DBConfig" FOR READ 'Prova ad aprire il file in lettura
+  IF NOT ( ERROR ) THEN 'Se non ci sono errori nell'apertura (es. il file non esiste)
+     'Leggo il file di configurazione
+     'Se il file finisce i dati non vengono caricati e rimangono quelli di default.
+     IF NOT (Eof(ConfFile)) THEN LINE INPUT #ConfFile, DBHost.Text
+     IF NOT (Eof(ConfFile)) THEN LINE INPUT #ConfFile, DBUserName.Text
+     IF NOT (Eof(ConfFile)) THEN LINE INPUT #ConfFile, DBPass.Text
+     IF NOT (Eof(ConfFile)) THEN LINE INPUT #ConfFile, DBName.Text
+     
+  END IF
+ME.Height = 273 'Imposto l'altezza del form in modo che non siano visibili le opzioni aggiuntive.
+
+ME.Center  
+END
+
+PUBLIC SUB CheckAndSave_Click()
+DIM hFile AS File 'Questa variabile conterrà il descrittore del file di configurazione del database
+
+
+     DBConnect = NEW Connection 'Crea una nuova connessione
+     
+     WITH DBConnect 'Imposto i dati di accesso al database
+          .Host = DBHost.Text
+          .User = DBUserName.Text
+          .Password = DBPass.Text
+          .Name = DBName.Text
+          .Type = "mysql" 'Defaul non modificabile
+     END WITH 
+     
+     
+     IF CreaDB.Value = TRUE THEN 'Se è selezionata l'opzione di creare il database controllo la connessione e poi creo il Db se non esiste
+          
+          DBConnect.Name = "mysql" 'Database di defaul presente in Mysql
+          TRY DBConnect.Open 'Provo a stabilire una connessione
+          IF NOT (DBConnect.Databases.Exist(DBName.Text)) THEN 'Se non esiste il database crealo.
+               DBConnect.Databases.Add(DBName.Text)
+          ENDIF
+          DBConnect.Close 'Chiudo la connessione
+          DBConnect.Name = DBName.Text 'Aggiorno il nome del database a cui deve connettersi il programma
+     ENDIF
+     
+     
+     
+     TRY DBConnect.OPEN  'Provo la connessione al database selezionato
+     IF NOT ( ERROR ) THEN 'Se non ci sono errori salvo la configurazione ed esco
+          hFile = OPEN user.Home & "/.Aedilis/DBConfig" FOR WRITE CREATE 'Apro il file di configurazione del database in scrittura/creazione
+          IF NOT ( ERROR ) THEN 'Se non ci sono errori (es. file protetto da scrittura) scrivo i dati
+               PRINT #hFile, DBConnect.Host
+               PRINT #hFile, DBConnect.User
+               PRINT #hFile, DBConnect.Password
+               PRINT #hFile, DBConnect.Name
+               PRINT #hFile, DBConnect.Type
+          
+               hFile.Close 'Chiudo il file in modo che sia successivamente accessibile      
+               CheckTables() 'Controllo l'esistenza di tutte le tabelle necessarie, altrimenti le creo
+               'Informo l'utente che la prova è andata a buon fine ed anche il salvataggio della configurazione.
+               Message.Info("Verifica e salvataggio eseguiti correttamente.\nLe modifiche verranno applicate quando riavvierai il programma.")
+               ME.Close
+               'Termina il programma
+          ELSE 
+               Message.Error("Impossibile creare il file di configurazione.")
+          END IF
+          
+     ELSE 
+          'Stampa l'errore generato da MySql (Error.Text)
+          Message.Error("Impossibile connettersi: \n" & Error.Text)
+          Error.Clear
+     END IF
+END
+
+PUBLIC SUB Chiudi_Click()
+
+ME.Close  
+
+END
+
+PUBLIC SUB Options_Click()
+     'Se devo far vedere il frame allora sono nel primo caso altrimenti nel secondo
+     IF Frame1.Visible = FALSE THEN 
+          Frame1.Visible = TRUE 'Rendo visibile il frame
+          Options.Picture = LessPic.Picture 'Cambio l'immagine
+          IF (ME.Height <= 273) THEN ME.Height = ME.Height + Frame1.Height + 10 'Ridimensiono il form
+     ELSE 
+          Frame1.Visible = FALSE 'Nascondo il frame
+          Options.Picture = MorePic.Picture 'Cambio l'immagine
+          IF (ME.FullScreen = FALSE) THEN ME.Height = ME.Height - Frame1.Height - 10 'Ridimensiono il form
+          
+     END IF  
+
+END
+
+PUBLIC SUB BackupDB_Click()
+DIM DBConnect AS Connection 'Questa variabile rappresenterà la connessione con il database MySql
+DIM ext AS String[] 'Variabile per trovare l'estensione usata dall'utente.
+
+     DBConnect = NEW Connection 'Crea una nuova connessione
+     
+     WITH DBConnect 'Imposto i dati di accesso al database
+          .Host = DBHost.Text
+          .User = DBUserName.Text
+          .Password = DBPass.Text
+          .Name = DBName.Text
+          .Type = "mysql" 'Defaul non modificabile
+     END WITH 
+     
+     'Per questo comando è necessario avere già una connessione attiva. Ovvero i dati per l'accesso a MySql devono essere validi.
+     Message.Info("Attenzione, se i dati di accesso a MySql\nche hai inserito non sono corretti il comando fallirà.")
+     'Imposto i filtri, la cartella di default e il titolo per la finestra di dialogo
+     Dialog.Filter = ["*.sql", "MySql Backup Files", "*.tar.gz", "MySql Backup Files Compressed"]
+     Dialog.Title = "Backup"
+     Dialog.Path = User.Home &/ "Backup.sql"
+     IF NOT (Dialog.SaveFile() = TRUE) THEN 'Se l'utente non ha premuto annulla o ha chiuso la finestra allora
+          'Imposto l'applicazione a Busy, occupata
+          INC Application.Busy
+          'Il backup verrà fatto prima nella cartella temporanea: "/tmp/BackupAedilis.sql" e poi zippato oppure spostato.
+          IF (DBConnect.Login = "") THEN '1° caso: nessun nome utente
+               SHELL "mysqldump --databases " & DBConnect.Name & " > " & "/tmp/BackupAedilis.sql" WAIT 
+          ELSE 
+               IF (DBConnect.Password = "") THEN '2° caso: nome utente ma nessuna password
+                    SHELL "mysqldump -u " & DBConnect.User & " --databases " & DBConnect.Name & " > " & "/tmp/BackupAedilis.sql" WAIT
+               ELSE '3° caso: nome utente e password
+                    SHELL "mysqldump -u " & DBConnect.User & " --password=" & DBConnect.Password & " --databases " & DBConnect.Name & " > " & "/tmp/BackupAedilis.sql" WAIT 
+               END IF
+          END IF
+          WAIT 5
+          'Controlla estensione
+          ext = Split(Dialog.Path, ".")
+          'Il comando Lower$ mette tutti i caratteri in minuscolo.
+          IF (Lower$(ext[ext.count - 1]) = "sql") THEN 
+               'Copio il file
+               SHELL "cp " & "/tmp/BackupAedilis.sql " & Dialog.Path 
+          ELSE 
+               'Comprimo il file
+               SHELL "tar -cvzf " & Dialog.Path & " -C /tmp/ BackupAedilis.sql" WAIT 
+          END IF
+          SHELL "rm " & "/tmp/BackupAedilis.sql"
+          'L'applicazione ora non è + Busy, la libero e mando un messaggio che informa che ho finito.
+          DEC Application.Busy 
+          Message.Info("Backup Completato")
+     END IF  
+
+
+END
+
+PUBLIC SUB RestoreDB_Click()
+'Comando da shell per il restore del database
+'mysql -u [username] -p [password] [database_to_restore] < [backupfile] 
+DIM DBConnect AS Connection 'Questa variabile rappresenterà la connessione con il database MySql
+DIM path AS String 'Questa variabile conterrà la path del file contentente il database
+DIM ext AS String[] 'Questa variabile servirà a determinare l'estensione del file.
+
+     DBConnect = NEW Connection 'Crea una nuova connessione
+     
+     WITH DBConnect 'Imposto i dati di accesso al database
+          .Host = DBHost.Text
+          .User = DBUserName.Text
+          .Password = DBPass.Text
+          .Name = DBName.Text
+          .Type = "mysql" 'Defaul non modificabile
+     END WITH 
+     
+     'Per questo comando è necessario avere già una connessione attiva. Ovvero i dati per l'accesso a MySql devono essere validi.
+     Message.Info("Attenzione, se i dati di accesso a MySql\nche hai inserito non sono corretti il comando fallirà.")
+     
+     'Informo l'utente che se ha dei dati non salvati nel backup li perderà irrimediabilmente.
+     IF (Message.Warning("Procedendo perderai tutti i dati che non hai salvato nel backup! Vuoi procedere comunque?", "No", "Sì") = 2) THEN 
+          'Imposto i filtri, la cartella di default e il titolo per la finestra di dialogo
+          Dialog.Filter = ["*.sql", "MySql Backup Files", "*.tar.gz", "MySql Backup Files Compressed"]
+          Dialog.Title = "Backup"
+          Dialog.Path = User.Home
+          IF NOT (Dialog.OpenFile() = TRUE) THEN 'Se l'utente non ha premuto annulla o ha chiuso la finestra allora
+               'Imposto l'applicazione a Busy, occupata
+               INC Application.Busy
+               path = Dialog.path 'Imposto la path al file, se è un sql infatti andrà letto da lì, altrimenti verrà cambiata in seguito.
+               ext = Split(Path, ".") 'Ricerco l'estensione del file
+               'Il comando Lower$ mette tutti i caratteri in minuscolo.
+               IF NOT (Lower$(ext[ext.Count - 1]) = "sql") THEN 'Se il file non è .sql allora viene trattato come tar.gz
+                     'Il file è zippato in tar.gz quindi lo decomprimo in "/tmp/Backup.sql" e poi lo ripristino
+                     SHELL "tar -xvzf " & Path & " -C /tmp/" WAIT TO Path 'Il comando Tar restituisce il nome del file dezippato [ATTENZIONE: Non funzionerà se il tarball contiene + files!!]
+                     Path = "/tmp/" & Path 'Questa è la path del file temporaneo
+               END IF
+               
+               IF (DBConnect.Login = "") THEN '1° caso: nessun nome utente
+                    SHELL "mysql " & DBConnect.Name & " < " & Path
+               ELSE 
+                    IF (DBConnect.Password = "") THEN '2° caso: nome utente ma nessuna password
+                         SHELL "mysql -u " & DBConnect.User & " " & DBConnect.Name & " < " & Path
+                    ELSE '3° caso: nome utente e password
+                         SHELL "mysql -u " & DBConnect.User & " -p=" & DBConnect.Password & " " & DBConnect.Name & " < " & Path
+                    END IF
+               END IF
+               'Se ho creato un file intermedio allora lo rimuovo.
+               IF NOT (path = Dialog.path) THEN SHELL "rm " & path
+               'L'applicazione ora non è + Busy, la libero e mando un messaggio che informa che ho finito.
+               DEC Application.Busy 
+               Message.Info("DataBase Ripristinato")
+          END IF  
+     END IF
+
+END
+
+
+PUBLIC SUB Form_Close()
+
+  QUIT 
+
+END
+
+
+PUBLIC SUB Help_Click()
+'Scrivo nel file di configurazione dell'Help la path della pagina della guida per questa sezione
+DIM hfile AS File 'Questa variabile conterrà il descrittore del file di configurazione dell'help
+     TRY hfile = OPEN user.Home &/ ".Aedilis/Help" FOR WRITE CREATE 'Provo ad aprire il file di configurazione dell'help in scrittura/creazione
+     IF NOT ( ERROR ) THEN 'Se non ci sono stati errori (es. file protetto da scrittura) allora salvo la nuova path della guida
+          PRINT #hfile, "http://www.sciallo.net/Aedilis/Guida/DbConfig.html"
+          hfile.Close 'Chiudo il descrittore del file
+          WAIT 1 'Attendo in modo che il file possa essere scritto
+     END IF
+     
+     SHELL "aedilis-help.gambas" 'Lancio la guida
+END
+

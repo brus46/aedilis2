@@ -1,0 +1,33 @@
+' Gambas class file
+
+
+PUBLIC SUB Form_Open()
+
+     ME.Center
+       
+
+END
+
+PUBLIC SUB Button2_Click()
+
+     Licenza.Show  
+
+END
+
+PUBLIC SUB Button3_Click()
+
+     ME.Close  
+
+END
+
+PUBLIC SUB Button1_Click()
+
+Message.Info("Non ancora implementato")  
+
+END
+
+PUBLIC SUB TextArea1_KeyPress()
+
+  
+
+END

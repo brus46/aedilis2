@@ -1,0 +1,86 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,64,51)
+  Text = ("Propriet\xC3\xA0 del Progetto")
+  Icon = Picture["Icone/azienda.gif"]
+  Border = Window.Fixed
+  { Nome TextBox
+    MoveScaled(18,1,39,4)
+    Text = ("ComputoMetrico")
+  }
+  { Committente TextBox
+    MoveScaled(18,6,39,4)
+    Text = ("")
+  }
+  { Autore TextBox
+    MoveScaled(18,16,39,4)
+    Text = ("")
+  }
+  { Button1 Button
+    MoveScaled(20,43,24,7)
+    Text = ("Esci")
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(3,2,15,3)
+    Text = ("Titolo progetto:")
+  }
+  { TextLabel2 TextLabel
+    MoveScaled(5,7,13,3)
+    Text = ("Committente:")
+  }
+  { TipoCommittente ComboBox
+    MoveScaled(18,11,39,4)
+    Text = ("Privato")
+    List = [("Privato"), ("Appalto Pubblico"), ("Azienda")]
+  }
+  { TextLabel3 TextLabel
+    MoveScaled(1,12,17,3)
+    Text = ("Tipo Committente:")
+  }
+  { TextLabel4 TextLabel
+    MoveScaled(6,17,11,3)
+    Text = ("Progettista:")
+  }
+  { TextLabel5 TextLabel
+    MoveScaled(48,42,16,9)
+    Text = ("I cambiamenti vengono salvati immediatamente.")
+    Border = Border.Raised
+  }
+  { Comune TextBox
+    MoveScaled(18,21,39,4)
+    Text = ("")
+  }
+  { TextLabel6 TextLabel
+    MoveScaled(9,22,8,3)
+    Text = ("Comune:")
+  }
+  { Provincia TextBox
+    MoveScaled(18,26,39,4)
+    Text = ("")
+  }
+  { TextLabel7 TextLabel
+    MoveScaled(8,27,9,3)
+    Text = ("Provincia:")
+  }
+  { DataDocumento TextBox
+    MoveScaled(18,31,39,4)
+    Text = ("")
+  }
+  { TextLabel8 TextLabel
+    MoveScaled(1,32,16,3)
+    Text = ("Data Documento:")
+  }
+  { DicituraLavoro TextBox
+    MoveScaled(18,36,39,4)
+    Text = ("")
+  }
+  { TextLabel9 TextLabel
+    MoveScaled(1,37,17,3)
+    Text = ("Titolo documento:")
+  }
+  { SetOggi Button
+    MoveScaled(58,31,5,4)
+    Text = ("Oggi")
+  }
+}

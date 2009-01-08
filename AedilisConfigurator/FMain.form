@@ -1,0 +1,207 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,76,49)
+  Text = ("Configurazioni Generali")
+  Icon = Picture["aedilis-configura.png"]
+  Border = Window.Fixed
+  { Salva Button
+    MoveScaled(1,40,24,8)
+    Text = ("Salva")
+    Picture = Picture["Icone/salva.png"]
+  }
+  { Chiudi Button
+    MoveScaled(51,40,24,8)
+    Text = ("Esci")
+    Picture = Picture["Icone/esci.png"]
+  }
+  { TabStrip1 TabStrip
+    MoveScaled(0,0,76,39)
+    Count = 4
+    Index = 0
+    Text = ("Applicazioni Preferite")
+    { browser ComboBox
+      MoveScaled(20,5,22,5)
+      Text = ("")
+      ReadOnly = True
+      List = [("firefox "), ("konqueror "), ("epiphany "), ("altro...")]
+    }
+    { altro TextBox
+      MoveScaled(52,5,22,5)
+      Text = ("")
+    }
+    { TextLabel1 TextLabel
+      MoveScaled(1,6,17,4)
+      Text = ("Seleziona Browser:")
+      Alignment = Align.Right
+    }
+    { TextLabel2 TextLabel
+      MoveScaled(44,6,7,4)
+      Text = ("Altro:")
+      Alignment = Align.Right
+    }
+    { pdf ComboBox
+      MoveScaled(20,11,22,5)
+      Text = ("")
+      ReadOnly = True
+      List = [("evince "), ("kpdf "), ("acroread "), ("altro...")]
+    }
+    { altropdf TextBox
+      MoveScaled(52,11,22,5)
+      Text = ("")
+    }
+    { TextLabel7 TextLabel
+      MoveScaled(0,12,19,4)
+      Text = ("Seleziona lettore pdf:")
+      Alignment = Align.Right
+    }
+    { csv ComboBox
+      MoveScaled(20,17,22,5)
+      Text = ("")
+      ReadOnly = True
+      List = [("gnumeric "), ("ooffice -calc "), ("altro...")]
+    }
+    { altrocsv TextBox
+      MoveScaled(52,17,22,5)
+      Text = ("")
+    }
+    { TextLabel9 TextLabel
+      MoveScaled(1,18,17,4)
+      Text = ("Seleziona Foglio di calcolo:")
+      Alignment = Align.Right
+    }
+    { EditorTesto ComboBox
+      MoveScaled(20,23,22,5)
+      Text = ("")
+      ReadOnly = True
+      List = [("gedit "), ("kate "), ("altro...")]
+    }
+    { AltroEditorTesto TextBox
+      MoveScaled(52,23,22,5)
+      Text = ("")
+    }
+    { TextLabel11 TextLabel
+      MoveScaled(1,24,17,4)
+      Text = ("Seleziona Editor di testo:")
+      Alignment = Align.Right
+    }
+    { TextLabel8 TextLabel
+      MoveScaled(44,12,7,4)
+      Text = ("Altro:")
+      Alignment = Align.Right
+    }
+    { TextLabel10 TextLabel
+      MoveScaled(44,18,7,4)
+      Text = ("Altro:")
+      Alignment = Align.Right
+    }
+    { TextLabel12 TextLabel
+      MoveScaled(44,23,7,4)
+      Text = ("Altro:")
+      Alignment = Align.Right
+    }
+    Index = 1
+    Text = ("Cifre decimali")
+    { TextLabel14 TextLabel
+      MoveScaled(18,18,31,6)
+      Text = ("Numero di cifre decimali da utilizzare nel calcolo dei prezzi:")
+      Alignment = Align.Left
+    }
+    { TextLabel13 TextLabel
+      MoveScaled(18,11,31,6)
+      Text = ("Numero di cifre decimali da utilizzare nel calcolo delle misure:")
+      Alignment = Align.Left
+    }
+    { CifreDecimali ComboBox
+      MoveScaled(49,12,10,5)
+      Text = ("")
+      ReadOnly = True
+      List = [("0"), ("1"), ("2"), ("3"), ("4")]
+    }
+    { CifreDecPrezzi ComboBox
+      MoveScaled(49,19,10,5)
+      Text = ("")
+      ReadOnly = True
+      List = [("0"), ("1"), ("2"), ("3")]
+    }
+    Index = 2
+    Text = ("Politica descrizioni brevi")
+    { TextLabel15 TextLabel
+      MoveScaled(10,12,19,8)
+      Text = ("Taglia in mezzo la descrizione lunga se supera:")
+    }
+    { TextLabel16 TextLabel
+      MoveScaled(50,14,12,4)
+      Text = ("caratteri")
+    }
+    { TextLabel17 TextLabel
+      MoveScaled(29,18,19,8)
+      Text = ("La lunghezza deve essere come minimo pari a 10 caratteri.")
+      Alignment = Align.Center
+    }
+    { LenDescrBreve TextBox
+      MoveScaled(31,13,17,5)
+      Text = ("TextBox1")
+    }
+    Index = 3
+    Text = ("AutoBackup")
+    { AutoBackup CheckBox
+      MoveScaled(18,5,42,4)
+      Enabled = False
+      Text = ("Esegui Backup del database in automatico")
+    }
+    { Frame1 Frame
+      MoveScaled(19,9,40,21)
+      Enabled = False
+      Text = ("AutoBackup")
+      { TextLabel3 TextLabel
+        MoveScaled(17,3,5,3)
+        Text = ("Ogni")
+      }
+      { Minuti SpinBox
+        MoveScaled(23,2,7,4)
+        MinValue = 10
+        MaxValue = 1440
+      }
+      { TextLabel4 TextLabel
+        MoveScaled(31,3,8,3)
+        Text = ("minuti")
+      }
+      { TextLabel5 TextLabel
+        MoveScaled(2,6,10,6)
+        Text = ("Directory Backup:")
+      }
+      { DirBackup TextBox
+        MoveScaled(12,7,24,5)
+        Text = ("TextBox1")
+      }
+      { SfogliaDirBackup Button
+        MoveScaled(36,7,3,5)
+        Text = ("...")
+      }
+      { SaveOnlyFewBackups CheckBox
+        MoveScaled(2,12,33,4)
+        Text = ("Conserva solo gli ultimi N backup")
+      }
+      { TextLabel6 TextLabel
+        MoveScaled(29,17,2,3)
+        Text = ("N")
+      }
+      { N SpinBox
+        MoveScaled(31,16,7,4)
+        MinValue = 1
+      }
+    }
+    Index = 0
+  }
+  { Help Button
+    MoveScaled(26,40,24,8)
+    Text = ("Guida")
+    Picture = Picture["Icone/Ridimensionato-Guida.png"]
+  }
+  { Anteprima PictureBox
+    MoveScaled(46,33,7,7)
+    Visible = False
+    Picture = Picture["Icone/new.png"]
+  }
+}

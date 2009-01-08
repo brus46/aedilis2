@@ -1,0 +1,93 @@
+' Gambas class file
+
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+
+END
+
+PUBLIC SUB Annulla_Click()
+
+  ME.Hide
+  CategorieComputo.Show
+
+END
+
+PUBLIC SUB Prosegui_Click()
+
+DIM id_cat AS Integer
+DIM contatore AS Integer
+DIM contatore2 AS Integer
+
+
+     IF deleteelements.Value = TRUE THEN 
+          WITH ComputoMetrico
+          IF (1 = Message.Question("Sei sicuro di voler eliminare: " & CategorieComputo.ElCat.Current.text & " ?", "Sì", "No")) THEN
+               contatore = 0
+               WHILE contatore <= .ListElCat.Count - 1
+                    IF (.ListElCat[contatore].Text = daeliminare.Text) THEN 
+                         'Istruzioni per elimina elemento da elenco-prezzi e da computo
+                         'elimino eventuali elementi del computo associati
+                         .EliminaElementoCM(contatore)
+                         'elimino la voce
+                         .EliminaElementoEP(contatore)
+                         .CategorieCM_Click()
+                         contatore = 0                    
+                    ELSE 
+                         contatore = contatore + 1
+                    END IF
+               WEND                 
+               
+               FOR contatore = 0 TO ComputoMetrico.ListElCat.Count - 1
+                    IF (Val(ComputoMetrico.ListElCat[contatore].Text) > Val(daeliminare.Text)) THEN 
+                         ComputoMetrico.ListElCat[contatore].Text = Val(ComputoMetrico.ListElCat[contatore].Text) - 1
+                    END IF
+               NEXT   
+               
+               'Elimina la categoria
+               CategorieComputo.Categorie.Remove(daeliminare.Text)
+               CategorieComputo.CatProp.Remove(daeliminare.Text)
+               
+               CategorieComputo.Refresh1()
+               
+          END IF        
+          END WITH 
+     ELSE 
+     
+          WITH CategorieComputo
+          IF (1 = Message.Question("Sei sicuro di voler eliminare: " & .ElCat.Current.text & " ?", "Sì", "No")) THEN
+               
+               IF (Categorie.Index < 0) THEN 
+                    Message.Info("Poichè non è stata selezionata alcuna categoria di arrivo,\nsposterò i dati in quella di Default.")
+                    id_cat = 0
+               ELSE 
+                    id_cat = Categorie.Index
+               END IF
+               
+               
+               FOR contatore = 0 TO ComputoMetrico.ListElCat.Count - 1
+                    IF (ComputoMetrico.ListElCat[contatore].Text = daeliminare.Text) THEN 
+                         ComputoMetrico.ListElCat[contatore].Text = id_cat
+                    ELSE IF (Val(ComputoMetrico.ListElCat[contatore].Text) > Val(daeliminare.Text)) THEN 
+                         ComputoMetrico.ListElCat[contatore].Text = Val(ComputoMetrico.ListElCat[contatore].Text) - 1
+                    END IF
+               NEXT                
+               
+               'Elimina la categoria
+               .Categorie.Remove(.ElCat.Current.Key)
+               .CatProp.Remove(.ElCat.Current.Key)
+               
+               .Refresh1()
+               
+          END IF       
+          
+          END WITH
+     END IF
+
+
+  ME.Hide
+  CategorieComputo.Show
+
+
+END

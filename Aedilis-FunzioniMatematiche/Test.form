@@ -1,0 +1,36 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,80,64)
+  Text = ("Test")
+  Icon = Picture["Immagini/CrashTest.png"]
+  { Terminale TextArea
+    MoveScaled(1,7,78,56)
+    Font = Font["Courier New,Bold,+3"]
+    Background = &H000000&
+    Foreground = &HFFFF00&
+    Drop = True
+    Text = ("")
+    ReadOnly = True
+    Wrap = True
+  }
+  { Comando TextBox
+    MoveScaled(12,1,33,5)
+    Text = ("")
+  }
+  { Esegui Button
+    MoveScaled(46,1,13,5)
+    Text = ("Esegui")
+    Picture = Picture["Immagini/esegui.resized.png"]
+    Default = True
+  }
+  { TextLabel1 TextLabel
+    MoveScaled(2,2,10,3)
+    Text = ("Comando:")
+  }
+  { Restart Button
+    MoveScaled(60,1,19,5)
+    Text = ("Riavvia Octave")
+    Picture = Picture["Immagini/restart.resized.png"]
+  }
+}

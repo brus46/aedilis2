@@ -1,0 +1,48 @@
+' Gambas class file
+
+
+PUBLIC SUB EditCat_Click()
+
+   CategorieComputo.Show
+
+END
+
+PUBLIC SUB Form_Open()
+
+  ME.Center
+
+END
+
+PUBLIC SUB Ok_Click()
+
+  WITH ComputoMetrico
+  
+     .ListElCode[idEl.text].text = code.text
+     .ListElPrezzo[idEl.Text].Text = Costo.Text
+     .ListElCat[idEl.Text].Text = Categorie.Index
+     .ListElDescr[idEl.Text].Text = Descrizione.Text
+     .ListElDescrBreve[idEl.Text].Text = Globals.Cut_Descr(Descrizione.Text, Connessione.LenDescrBreve)
+     IF (Nosconto.Value = TRUE) THEN 
+          .ListElSconto[IdEl.Text].Text = "0"
+     ELSE 
+          .ListElSconto[IdEl.Text].Text = ScontoVal.Text
+     END IF
+     .ListaElementiElPrezzi_click()
+     .CategorieElPrezzi_click()
+     .CategorieCM_click()
+     ME.Close
+  END WITH 
+
+END
+
+PUBLIC SUB ScontoSlide_Change()
+
+    ScontoVal.Text = ScontoSlide.Value
+
+END
+
+PUBLIC SUB Cancel_Click()
+
+  ME.Close
+
+END

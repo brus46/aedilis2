@@ -1,0 +1,18 @@
+# Gambas Project File 2.0
+Title=Aedilis - Configurazione
+Startup=FMain
+Icon=aedilis-configura.png
+Version=0.0.33
+Library=gb.qt
+Library=gb.form
+Library=gb.qt.ext
+Description=Questo programma serve a gestire le impostazioni generali di Aedilis.
+Authors=Mosconi Marco
+TabSize=5
+Maintainer=MosconiMarco
+Address=brus46@gmail.com
+License=General Public Licence
+Systems=ubuntu
+Menus=Apps/Tools
+Categories=Office
+Groups=Office

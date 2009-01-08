@@ -1,0 +1,126 @@
+# Gambas Form File 2.0
+
+{ Form Form
+  MoveScaled(0,0,141,56)
+  Text = ("Fruizione")
+  Icon = Picture["Icone/FruizioneComplessa.png"]
+  Border = Window.Fixed
+  { Frame2 Frame
+    MoveScaled(71,0,70,35)
+    Text = ("Dati da stampare:")
+    { ListaDati ListBox
+      MoveScaled(1,7,26,26)
+      List = [("Codice"), ("Descrizione Breve"), ("Descrizione Completa"), ("Prezzo"), ("Sconto"), ("UM"), ("Quantit\xC3\xA0"), ("Costo"), ("Costo(no sconto)"), ("Offerte (numerica)"), ("Offerte (letterale)")]
+    }
+    { TextLabel1 TextLabel
+      MoveScaled(2,3,19,3)
+      Text = ("Lista dei dati:")
+    }
+    { TextLabel2 TextLabel
+      MoveScaled(37,3,19,3)
+      Text = ("Da stampare:")
+    }
+    { ListaStampa ListBox
+      MoveScaled(36,7,26,26)
+    }
+    { AddDati Button
+      MoveScaled(28,13,7,7)
+      Text = ("")
+      Picture = Picture["Icone/1rightarrow.png"]
+    }
+    { RMDati Button
+      MoveScaled(28,20,7,7)
+      Text = ("")
+      Picture = Picture["Icone/1leftarrow.png"]
+    }
+    { DownDati Button
+      MoveScaled(63,20,6,6)
+      Text = ("")
+      Picture = Picture["Icone/1downarrow.png"]
+    }
+    { UpDati Button
+      MoveScaled(63,14,6,6)
+      Text = ("")
+      Picture = Picture["Icone/1uparrow.png"]
+    }
+  }
+  { Frame3 Frame
+    MoveScaled(71,35,70,10)
+    Text = ("Categorie")
+    { Categorie CheckBox
+      MoveScaled(2,3,26,3)
+      Text = ("Dividi in categorie")
+    }
+    { TotCat CheckBox
+      MoveScaled(35,3,33,3)
+      Enabled = False
+      Text = ("Stampa il totale della categoria")
+    }
+    { CategoriaPerPagina CheckBox
+      MoveScaled(35,6,34,3)
+      Enabled = False
+      Text = ("Stampa una categoria per pagina")
+    }
+    { CatIntestazione CheckBox
+      MoveScaled(2,6,32,3)
+      Visible = False
+      Enabled = False
+      Text = ("Ristampa definizioni colonne")
+    }
+  }
+  { Frame4 Frame
+    MoveScaled(0,0,70,45)
+    Text = ("Intestazione")
+    { ListaDatiInt ListBox
+      MoveScaled(1,7,26,26)
+      List = [("Titolo Progetto"), ("Totale Computo"), ("Committente"), ("Tipo di Committente"), ("Professionista"), ("Lista riassuntiva delle categorie")]
+    }
+    { TextLabel3 TextLabel
+      MoveScaled(1,3,19,3)
+      Text = ("Lista dei dati:")
+    }
+    { TextLabel4 TextLabel
+      MoveScaled(36,3,19,3)
+      Text = ("Da stampare:")
+    }
+    { ListaStampaInt ListBox
+      MoveScaled(36,7,26,26)
+    }
+    { AddInt Button
+      MoveScaled(28,13,7,7)
+      Text = ("")
+      Picture = Picture["Icone/1rightarrow.png"]
+    }
+    { RmInt Button
+      MoveScaled(28,20,7,7)
+      Text = ("")
+      Picture = Picture["Icone/1leftarrow.png"]
+    }
+    { UpInt Button
+      MoveScaled(63,14,6,6)
+      Text = ("")
+      Picture = Picture["Icone/1uparrow.png"]
+    }
+    { DownInt Button
+      MoveScaled(63,20,6,6)
+      Text = ("")
+      Picture = Picture["Icone/1downarrow.png"]
+    }
+    { Copertina CheckBox
+      MoveScaled(36,36,33,3)
+      Text = ("Crea Copertina")
+    }
+    { TotComputoFondo CheckBox
+      MoveScaled(36,40,33,3)
+      Text = ("Stampa totale computo in fondo")
+    }
+  }
+  { Button9 Button
+    MoveScaled(91,47,32,7)
+    Text = ("Anteprima Fruizione")
+  }
+  { Button10 Button
+    MoveScaled(17,47,32,7)
+    Text = ("Annulla")
+  }
+}
