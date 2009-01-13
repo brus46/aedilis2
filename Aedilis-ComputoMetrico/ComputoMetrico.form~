@@ -238,7 +238,6 @@
     }
     { ListElementiCM ListView
       MoveScaled(1,14,39,68)
-      Mode = Select.Multiple
     }
     { FrameComandiCM Frame
       MoveScaled(96,74,35,17)

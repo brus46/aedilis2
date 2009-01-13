@@ -1,21 +1,21 @@
 # Gambas Form File 2.0
 
 { Form Form
-  MoveScaled(0,0,64,51)
+  MoveScaled(0,0,64,46)
   Text = ("Edita Elemento Elenco Prezzi")
   Icon = Picture["Icone/aedilisDocumentoEdit.png"]
   Border = Window.Fixed
   { TextLabel3 TextLabel
-    MoveScaled(1,5,16,4)
+    MoveScaled(1,2,16,4)
     Text = ("Hai Selezionato:")
   }
   { Nome TextBox
-    MoveScaled(17,4,46,5)
+    MoveScaled(17,1,46,5)
     Text = ("Cod-Nome")
     ReadOnly = True
   }
   { TabStrip1 TabStrip
-    MoveScaled(1,11,62,31)
+    MoveScaled(1,7,62,31)
     Count = 5
     Index = 0
     Text = ("Codice")
@@ -98,19 +98,15 @@
     Index = 0
   }
   { Cancel Button
-    MoveScaled(34,43,29,6)
+    MoveScaled(34,39,29,6)
     Text = ("Annulla")
   }
   { Ok Button
-    MoveScaled(1,43,29,6)
+    MoveScaled(1,39,29,6)
     Text = ("Ok")
   }
   { IdEl TextLabel
-    MoveScaled(17,1,46,3)
+    MoveScaled(1,0,6,3)
     Text = ("IdEl")
-  }
-  { Label1 Label
-    MoveScaled(1,1,14,3)
-    Text = ("Voce n\xC2\xBA")
   }
 }
