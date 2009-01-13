@@ -7,7 +7,7 @@ Count=0
 [FFind]
 SearchIn="Project"
 CaseSensitive=False
-SearchWord=False
+SearchWord=True
 SearchComment=False
 SearchString=True
 

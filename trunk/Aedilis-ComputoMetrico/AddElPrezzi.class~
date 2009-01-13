@@ -30,7 +30,7 @@ DIM IdSostituire AS Integer
      FOR contatore = 0 TO .ListElCode.Count - 1
           IF (Dati[0].Text = .ListElCode[contatore].Text) THEN 
                IdSostituire = contatore
-               IF (1 = Message.Question("Verrà creata una nuova voce di computo con questo codice.\nTi ricordo che hai già usato questo codice per un'altra lavorazione.", "Prosegui", "Annulla")) THEN 
+               IF (1 = Message.Question("Verrà creata una nuova voce di computo con questo codice.\nTi ricordo che hai già usato questo codice per un altra lavorazione.", "Prosegui", "Annulla")) THEN 
                     prosegui = 2
                ELSE      
                     prosegui = -1

@@ -14,7 +14,6 @@ PUBLIC ListPrezzo AS String[]
 PUBLIC ListSconto AS String[]
 PUBLIC listkey AS Integer[]
 
-
 PUBLIC SUB nyi()
   
   message.Warning("Not yet implemented")
@@ -34,6 +33,7 @@ DIM tot AS Float
 DIM costo AS Float
 DIM parziale_azienda AS Float[]
 DIM parziale_categoria AS Float
+
 
   'Refresh lista
   CleanOfferte()
@@ -306,7 +306,9 @@ END
 
 PUBLIC SUB EliminaElementoCM(id AS Integer)
 DIM contatore AS Integer
-               EliminaElementoOfferte(listcmid[id].Text)
+TRY 
+               EliminaElementoOfferte(ListCMid[id].Text)
+IF NOT ( ERROR ) THEN 
                contatore = 0
                WHILE (contatore <= ListQuantitaId.Count - 1)
                     IF (Val(ListQuantitaId[contatore].Text) = id) THEN 
@@ -340,6 +342,7 @@ DIM contatore AS Integer
                CategorieCM_Click()
                Refresh_Offerte()
   
+ENDIF 
 END
 
 PUBLIC SUB EliminaElementoEP(id AS Integer)
@@ -534,7 +537,6 @@ DIM contatore2 AS Integer
           
           PRINT #SaveFile, "#ElPrezzi#"
           FOR contatore = 0 TO ListElCat.Count - 1
-          
                PRINT #SaveFile, "@"
                PRINT #SaveFile, ListElCode[contatore].Text
                PRINT #SaveFile, ListElCat[contatore].Text
@@ -841,15 +843,23 @@ PUBLIC SUB ListaPrezziari_Click()
 END
 
 PUBLIC SUB PrezziarioSelezionato_Click()
-
   IF (Prezziarioselezionato.Current.Picture = picel.Picture) THEN 
   '   message.Info(Prezziarioselezionato.Current.Key)
      codice.Text = ListCode[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
      DescrBreve.Text = ListDescrBreve[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
-     DescrLunga.Text = ListDescr[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
+     'DescrLunga.Text = ListDescr[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
+     IF NOT Prezziarioselezionato.MoveParent() THEN
+       TRY DescrLunga.text = ListDescr[ListIdEl[Val(Prezziarioselezionato.Item.key)].Text]
+       IF ( ERROR ) THEN DescrLunga.text = ""
+     END IF
+     IF DescrLunga.text <> "" THEN 
+     DescrLunga.Text = Descrlunga.text & "\n" & ListDescr[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
+     ELSE 
+     DescrLunga.text = ListDescr[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
+     END IF
      Prezzo.Text = ListPrezzo[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
      IF (prezzo.Text = "") THEN prezzo.Text = "0"
-     Sconto.Text = ListSconto[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
+     Sconto.Text = ListSconto[ListIdEl[Val(Prezziarioselezionato.Current.key)].Text]
      IF (sconto.Text = "") THEN sconto.Text = "0"
      UM.Text = ListUM[ListIdEl[Val(Prezziarioselezionato.Current.Key)].Text]
   ELSE 
@@ -871,7 +881,6 @@ IF NOT (Prezziarioselezionato.Current = NULL) THEN
      AddElPrezzi.Nome.Text = codice.Text & " - " & DescrBreve.Text
      AddElPrezzi.ValScontoPrezziario.Text = Sconto.Text
      AddElPrezzi.ScontoSlide.Value = Val(Sconto.Text)
-     
      AddElPrezzi.Dati.Clear
      AddElPrezzi.Dati.Add(Codice.Text)
      AddElPrezzi.Dati.Add(DescrBreve.Text)
@@ -915,11 +924,11 @@ DIM immagine AS Picture
                FOR contatore2 = 0 TO ListCMId.Count - 1
                     IF (ListCmId[contatore2].Text = contatore) THEN 
                          immagine = picins.Picture
-                         BREAK 
+
+               ListaElementiElPrezzi.Add(contatore, ListCmId[contatore2].Text & " - " & ListElCode[contatore].Text & " - " & ListElDescrBreve[contatore].Text, immagine)     
+                           BREAK 
                     END IF
-               NEXT 
-               ListaElementiElPrezzi.Add(contatore, ListElCode[contatore].Text & " - " & ListElDescrBreve[contatore].Text, immagine)     
-               
+               NEXT
           END IF
   
      NEXT 
@@ -1525,7 +1534,7 @@ DIM contatore AS Integer
      'Categoria specifica
      FOR contatore = 0 TO ListCMId.Count - 1
           IF (CategorieCM.Index = ListElCat[ListCMId[contatore].Text].Text) THEN 
-               ListElementiCM.add(contatore, ListElCode[ListCMId[contatore].Text].Text & " - " & ListElDescrBreve[ListCMId[contatore].Text].Text, picel.Picture)
+               ListElementiCM.add(contatore, ListCMId[contatore].Text & " - " & ListElCode[ListCMId[contatore].Text].Text & " - " & ListElDescrBreve[ListCMId[contatore].Text].Text, picel.Picture)
           END IF
      NEXT 
   ELSE 
