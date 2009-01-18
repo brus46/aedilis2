@@ -1,0 +1,244 @@
+Version: 1.3.1
+Using password: no
+ProjectName: Villetta bianca
+ProjectCommittente: Bianca Bianchi
+ProjectTipoComm: Privato
+ProjectAutore: TIzio Caio
+ProjectDicituraLavoro: Computo Metrico Estimativo
+ProjectDataDocumento: 17/1/2009
+ProjectComune: Milano
+ProjectProvincia: Mi
+#Categorie#
+Default
+Lavori Strutturali
+Opere Di Finitura
+Sicurezza
+#ElPrezzi#
+@
+A2.01.1.b
+1
+Scavo a sezione aperta per sbancamento...preso il carico sui mezzi di trasporto
+##END-TEXT##
+Scavo a sezione aperta per sbancamento e splateamento in rocce di qualsiasi natura e consistenza con resistenza inferiore a 8 N/mm² (argille sciolte e compatte, sabbie, ghiaie, pozzolane, lapilli, tufi ecc.) compreso il taglio e la rimozione di radici, ceppaie, pietre e trovanti di roccia e muratura di volume fino a 0,50 m³ sia in asciutto che in bagnato, anche in presenza di acqua stabilizzantesi nel cavo fino all'altezza di 0,20 m esclusa l’acqua proveniente da falda, compreso e compensato l'onere per il rispetto di costruzioni sotterranee preesistenti da mantenere quali fogne, condutture in genere, cavi, ecc., inoltre, lo spianamento e la configurazione del fondo, anche se a gradoni, l'eventuale profilatura di pareti, scarpate e cigli, l'eventuale tiro in alto sull'orlo del cavo e comunque in posizione di sicurezza:
+eseguito con mezzi meccanici, compreso il carico sui mezzi di trasporto
+##END-TEXT##
+2.74
+0
+m³
+@
+A2.01.3.b
+1
+Scavo a sezione obbligata, fino alla p...preso il carico sui mezzi di trasporto
+##END-TEXT##
+Scavo a sezione obbligata, fino alla profondità di 2,00 m dal piano di sbancamento od, in mancanza di questo, dall'orlo del cavo, di rocce sciolte di qualsiasi natura e consistenza con resistenza inferiore a 8 N/mm² (argille sciolte e compatte, sabbie, ghiaie, pozzolane, lapilli, tufi ecc.), sia in asciutto che bagnato, anche in presenza di acqua stabilizzantesi nel cavo fino all'altezza di 0,20 m esclusa l’acqua proveniente da falda, compreso altresì lo spianamento e la configurazione del fondo, il tiro in alto sull'orlo del cavo e comunque in posizione di sicurezza, le eventuali sbadacchiature di qualunque tipo e resistenza, esclusa soltanto quella a cassa chiusa:
+eseguito con mezzi meccanici, compreso il carico sui mezzi di trasporto
+##END-TEXT##
+8.88
+0
+m³
+@
+A3.03.4
+1
+TRASPORTI
+Carico e trasporto a discari...seguenti alla rimozione del materiale:
+##END-TEXT##
+TRASPORTI
+Carico e trasporto a discarica autorizzata del tipo 2A che dovrà vidimare copia del formulario d'identificazione del rifiuto trasportato secondo le norme vigenti, con qualunque mezzo, di materiale proveniente da demolizioni e scavi, anche se bagnato compreso il carico eseguito con mezzi meccanici o a mano e il successivo scarico, misurato per gli scavi secondo il loro effettivo volume, senza tenere conto di aumenti di volume conseguenti alla rimozione del materiale:
+##END-TEXT##
+0
+0
+
+@
+A6.01.1
+1
+CONGLOMERATI
+Conglomerato cementizio c...ura, per strutture a piano di campagna
+##END-TEXT##
+CONGLOMERATI
+Conglomerato cementizio confezionato in cantiere in opera, eseguito con 300 kg di cemento 32.5, 0,4 m³ di sabbia e 0,8 m³ di ghiaietto, per quantitativi di piccola entità, su ordine della D.L. o previsto in progetto, eseguito secondo le prescrizioni previste compresi lo spargimento, la vibrazione e quant'altro necessario per dare un’opera eseguita a perfetta regola d'arte, escluse le opere provvisionali, le casseforme e il ferro di armatura, per strutture a piano di campagna
+##END-TEXT##
+163.2
+0
+m³
+@
+A6.01.3.c
+1
+Conglomerato cementizio in opera esegu...toscarpa, di controripa:
+Rck 30 N/mm²
+##END-TEXT##
+Conglomerato cementizio in opera eseguito secondo le prescrizioni tecniche previste compresi lo spargimento, la vibrazione e quant'altro necessario per dare un'opera eseguita a perfetta regola d'arte, esclusi i soli ponteggi, le cassaforme e il ferro di armatura: eseguito con calcestruzzi a resistenza caratteristica e classe di esposizione 1 (ambiente secco con umidità relativa inferiore al 70%), dimensione massima degli inerti pari a 30 mm, classe di lavorabilità (slump) S4 (semifluida), rapporto A/C = 0,65, da utilizzare per plinti e platee di fondazione, travi rovesce e di collegamento, fondazione di muri di sostegno, di sottoscarpa, di controripa:
+Rck 30 N/mm²
+##END-TEXT##
+101.72
+0
+m³
+@
+A6.02.1.a
+1
+Acciaio in barre per armature di congl... in stabilimento:
+lavorato in cantiere
+##END-TEXT##
+Acciaio in barre per armature di conglomerato cementizio lavorato e tagliato a misura, sagomato e posto in opera a regola d'arte, compreso ogni sfrido, legature, ecc.; nonché tutti gli oneri relativi ai controlli di legge; del tipo Fe B 22 K, Fe B 32 K, Fe B 38 K, Fe B 44 K in barre lisce o ad aderenza migliorata, del tipo controllato in stabilimento:
+lavorato in cantiere
+##END-TEXT##
+1.22
+0
+kg
+@
+B1.03.1.a
+2
+Massicciata stradale formata da uno st..., misurata a spessore finito:
+da 10 cm
+##END-TEXT##
+Massicciata stradale formata da uno strato di pietrisco di pezzatura 40- 70 mm compresi la fornitura del materiale, lo spandimento, la cilindratura, trattata in superficie con emulsione bituminosa a semipenetrazione realizzata in due fasi: nella prima impiegando 3 kg/m² di emulsione e 12 litri/m² di graniglia da 1÷1,5 cm; nella seconda 2 kg/m² di emulsione e 10 litri/m² di graniglia da 0,5÷1 cm separatamente cilindrate, misurata a spessore finito:
+da 10 cm
+##END-TEXT##
+4.03
+0
+m²
+@
+B1.05.22.a
+2
+Fornitura e posa in opera di conglomer...one.
+con materiale di natura calcarea;
+##END-TEXT##
+Fornitura e posa in opera di conglomerato bituminoso per strato di base e collegamento (binderone) miscelato a caldo con bitume modificato. Conglomerato bituminoso per strato di base e collegamento (binderone) ottenuto con materiale litico di frantumazione artificiale, di pezzatura non superiore a 25 mm, caratterizzato da un coefficiente di Abrasione Los Angeles non superiore a 25, con curva granulometrica complessiva appartenente al fuso prescritto dalle norme tecniche di appalto, miscelato a caldo con bitume modificato, di penetrazione 50- 70, di classe 4 (di cui alla tabella 2), nella percentuale compresa tra il 4,5 e il 5 % in massa degli aggregati, confezionato in impianti a peso, a ciclo discontinuo. Per la costituzione della miscela, non dovranno essere utilizzati i materiali di riciclaggio provenienti dagli scarti delle costruzioni e delle demolizioni edilizie, accettati nello strato di base di cui all’art.1.05.19; potrà altresì essere impiegato materiale fresato da precedenti strati di manto di pavimentazioni stradali, purchè in quantità non superiore al 15 % della massa totale della miscela di conglomerato.&#xD;&#xA;In tale caso, all’impianto dovrà provvedersi alla necessaria integrazione del legante e delle sostanze rigeneranti, al fine di conferire al legante finale le caratteristiche richieste dal capitolato. Il conglomerato dovrà essere caratterizzato da una Stabilità Marshall (su provini costituiti all’impianto o al momento della stesa, con 75 colpi di maglio per faccia) non inferiore a 1100 daN; inoltre il valore della rigidezza Marshall, cioè il rapporto tra la Stabilità Marshall (daN) e lo scorrimento Marshall (mm) dovrà essere compreso tra 300 e 450 daN/mm Gli stessi provini Marshall devono presentare una percentuale di vuoti residui compresa tra il 4 e il 6% . Devono essere soddisfatti tutti gli altri requisiti previsti, per tale strato, nelle norme tecniche di appalto. Nel prezzo sono compresi e compensati gli oneri relativi alla fornitura e al trasporto di tutti i materiali e delle attrezzature necessarie, la fornitura e la stesura del conglomerato bituminoso con vibro-finitrici in uno o più strati, ad una temperatura superiore di circa 20 °C rispetto alla temperatura del conglomerato tradizionale, il costipamento eseguito con rulli idonei, del peso non inferiore ad 8 tonnellate, ed ogni altra opera necessaria per dare il lavoro finito e pronto per l’applicazione del sovrastante strato, con il raggiungimento di un grado di costipamento non inferiore al 97 %, riferito alla massa volumica dei provini Marshall approvati, esclusa soltanto la fornitura e la stesura della mano di ancoraggio allo strato sottostante, costituita da emulsione bituminosa ER 50, in ragione di 0,5 kg/m² , che viene compensata a parte. Per i conglomerati confezionati con materiali silicei, nel prezzo è compensata l’aggiunta, nel bitume, dell’attivante l’adesione. Misurato in opera a costipamento ultimato. Il materiale utilizzato dovrà essere certificato dall'Impianto di produzione.
+con materiale di natura calcarea;
+##END-TEXT##
+147.1
+0
+m³
+@
+B1.05.23.a
+2
+Fornitura e posa in opera di conglomer...ianto di produzione.
+per spessore cm 3
+##END-TEXT##
+Fornitura e posa in opera di conglomerato bituminoso per strato di usura miscelato a caldo con bitume tradizionale, spessore cm 3 Conglomerato bituminoso per strato di usura, da porsi in opera su uno strato di binder o di “binderone”, ottenuto con materiale litico esclusivamente di frantumazione artificiale, di pezzatura massima non superiore alla metà dello spessore dello strato costipato e finito, caratterizzato da un coefficiente di Abrasione Los Angeles non superiore a 18, con curva granulometrica appartenente al fuso prescritto dalle norme tecniche di appalto, miscelato a caldo con bitume tradizionale di penetrazione 50-70, nella percentuale non inferiore al 4,5 % della massa degli aggregati, confezionato in impianti a peso, a ciclo discontinuo. Per la costituzione della miscela, potrà altresì essere impiegato materiale fresato esclusivamente da precedenti strati di usura di pavimentazioni stradali, purchè in quantità non superiore al 10 % della massa totale della miscela di conglomerato.&#xD;&#xA;In tale caso, all’impianto dovrà provvedersi alla necessaria integrazione del legante e delle sostanze rigeneranti, al fine di conferire al legante finale le caratteristiche richieste dal capitolato. Il conglomerato dovrà essere caratterizzato da una Stabilità Marshall (su provini costituiti all’impianto o al momento della stesa, con 75 colpi di maglio per faccia) non inferiore a 1200 daN; inoltre il valore della rigidezza Marshall, cioè il rapporto tra la Stabilità Marshall (daN) e lo scorrimento Marshall (mm) dovrà essere compreso tra 300 e 450 daN/mm Gli stessi provini Marshall devono presentare una percentuale di vuoti residui compresa tra il 3 e il 5 % . Devono essere soddisfatti tutti gli altri requisiti previsti, per tale strato, nelle norme tecniche di appalto.&#xD;&#xA;Nel prezzo sono compresi e compensati gli oneri relativi alla fornitura e al trasporto di tutti i materiali e delle attrezzature necessarie, la fornitura e la stesura del conglomerato bituminoso con vibro-finitrici in uno o più strati, il costipamento eseguito con rulli idonei, del peso non inferiore ad 8 tonnellate, ed ogni altra opera necessaria per dare il lavoro finito e pronto, con il raggiungimento di un grado di costipamento non inferiore al 97 %, riferito alla massa volumica dei provini Marshall approvati, esclusa soltanto la fornitura e la stesura della mano di ancoraggio allo strato sottostante, costituita da emulsione bituminosa ER 50, in ragione di 0,7 kg/m² , che viene compensata a parte. Nel prezzo è compensata l’aggiunta, nel bitume, dell’attivante l’adesione.&#xD;&#xA;Misurato in opera a costipamento ultimato. Il materiale utilizzato dovrà essere certificato dall'Impianto di produzione.
+per spessore cm 3
+##END-TEXT##
+5.66
+0
+m²
+#Computo#
+@
+0
+Sbancamento area di sedime edificio
+##END-TEXT##
+1
+40
+30
+1.5
+1800
+-FineQuantità-
+@
+1
+travi rovesce
+##END-TEXT##
+2
+40
+1
+1
+80
+travi rovesce
+##END-TEXT##
+4
+20
+1
+1
+80
+-FineQuantità-
+@
+2
+Materiale di risulta dello sbancamento
+##END-TEXT##
+1
+1800
+0
+0
+1800
+Materiale di risulta travi rovesce
+##END-TEXT##
+1
+160
+0
+0
+160
+-FineQuantità-
+@
+3
+Magrone di sottofondo travi rovesce
+##END-TEXT##
+2
+40
+1
+.1
+8
+
+##END-TEXT##
+4
+20
+1
+.1
+8
+-FineQuantità-
+@
+4
+Travi rovesce
+##END-TEXT##
+2
+40
+.8
+.3
+19.2
+
+##END-TEXT##
+4
+20
+.4
+.5
+16
+-FineQuantità-
+@
+5
+Acciaio travi rovesce (110Kg/m3)
+##END-TEXT##
+110
+35.20
+0
+0
+3872
+-FineQuantità-
+@
+6
+Viale di accesso
+##END-TEXT##
+1
+20
+6
+0
+120
+-FineQuantità-
+@
+7
+Viale di accesso
+##END-TEXT##
+1
+20
+6
+0.1
+12
+-FineQuantità-
+@
+8
+Manto di usura viale di accesso
+##END-TEXT##
+1
+20
+6
+0
+120
+-FineQuantità-
+#Aziende#
+#FineAziende#
+#Offerte#
