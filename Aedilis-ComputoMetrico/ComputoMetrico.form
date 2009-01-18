@@ -1,7 +1,7 @@
 # Gambas Form File 2.0
 
 { Form Form
-  MoveScaled(0,0,124,109)
+  MoveScaled(0,0,123,109)
   Text = ("Aedilis - Computo Metrico")
   Icon = Picture["Icone/aedilisComputoMetrico.png"]
   { File Menu
@@ -116,6 +116,7 @@
       }
       { PanelDwElSelElPrezzi Panel
         MoveScaled(3,42,35,5)
+        AutoResize = True
         { ElUM TextBox
           MoveScaled(29,0,6,5)
           Text = ("")
@@ -168,21 +169,18 @@
     { FrameComandiElPrezzi Frame
       MoveScaled(50,60,39,22)
       Text = ("Comandi")
-      { AddElementoComputo Button
-        MoveScaled(5,3,30,6)
-        Text = ("Aggiungi al Computo Metrico")
-      }
       { EditVoceEP Button
-        MoveScaled(5,9,30,6)
+        MoveScaled(5,4,30,6)
         Text = ("Edita Voce")
       }
       { DeleteVoceEP Button
-        MoveScaled(5,15,30,6)
+        MoveScaled(5,10,30,6)
         Text = ("Elimina Voce")
       }
     }
     { SidePanelElPrezzi SidePanel
       MoveScaled(0,0,50,82)
+      AutoResize = True
       Orientation = Align.Left
       { FrameCatElPrezzi Frame
         MoveScaled(0,0,49,12)
@@ -195,7 +193,7 @@
         }
       }
       { ListaElementiElPrezzi ListView
-        MoveScaled(0,13,49,68)
+        MoveScaled(0,14,49,67)
       }
       { Dat Frame
         MoveScaled(0,38,51,38)
@@ -238,7 +236,6 @@
     }
     { ListElementiCM ListView
       MoveScaled(1,14,39,68)
-      Mode = Select.Multiple
     }
     { FrameComandiCM Frame
       MoveScaled(96,74,35,17)
@@ -502,6 +499,7 @@
     Text = ("Prezziari")
     { SidePanelPrezziari SidePanel
       MoveScaled(0,1,50,84)
+      AutoResize = True
       Orientation = Align.Left
       { ListaPrezziari ListView
         MoveScaled(0,0,49,22)
@@ -531,7 +529,7 @@
       }
     }
     { FrameElSelPrezziari Frame
-      MoveScaled(50,0,57,53)
+      MoveScaled(52,0,57,53)
       Text = ("Elemento Selezionato")
       { DescrLunga TextArea
         MoveScaled(1,21,43,25)
@@ -605,19 +603,15 @@
       }
     }
     { FrameComandiPrezziari Frame
-      MoveScaled(69,64,39,18)
+      MoveScaled(81,64,39,18)
       Text = ("Comandi")
-      { AddElementoElPrezzi Button
-        MoveScaled(5,3,30,6)
-        Text = ("Aggiungi all' Elenco Prezzi")
-      }
       { AddElementoDirComputo Button
-        MoveScaled(5,10,30,6)
+        MoveScaled(5,3,30,6)
         Text = ("Aggiungi al Computo Metrico")
       }
     }
     { FrameSearch Frame
-      MoveScaled(35,64,32,18)
+      MoveScaled(48,64,32,18)
       Text = ("Cerca")
       { Search TextBox
         MoveScaled(2,3,28,4)
@@ -640,7 +634,7 @@
     Index = 0
   }
   { ProjectID TextLabel
-    MoveScaled(71,0,11,4)
+    MoveScaled(74,0,11,4)
     Visible = False
     Text = ("0")
   }

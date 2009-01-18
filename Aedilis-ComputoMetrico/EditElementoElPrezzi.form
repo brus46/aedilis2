@@ -113,4 +113,9 @@
     MoveScaled(1,1,14,3)
     Text = ("Voce n\xC2\xBA")
   }
+  { CodeAntico TextBox
+    MoveScaled(2,8,13,3)
+    Visible = False
+    Text = ("TextBox1")
+  }
 }

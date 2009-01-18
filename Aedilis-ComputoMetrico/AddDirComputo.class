@@ -37,21 +37,18 @@ PUBLIC SUB Ok_Click()
 DIM id AS Integer
 DIM contatore AS Integer
 DIM prosegui AS Integer
-DIM IdSostituire AS Integer
 DIM sostituire AS Integer
 DIM ToRemove AS Integer[]
 
 WITH ComputoMetrico
-
+Message.info("Se il codice di tariffa è già presente nel computo\nsi utilizzano i parametri locali dell'elenco prezzi interno.") 
+              
 prosegui = 1
      FOR contatore = 0 TO .ListElCode.Count - 1
           IF (Dati[0].Text = .ListElCode[contatore].Text) THEN 
-               IdSostituire = contatore
-              IF (1 = Message.Question("Questo codice è già presente nell'elenco prezzi.\nProseguendo sostituirai la voce.", "Prosegui", "Annulla")) THEN 
-                    prosegui = 2
-               ELSE      
-                    prosegui = -1
-               END IF
+               Descrizione.Text = .ListElDescr[contatore].Text
+               dati[2].Text = .ListElPrezzo[contatore].Text
+               dati[3].Text = .ListElSconto[contatore].Text
           END IF
      NEXT 
      IF (prosegui = 1) THEN 
@@ -82,75 +79,7 @@ prosegui = 1
                .ListCMTot.Add(quantita[contatore, 5].Text)
           NEXT 
           .ListCMid.Add(id)
-     ELSE IF (prosegui = 2) THEN 
-          .ListElCat[IdSostituire].Text = Categorie.Index
-          .ListElDescrBreve[IdSostituire].Text = Globals.Cut_Descr(Descrizione.Text, Connessione.LenDescrBreve)
-          .ListElDescr[IdSostituire].Text = Descrizione.Text
-          '.ListElCode[IdSostituire].Text = dati[0].Text
-          '.ListElPrezzo[IdSostituire].Text = dati[3].Text
-          IF (Nosconto.Value = TRUE) THEN 
-               .ListElSconto[IdSostituire].Text = "0"
-          ELSE IF (ScontoPrezziario.Value = TRUE) THEN 
-               .ListElSconto[IdSostituire].Text = dati[3].Text
-          ELSE 
-               .ListElSconto[IdSostituire].Text = ScontoVal.Text
-          END IF
-          '.ListElUM[IdSostituire].Text = Dati[5].Text
-          .CategorieElPrezzi_Click()
-          .CategorieCM_click()
-          id = IdSostituire
-          
-            prosegui = 1
-     'Controllo se non esiste nel computo
-          FOR contatore = 0 TO .ListCMid.Count - 1
-     
-               IF (id = .ListCMid[contatore].Text) THEN 
-                    IF (1 = Message.question("Questa voce esiste già nel computo.\nProcedendo sovrascriverai i dati precedenti.\nProcedo?", "Sì", "No")) THEN
-                         prosegui = 2
-                        sostituire = contatore
-                    ELSE      
-                         prosegui = -1
-                    END IF
-               END IF
-
-          NEXT 
-
-
-     IF (prosegui >= 1) THEN 
-          IF (prosegui = 2) THEN 
-              ToRemove = [0]
-              ToRemove.Clear
-              FOR contatore = .ListQuantitaId.Count - 1 TO 0 STEP -1
-                    IF (.ListQuantitaId[contatore].Text = id) THEN 
-                        ToRemove.Add(contatore)
-                    END IF
-              NEXT 
-              FOR contatore = 0 TO ToRemove.Count - 1
-                   .ListCMDescrMis.Remove(ToRemove[contatore])
-                   .ListCMQ1.Remove(ToRemove[contatore])
-                   .ListCMQ2.Remove(ToRemove[contatore])
-                   .ListCMQ3.Remove(ToRemove[contatore])
-                   .ListCMQ4.Remove(ToRemove[contatore])
-                   .ListCMTot.Remove(ToRemove[contatore])
-                   .ListQuantitaId.Remove(ToRemove[contatore])
-              NEXT 
-         END IF
-          FOR contatore = 1 TO quantita.Rows.Count - 1
-               .ListQuantitaId.Add(id)
-               .ListCMDescrMis.Add(quantita[contatore, 0].Text)
-               .ListCMQ1.Add(quantita[contatore, 1].Text)
-               .ListCMQ2.Add(quantita[contatore, 2].Text)
-               .ListCMQ3.Add(quantita[contatore, 3].Text)
-               .ListCMQ4.Add(quantita[contatore, 4].Text)
-               .ListCMTot.Add(quantita[contatore, 5].Text)
-          NEXT 
-          IF NOT (prosegui = 2) THEN 
-               .ListCMid.Add(id)
-          END IF
-          
-     END IF
-
-     
+    
      END IF
 
      .CategorieCM_click()

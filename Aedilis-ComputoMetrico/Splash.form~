@@ -8,7 +8,7 @@
   Border = Window.None
   { PictureBox1 PictureBox
     MoveScaled(0,0,62,43)
-    Picture = Picture["Icone/Splash.png"]
+    Picture = Picture["Icone/Splash.jpg"]
     Stretch = True
   }
   { Timer1 #Timer

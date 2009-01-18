@@ -34,7 +34,6 @@ DIM costo AS Float
 DIM parziale_azienda AS Float[]
 DIM parziale_categoria AS Float
 
-
   'Refresh lista
   CleanOfferte()
   ListIdOfferte.Clear
@@ -209,9 +208,9 @@ FOR contatore = 0 TO ListQuantitaId.Count - 1
      
      FOR contatore_id = 0 TO ListCMid.Count - 1
           IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN BREAK 
+          parziale = totquantita * (ListElPrezzo[contatore_id].Text)
      NEXT 
-     parziale = totquantita * (ListElPrezzo[contatore_id].Text)
-     
+      
      IF (Val(ListElSconto[contatore_id].Text) = NULL) THEN 
           ListElSconto[contatore_id].Text = "0"
           PRINT "Sconto vuoto corretto con 0"
@@ -368,7 +367,6 @@ PUBLIC SUB Form_Resize()
        'ElencoPrezzi  
        SidePanelElPrezzi.Height = Tab.Height - 40
        ListaElementiElPrezzi.Height = SidePanelElPrezzi.Height - ListaElementiElPrezzi.Y
-       
        FrameElSelElPrezzi.X = SidePanelElPrezzi.X + SidePanelElPrezzi.Width
        FrameComandiElPrezzi.X = Tab.Width - FrameComandiElPrezzi.Width - 10
        FrameComandiElPrezzi.Y = Tab.Height - FrameComandiElPrezzi.Height - 40
@@ -380,7 +378,10 @@ PUBLIC SUB Form_Resize()
           PanelDwElSelElPrezzi.X = (FrameElSelElPrezzi.Width - PanelDwElSelElPrezzi.Width) / 2
           PanelDwElSelElPrezzi.Y = FrameElSelElPrezzi.Height - PanelDwElSelElPrezzi.Height - 5
           ElDescrLunga.Height = PanelDwElSelElPrezzi.Y - ElDescrLunga.Y - 5
-
+  IF NOT (SidePanelElPrezzi.Width <= 0) THEN 
+          FrameCatElPrezzi.Width = Tab.Width - FrameElSelElPrezzi.Width - 25
+          ListaElementiElPrezzi.Width = Tab.Width - FrameElSelElPrezzi.Width - 25 
+       END IF
 
        'Computo
        FrameComandiCM.X = Tab.Width - FrameComandiCM.Width - 10
@@ -836,11 +837,10 @@ PUBLIC SUB EditPrezziari_Click()
 
 END
 
-PUBLIC SUB ListaPrezziari_Click()
+PUBLIC SUB PrezziarioSelezionato_KeyPress()
+  PrezziarioSelezionato_Click()
+END SUB   
 
-  
-
-END
 
 PUBLIC SUB PrezziarioSelezionato_Click()
   IF (Prezziarioselezionato.Current.Picture = picel.Picture) THEN 
@@ -873,28 +873,6 @@ PUBLIC SUB PrezziarioSelezionato_Click()
 
 END
 
-PUBLIC SUB AddElementoElPrezzi_Click()
-IF NOT (Prezziarioselezionato.Current = NULL) THEN
-  IF NOT (Prezziarioselezionato.Current.Picture = PicCat.Picture) THEN 
-     PrezziarioSelezionato_Click
-     AddElPrezzi.Descrizione.Text = DescrLunga.Text
-     AddElPrezzi.Nome.Text = codice.Text & " - " & DescrBreve.Text
-     AddElPrezzi.ValScontoPrezziario.Text = Sconto.Text
-     AddElPrezzi.ScontoSlide.Value = Val(Sconto.Text)
-     AddElPrezzi.Dati.Clear
-     AddElPrezzi.Dati.Add(Codice.Text)
-     AddElPrezzi.Dati.Add(DescrBreve.Text)
-     AddElPrezzi.Dati.Add(DescrLunga.Text)
-     AddElPrezzi.Dati.Add(Prezzo.Text)
-     AddElPrezzi.Dati.Add(Sconto.Text)
-     AddElPrezzi.Dati.Add(UM.Text)
-
-     
-     AddElPrezzi.Show  
-     
-  END IF
-END IF
-END
 
 PUBLIC SUB EditCategorie_Click()
 
@@ -941,11 +919,11 @@ DIM immagine AS Picture
                FOR contatore2 = 0 TO ListCMId.Count - 1
                     IF (ListCmId[contatore2].Text = contatore) THEN 
                          immagine = picins.Picture
-                         BREAK 
+         
+          ListaElementiElPrezzi.Add(contatore, ListCmId[contatore2].Text & " - " & ListElCode[contatore].Text & " - " & ListElDescrBreve[contatore].Text, immagine)
+                       BREAK 
                     END IF
-               NEXT      
-          ListaElementiElPrezzi.Add(contatore, ListElCode[contatore].Text & " - " & ListElDescrBreve[contatore].Text, immagine)
-  
+               NEXT 
      NEXT      
   
   END IF
@@ -1540,13 +1518,13 @@ DIM contatore AS Integer
   ELSE 
      'Tutte le categorie
      FOR contatore = 0 TO ListCMId.Count - 1
-         ListElementiCM.add(contatore, ListElCode[ListCMId[contatore].Text].Text & " - " & ListElDescrBreve[ListCMId[contatore].Text].Text)
+         ListElementiCM.add(contatore, ListCMId[contatore].Text & " - " & ListElCode[ListCMId[contatore].Text].Text & " - " & ListElDescrBreve[ListCMId[contatore].Text].Text, picel.Picture)
      NEXT 
   
   END IF
 
   CostoFinale.Clear
-  cmcode.Clear
+  cmCode.Clear
   CMDescrBreve.Clear
   CMDescrLunga.Clear
   CMPrezzo.Clear
@@ -1560,22 +1538,6 @@ DIM contatore AS Integer
   quantita.Clear
   RefreshTotaleComputo()
   
-
-END
-
-PUBLIC SUB AddElementoComputo_Click()
-
-  IF NOT (ListaElementiElPrezzi.Current = NULL) THEN
-     AddElPrezziToComputo.Nome.Text = ListaElementiElPrezzi.Current.Text
-     AddElPrezziToComputo.Q1.Clear
-     AddElPrezziToComputo.Q2.Clear
-     AddElPrezziToComputo.Q3.Clear
-     AddElPrezziToComputo.Q4.Clear
-     AddElPrezziToComputo.UM.Text = "UM = " & listelUM[ListaElementiElPrezzi.Current.Key].Text
-     AddElPrezziToComputo.ID.Text = ListaElementiElPrezzi.Current.Key
-     AddElPrezziToComputo.Show
-     
-  END IF
 
 END
 
@@ -1635,16 +1597,28 @@ PUBLIC SUB ListElementiCM_Click()
 DIM contatore AS Integer
 DIM parziale AS Float
 DIM ContatoreRighe AS Integer
+DIM voce_corrente AS Integer
 
-IF NOT (ListElementiCM.Current = NULL) THEN 
+IF NOT (ListElementiCM.Current = NULL) THEN
+         voce_corrente = ListElementiCM.Current.Key
+      
+          
+    
+'  CMCode.Text = ListElCode[ListCMid[ListElementiCM.Current.Key].Text].Text
+'  CMDescrBreve.Text = ListElDescrBreve[ListCMid[ListElementiCM.Current.Key].Text].Text
+'  CMDescrLunga.Text = ListElDescr[ListCMid[ListElementiCM.Current.Key].Text].Text
+'  CMPrezzo.Text = ListElPrezzo[ListCMid[ListElementiCM.Current.Key].Text].Text
+'  CMSconto.Text = ListElSconto[ListCMid[ListElementiCM.Current.Key].Text].Text
+'  CMUM.Text = ListElUM[ListCMid[ListElementiCM.Current.Key].Text].Text
 
-  CMCode.Text = ListElCode[ListCMid[ListElementiCM.Current.Key].Text].Text
-  CMDescrBreve.Text = ListElDescrBreve[ListCMid[ListElementiCM.Current.Key].Text].Text
-  CMDescrLunga.Text = ListElDescr[ListCMid[ListElementiCM.Current.Key].Text].Text
-  CMPrezzo.Text = ListElPrezzo[ListCMid[ListElementiCM.Current.Key].Text].Text
-  CMSconto.Text = ListElSconto[ListCMid[ListElementiCM.Current.Key].Text].Text
-  CMUM.Text = ListElUM[ListCMid[ListElementiCM.Current.Key].Text].Text
+CMCode.Text = ListElCode[voce_corrente].Text
+CMDescrBreve.Text = ListElDescrBreve[voce_corrente].Text
+CMDescrLunga.Text = ListElDescr[voce_corrente].Text
+CMPrezzo.Text = ListElPrezzo[voce_corrente].Text
+CMSconto.Text = ListElSconto[voce_corrente].Text
+CMUM.Text = ListElUM[voce_corrente].Text
 
+  
   quantita.Clear
   quantita.Columns.Count = 7
   quantita.Rows.Count = 1
@@ -1683,7 +1657,6 @@ IF NOT (ListElementiCM.Current = NULL) THEN
   CostoFinale.Text = totq.Text * CMPrezzo.Text
   CostoFinale.Text = CostoFinale.Text - ((CMSconto.Text * CostoFinale.Text) / 100) 
   CostoFinale.Text = Globals.Approssima(CostoFinale.Text, 0)
-  
 END IF
 END
 
@@ -1840,6 +1813,7 @@ PUBLIC SUB EditVoceEP_Click()
           .IdEl.Text = ListaElementiElPrezzi.Current.Key
           .Code.Text = ListElCode[ListaElementiElPrezzi.Current.Key].Text
           .Costo.Text = ListElPrezzo[ListaElementiElPrezzi.Current.Key].Text
+          .CodeAntico.text = ListElCode[ListaElementiElPrezzi.Current.Key].Text
           '.DescrBreve.Text = ListElDescrBreve[ListaElementiElPrezzi.Current.Key].Text
           .Descrizione.Text = ListElDescr[ListaElementiElPrezzi.Current.Key].Text
           
@@ -2065,13 +2039,13 @@ PUBLIC SUB ListElementiCM_DblClick()
 END
 
 PUBLIC SUB ListElementiCM_KeyPress()
-
+  ListElementiCM_Click()
   ListaElementiElPrezzi_Click()
 
 END
 
 PUBLIC SUB ListElementiCM_KeyRelease()
-
+  ListElementiCM_Click()
   ListaElementiElPrezzi_Click()
 
 END
