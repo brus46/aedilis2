@@ -8,6 +8,7 @@ PUBLIC ProjectDicituraLavoro AS String
 PUBLIC ProjectDataDocumento AS String
 PUBLIC ProjectComune AS String
 PUBLIC ProjectProvincia AS String
+PUBLIC CostoFinale AS Float
 
 PUBLIC Version AS String
 

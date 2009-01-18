@@ -1,5 +1,6 @@
 ' Gambas class file
 
+'Gambas Class File
 PUBLIC aggiungi AS Boolean
 PUBLIC RowToEdit AS Integer
 
@@ -14,14 +15,6 @@ PUBLIC SUB Form_Open()
 ME.Center
 
   nome.Text = ComputoMetrico.ListElCode[id.Text].Text & " - " & ComputoMetrico.ListElDescrBreve[id.Text].Text
-  quantita.Columns.Count = 7
-  quantita.Rows.Count = 1
-  quantita[0, 0].Text = "DescrMisura"
-  quantita[0, 1].Text = "Parti Uguali"
-  quantita[0, 2].Text = "Larg"
-  quantita[0, 3].Text = "Lung"
-  quantita[0, 4].Text = "Prof"
-  quantita[0, 5].Text = "Tot"
 
 END
 
@@ -39,12 +32,7 @@ WITH ComputoMetrico
   FOR contatore = 0 TO .ListCMid.Count - 1
      
      IF (id.Text = .ListCMid[contatore].Text) THEN 
-          IF (1 = Message.question("Questa voce esiste già nel computo.\nProcedendo sovrascriverai i dati precedenti.\nProcedo?", "Sì", "No")) THEN
                prosegui = 2
-               sostituire = contatore
-          ELSE      
-               prosegui = -1
-          END IF
      END IF
 
   NEXT 
@@ -111,15 +99,14 @@ PUBLIC SUB Button1_Click()
 END
 
 PUBLIC SUB Button4_Click()
-  DIM x AS String
-  DIM y AS String
-  DIM z AS String
-  DIM w AS String
-  DIM parziale AS Float
-  
+DIM parziale AS Float
+DIM x AS String
+DIM y AS String
+DIM z AS String
+DIM w AS String
+
   IF (aggiungi = TRUE) THEN 
      quantita.Rows.Count = quantita.Rows.Count + 1
-     parziale = 1
      x = "1"
      y = "1"
      z = "1"
@@ -136,6 +123,7 @@ PUBLIC SUB Button4_Click()
 
      
      parziale = Globals.Math(x & " .* " & y & " .* " & z & " .* " & w)
+     
      parziale = Globals.Approssima(parziale, 1)
      
      IF ((q1.Text = 0) OR (q1.Text = "")) THEN q1.Text = "0"
@@ -151,7 +139,8 @@ PUBLIC SUB Button4_Click()
      quantita[quantita.Rows.Count - 1, 5].Text = parziale
      
   ELSE 
-     x = "1"
+     parziale = 1
+          x = "1"
      y = "1"
      z = "1"
      w = "1"
@@ -167,6 +156,7 @@ PUBLIC SUB Button4_Click()
 
      
      parziale = Globals.Math(x & " .* " & y & " .* " & z & " .* " & w)
+     
      parziale = Globals.Approssima(parziale, 1)
      
      IF ((q1.Text = 0) OR (q1.Text = "")) THEN q1.Text = "0"
@@ -222,11 +212,5 @@ IF NOT (quantita.Row <= 0) THEN
           quantita.Rows.Count = quantita.Rows.Count - 1
      END IF
 END IF
-
-END
-
-PUBLIC SUB SeeFunzioni_Click()
-
-  MostraFunzioni.Show
 
 END

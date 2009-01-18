@@ -214,3 +214,9 @@ IF NOT (quantita.Row <= 0) THEN
 END IF
 
 END
+
+PUBLIC SUB Button6_Click()
+
+    MostraFunzioni.Show
+
+END

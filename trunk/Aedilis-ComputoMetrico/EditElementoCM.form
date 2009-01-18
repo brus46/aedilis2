@@ -94,6 +94,10 @@
         MoveScaled(48,19,11,4)
         Text = ("Annulla")
       }
+      { Button6 Button
+        MoveScaled(20,19,14,4)
+        Text = ("Vedi Funzioni")
+      }
     }
     { UM TextLabel
       MoveScaled(51,0,10,4)

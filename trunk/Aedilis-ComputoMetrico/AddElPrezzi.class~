@@ -30,7 +30,7 @@ DIM IdSostituire AS Integer
      FOR contatore = 0 TO .ListElCode.Count - 1
           IF (Dati[0].Text = .ListElCode[contatore].Text) THEN 
                IdSostituire = contatore
-               IF (1 = Message.Question("Verrà creata una nuova voce di computo con questo codice.\nTi ricordo che hai già usato questo codice per un altra lavorazione.", "Prosegui", "Annulla")) THEN 
+               IF (1 = Message.Question("Questo codice è già presente nell'elenco prezzi.\nProseguendo sostituirai la voce.", "Prosegui", "Annulla")) THEN 
                     prosegui = 2
                ELSE      
                     prosegui = -1
@@ -56,39 +56,22 @@ DIM IdSostituire AS Integer
 
           ME.Close
      ELSE IF (prosegui = 2) THEN 
-      '    .ListElCat[IdSostituire].Text = Categorie.Index
-      '    .ListElDescrBreve[IdSostituire].Text = Globals.Cut_Descr(Descrizione.Text, Connessione.LenDescrBreve)
-      '    .ListElDescr[IdSostituire].Text = Descrizione.Text
-       '   '.ListElCode[IdSostituire].Text = dati[0].Text
-        '  '.ListElPrezzo[IdSostituire].Text = dati[3].Text
-       '   IF (Nosconto.Value = TRUE) THEN 
-        '       .ListElSconto[IdSostituire].Text = "0"
-         ' ELSE IF (ScontoPrezziario.Value = TRUE) THEN 
-        '       .ListElSconto[IdSostituire].Text = dati[4].Text
-         ' ELSE 
-          '     .ListElSconto[IdSostituire].Text = ScontoVal.Text
-        '  END IF
-         ' '.ListElUM[IdSostituire].Text = Dati[5].Text
-        '  .CategorieElPrezzi_Click()
-        '  .CategorieCM_click()
-        '  ME.Close  
-             .ListElCat.Add(Categorie.Index)
-          .ListElDescrBreve.Add(Globals.Cut_Descr(Descrizione.Text, Connessione.LenDescrBreve))
-          .ListElDescr.Add(Descrizione.Text)
-          .ListElCode.Add(dati[0].Text)
-          .ListElPrezzo.Add(dati[3].Text)
-     
+          .ListElCat[IdSostituire].Text = Categorie.Index
+          .ListElDescrBreve[IdSostituire].Text = Globals.Cut_Descr(Descrizione.Text, Connessione.LenDescrBreve)
+          .ListElDescr[IdSostituire].Text = Descrizione.Text
+          '.ListElCode[IdSostituire].Text = dati[0].Text
+          '.ListElPrezzo[IdSostituire].Text = dati[3].Text
           IF (Nosconto.Value = TRUE) THEN 
-               .ListElSconto.Add("0")
+               .ListElSconto[IdSostituire].Text = "0"
           ELSE IF (ScontoPrezziario.Value = TRUE) THEN 
-               .ListElSconto.Add(dati[4].Text)
+               .ListElSconto[IdSostituire].Text = dati[4].Text
           ELSE 
-               .ListElSconto.Add(ScontoVal.Text)
+               .ListElSconto[IdSostituire].Text = ScontoVal.Text
           END IF
-          .ListElUM.Add(Dati[5].Text)
+          '.ListElUM[IdSostituire].Text = Dati[5].Text
           .CategorieElPrezzi_Click()
-
-          ME.Close   
+          .CategorieCM_click()
+          ME.Close     
      END IF
   
   END WITH 
