@@ -4,6 +4,21 @@ Count=0
 [DebugWindow]
 Count=0
 
+[DebugWindow/CategorieOfferte]
+Geometry=[199,246,301,301]
+
+[DebugWindow/ListCMId]
+Geometry=[0,25,301,301]
+
+[DebugWindow/ListCMId[contatore]]
+Geometry=[0,25,301,301]
+
+[DebugWindow/ListCMTot[contatore]]
+Geometry=[0,25,301,301]
+
+[DebugWindow/gb]
+Geometry=[0,25,301,301]
+
 [FFind]
 SearchIn="Project"
 CaseSensitive=False
