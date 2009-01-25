@@ -39,18 +39,29 @@ DIM contatore AS Integer
 DIM prosegui AS Integer
 DIM sostituire AS Integer
 DIM ToRemove AS Integer[]
-
+DIM sovrascrivi AS Boolean
 WITH ComputoMetrico
-Message.info("Se il codice di tariffa è già presente nel computo\nsi utilizzano i parametri locali dell'elenco prezzi interno.") 
-              
-prosegui = 1
+'Message.info("Se il codice di tariffa è già presente nel computo\nsi utilizzano i parametri locali dell'elenco prezzi interno.") 
+  IF (1 = message.Question("Se il codice di tariffa è già presente nel computo.\nSovrascrivo il prezzo con i parametri reperiti\ndal database o utilizzo l'elenco locale?", "Utilizza l'EP del database", "Utilizza l'elenco locale")) THEN
+     sovrascrivi = TRUE
+  END IF             
+  prosegui = 1
      FOR contatore = 0 TO .ListElCode.Count - 1
+  
+     IF sovrascrivi = FALSE THEN 
           IF (Dati[0].Text = .ListElCode[contatore].Text) THEN 
                Descrizione.Text = .ListElDescr[contatore].Text
                dati[2].Text = .ListElPrezzo[contatore].Text
                dati[3].Text = .ListElSconto[contatore].Text
           END IF
+  
+     ELSE 
+    .ListElDescr[contatore].Text = Descrizione.Text 
+    .ListElPrezzo[contatore].Text = dati[2].Text
+    .ListElSconto[contatore].Text = dati[3].Text
+     END IF
      NEXT 
+     
      IF (prosegui = 1) THEN 
      
           .ListElCat.Add(Categorie.Index)
@@ -76,7 +87,7 @@ prosegui = 1
                .ListCMQ2.Add(quantita[contatore, 2].Text)
                .ListCMQ3.Add(quantita[contatore, 3].Text)
                .ListCMQ4.Add(quantita[contatore, 4].Text)
-               .ListCMTot.Add(Format$((quantita[contatore, 5].Text), ",0.00"))
+               .ListCMTot.Add(quantita[contatore, 5].Text)
           NEXT 
           .ListCMid.Add(id)
     

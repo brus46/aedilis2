@@ -196,30 +196,29 @@ DIM contatore_cat AS Integer
 DIM contatore_id AS Integer
 DIM totquantita AS Float
 DIM totcategoria AS Float
-DIM parziale AS Float
+DIM parzialeimporto AS Float
 DIM tot AS Float
 
 TotComputo.Text = 0
 tot = 0
 FOR contatore = 0 TO ListQuantitaId.Count - 1
      totquantita = 1
-     'PRINT ListCMTot[contatore].Text  
      totquantita = ListCMTot[contatore].Text  
-     
      FOR contatore_id = 0 TO ListCMid.Count - 1
-          IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN BREAK 
-          parziale = totquantita * (ListElPrezzo[contatore_id].Text)
+          IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN 
+          parzialeimporto = totquantita * (ListElPrezzo[contatore_id].Text)
          
      IF (Val(ListElSconto[contatore_id].Text) = NULL) THEN 
           ListElSconto[contatore_id].Text = "0"
           PRINT "Sconto vuoto corretto con 0"
      END IF
-     parziale = parziale - ((parziale * Val(ListElSconto[contatore_id].Text)) / 100)
-     Tot = Tot + parziale
+     parzialeimporto = parzialeimporto - ((parzialeimporto * Val(ListElSconto[contatore_id].Text)) / 100)
+     Tot = Tot + parzialeimporto
+      END IF
       NEXT 
 NEXT 
 
-TotComputo.Text = Globals.Approssima(tot, 0)
+TotComputo.Text = Globals.Approssima(Tot, 0)
 TotComputo.text = Format$(TotComputo.text, ",0.00")
 Totpercategoria.Clear
 FOR contatore_cat = 0 TO CategorieCM.Count - 2
@@ -227,13 +226,14 @@ FOR contatore_cat = 0 TO CategorieCM.Count - 2
      totcategoria = 0
      FOR contatore = 0 TO ListQuantitaId.Count - 1
           FOR contatore_id = 0 TO ListCMid.Count - 1
-               IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN BREAK 
+               IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN  
           IF (ListElCat[contatore_id].Text = contatore_cat) THEN 
                totquantita = 1
                totquantita = ListCMTot[contatore].Text
-               parziale = totquantita * ListElPrezzo[contatore_id].Text
-               parziale = parziale - ((parziale * Val(ListElSconto[contatore_id].Text)) / 100)
-               totcategoria = totcategoria + parziale
+               parzialeimporto = totquantita * ListElPrezzo[contatore_id].Text
+               parzialeimporto = parzialeimporto - ((parzialeimporto * Val(ListElSconto[contatore_id].Text)) / 100)
+               totcategoria = totcategoria + parzialeimporto
+          END IF
           END IF
           NEXT 
      NEXT 
@@ -2207,3 +2207,5 @@ PUBLIC SUB SidePanelElPrezzi_Resize()
   Form_Resize()
 
 END
+
+
