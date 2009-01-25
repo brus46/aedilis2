@@ -194,7 +194,6 @@
       }
       { ListaElementiElPrezzi ListView
         MoveScaled(0,14,49,67)
-        Sorted = True
       }
       { Dat Frame
         MoveScaled(0,38,51,38)
@@ -237,7 +236,6 @@
     }
     { ListElementiCM ListView
       MoveScaled(1,14,39,68)
-      Sorted = True
     }
     { FrameComandiCM Frame
       MoveScaled(96,74,35,17)
@@ -252,10 +250,10 @@
       }
     }
     { FrameElSelCM Frame
-      MoveScaled(41,1,77,64)
+      MoveScaled(41,1,79,64)
       Text = ("Elemento Selezionato")
       { TextLabel1 TextLabel
-        MoveScaled(1,13,6,6)
+        MoveScaled(2,13,6,6)
         Text = ("Descr Breve:")
       }
       { TextLabel8 TextLabel
@@ -263,20 +261,20 @@
         Text = ("Descr Lunga:")
       }
       { TextLabel15 TextLabel
-        MoveScaled(1,4,7,3)
+        MoveScaled(2,4,7,3)
         Text = ("Codice:")
       }
       { CMCode TextBox
-        MoveScaled(9,3,24,5)
+        MoveScaled(10,3,22,5)
         Text = ("")
         ReadOnly = True
       }
       { TextLabel16 TextLabel
-        MoveScaled(1,25,7,3)
+        MoveScaled(2,25,7,3)
         Text = ("Prezzo:")
       }
       { CMPrezzo TextBox
-        MoveScaled(8,24,30,5)
+        MoveScaled(10,24,22,5)
         Text = ("")
         Alignment = Align.Right
         ReadOnly = True
@@ -317,25 +315,25 @@
       }
       { TextLabel24 TextLabel
         MoveScaled(34,3,7,6)
-        Text = ("Costo finale")
+        Text = ("Importo")
       }
       { CostoFinale TextBox
-        MoveScaled(40,3,33,5)
+        MoveScaled(42,3,33,5)
         Text = ("")
         Alignment = Align.Right
         ReadOnly = True
       }
       { TextLabel27 TextLabel
-        MoveScaled(74,4,2,3)
+        MoveScaled(76,4,2,3)
         Text = ("\xE2\x82\xAC")
       }
       { CMDescrBreve TextArea
-        MoveScaled(8,13,23,6)
+        MoveScaled(10,13,22,6)
         Text = ("")
         ReadOnly = True
       }
       { CMDescrLunga TextArea
-        MoveScaled(40,9,36,14)
+        MoveScaled(42,9,33,14)
         Text = ("")
         ReadOnly = True
         Wrap = True
@@ -345,12 +343,12 @@
         Text = ("CMUM")
       }
       { TextLabel18 TextLabel
-        MoveScaled(1,31,10,5)
+        MoveScaled(1,31,9,5)
         Text = ("Quantit\xC3\xA0 totale:")
         Alignment = Align.Center
       }
       { TotQ TextBox
-        MoveScaled(12,31,25,5)
+        MoveScaled(10,31,22,5)
         Text = ("")
         Alignment = Align.Right
         ReadOnly = True

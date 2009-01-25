@@ -204,25 +204,23 @@ tot = 0
 FOR contatore = 0 TO ListQuantitaId.Count - 1
      totquantita = 1
      'PRINT ListCMTot[contatore].Text  
-     totquantita = ListCMTot[contatore].Text  
+     totquantita = Val(ListCMTot[contatore].Text)  
      
      FOR contatore_id = 0 TO ListCMid.Count - 1
           IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN BREAK 
-    
           parziale = totquantita * (ListElPrezzo[contatore_id].Text)
-     NEXT 
-      
+         
      IF (Val(ListElSconto[contatore_id].Text) = NULL) THEN 
           ListElSconto[contatore_id].Text = "0"
           PRINT "Sconto vuoto corretto con 0"
      END IF
      parziale = parziale - ((parziale * Val(ListElSconto[contatore_id].Text)) / 100)
      Tot = Tot + parziale
-     
+      NEXT 
 NEXT 
 
 TotComputo.Text = Globals.Approssima(tot, 0)
-
+TotComputo.text = Format$(TotComputo.text, ",0.00")
 Totpercategoria.Clear
 FOR contatore_cat = 0 TO CategorieCM.Count - 2
      
@@ -230,7 +228,6 @@ FOR contatore_cat = 0 TO CategorieCM.Count - 2
      FOR contatore = 0 TO ListQuantitaId.Count - 1
           FOR contatore_id = 0 TO ListCMid.Count - 1
                IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN BREAK 
-          NEXT 
           IF (ListElCat[contatore_id].Text = contatore_cat) THEN 
                totquantita = 1
                totquantita = ListCMTot[contatore].Text
@@ -238,9 +235,10 @@ FOR contatore_cat = 0 TO CategorieCM.Count - 2
                parziale = parziale - ((parziale * Val(ListElSconto[contatore_id].Text)) / 100)
                totcategoria = totcategoria + parziale
           END IF
+          NEXT 
      NEXT 
      totcategoria = Globals.Approssima(totcategoria, 0)
-     Totpercategoria.Add(CategorieCM[contatore_cat].Text & " - " & totcategoria & " €")
+     Totpercategoria.Add(CategorieCM[contatore_cat].Text & " - " & Format$(totcategoria, ",0.00") & " €")
 
 NEXT 
 
@@ -1580,7 +1578,10 @@ DIM contatore AS Integer
                EliminaElementoCM(ListElementiCM.Current.Key)                            
           ELSE 
                ListaElementiElPrezzi[listcmid[ListElementiCM.Current.Key].Text].Picture = picel.Picture
-               EliminaElementoCM(ListElementiCM.Current.Key)               
+               EliminaElementoCM(ListElementiCM.Current.Key)  
+                CategorieCM_Click()
+            
+                            
           END IF
      END IF
   END IF
@@ -1599,7 +1600,8 @@ DIM contatore AS Integer
 DIM parziale AS Float
 DIM ContatoreRighe AS Integer
 DIM voce_corrente AS Integer
-
+DIM quantot AS Float
+DIM parz AS Float
 IF NOT (ListElementiCM.Current = NULL) THEN
          voce_corrente = ListElementiCM.Current.Key
       
@@ -1642,22 +1644,31 @@ CMUM.Text = ListElUM[voce_corrente].Text
         q4.Text = ListCMQ4[contatore].Text
         
         parziale = ListCMTot[contatore].Text
-        totq.Text = totq.Text + parziale
+        parz = parziale
+        totq.Text = Format$(Val(totq.Text) + parziale, ",0.00")
+        
+        quantot = quantot + parziale 'corrisponde a totq.text pero senza formattazione      
+        
         quantita[ContatoreRighe, 0].Text = ListCMDescrMis[contatore].Text
         quantita[ContatoreRighe, 1].Text = q1.Text
         quantita[ContatoreRighe, 2].Text = q2.Text
         quantita[ContatoreRighe, 3].Text = q3.Text
         quantita[ContatoreRighe, 4].Text = q4.Text
-        quantita[ContatoreRighe, 5].Text = parziale
+        quantita[ContatoreRighe, 5].Text = Format$(parziale, ",0.00")
+        'Format$(parziale, ",0.00")
         
         ContatoreRighe = ContatoreRighe + 1
         
      END IF
   NEXT 
   
-  CostoFinale.Text = totq.Text * CMPrezzo.Text
+  CostoFinale.Text = quantot * CMPrezzo.Text
   CostoFinale.Text = CostoFinale.Text - ((CMSconto.Text * CostoFinale.Text) / 100) 
   CostoFinale.Text = Globals.Approssima(CostoFinale.Text, 0)
+  'formatta con separatore di migliaia e decimali
+  CostoFinale.Text = Format$(CostoFinale.Text, ",0.00")
+ 
+ 
 END IF
 END
 

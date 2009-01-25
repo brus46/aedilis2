@@ -140,6 +140,8 @@ PUBLIC SUB Math(Comando AS String) AS Float
    Terminale = ""
 
    IF (Processo.State = process.Stopped) THEN StartOctave()
+   'format long serve per dare precisione ai calcoli per cifre superiori a 5 digits
+   Comando = "format long\n" & Comando
    PRINT #Processo, Comando
    Process_read()
    splitted = [""]
@@ -196,15 +198,21 @@ PUBLIC SUB Approssima(numero AS Float, op AS Integer) AS Float
      ELSE IF (num_cifre_decimali = 4) THEN 
           fattore_moltiplicativo = 10000  
      END IF
-     togli_decimali = Int(numero * fattore_moltiplicativo)
-     approx = Int(numero * fattore_moltiplicativo * 10) - (togli_decimali * 10)
-     val_ritorno = togli_decimali / fattore_moltiplicativo
-     IF (approx >= 5) THEN val_ritorno = val_ritorno + (1 / fattore_moltiplicativo)
+    ' togli_decimali = Int(numero * fattore_moltiplicativo)
+    ' approx = Int(numero * fattore_moltiplicativo * 10) - (togli_decimali * 10)
+    ' val_ritorno = togli_decimali / fattore_moltiplicativo
+     '    IF (approx >= 5) THEN val_ritorno = val_ritorno + (1 / fattore_moltiplicativo)
+  
+    'http://www.donkarl.com/it/
+    ' fctRound = Fix("" & varNr * (10 ^ varPl) + Sgn(varNr) * 0.5) / (10 ^ varPl)
+    '  val_ritorno = Round(numero, -3) ' altra possibilita
+     
+     val_ritorno = (Fix(numero * (10 ^ num_cifre_decimali) + (Sgn(numero)) * 0.5)) / (10 ^ num_cifre_decimali)   
+         
   END IF
   
-
-
-     RETURN val_ritorno
+    RETURN val_ritorno    
+     
 END 
 
 PUBLIC SUB Cut_Descr(Stringa AS String, MaxChar AS Integer) AS String

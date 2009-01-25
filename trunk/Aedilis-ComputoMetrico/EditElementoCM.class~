@@ -122,8 +122,8 @@ DIM w AS String
      IF NOT ((q4.Text = 0) OR (q4.Text = "")) THEN W = q4.Text
 
      
-     parziale = Globals.Math(x & " .* " & y & " .* " & z & " .* " & w)
-     
+     'parziale = Globals.Math(x & " .* " & y & " .* " & z & " .* " & w)
+     parziale = x * y * z * w
      parziale = Globals.Approssima(parziale, 1)
      
      IF ((q1.Text = 0) OR (q1.Text = "")) THEN q1.Text = "0"
@@ -140,7 +140,7 @@ DIM w AS String
      
   ELSE 
      parziale = 1
-          x = "1"
+     x = "1"
      y = "1"
      z = "1"
      w = "1"
@@ -155,9 +155,9 @@ DIM w AS String
      IF NOT ((q4.Text = 0) OR (q4.Text = "")) THEN W = q4.Text
 
      
-     parziale = Globals.Math(x & " .* " & y & " .* " & z & " .* " & w)
-     
-     parziale = Globals.Approssima(parziale, 1)
+     'parziale = Globals.Math(x & " .* " & y & " .* " & z & " .* " & w)
+     parziale = x * y * z * w
+     'parziale = Globals.Approssima(parziale, 1)
      
      IF ((q1.Text = 0) OR (q1.Text = "")) THEN q1.Text = "0"
      IF ((q2.Text = 0) OR (q2.Text = "")) THEN q2.Text = "0"
@@ -212,5 +212,11 @@ IF NOT (quantita.Row <= 0) THEN
           quantita.Rows.Count = quantita.Rows.Count - 1
      END IF
 END IF
+
+END
+
+PUBLIC SUB Button6_Click()
+
+    MostraFunzioni.Show
 
 END
