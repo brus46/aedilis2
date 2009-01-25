@@ -197,7 +197,6 @@
       }
       { Dat Frame
         MoveScaled(0,38,51,38)
-        Visible = False
         Text = ("Dati(invisibile)")
         { ListElDescr ListBox
           MoveScaled(1,2,7,35)
@@ -280,7 +279,7 @@
         ReadOnly = True
       }
       { TextLabel17 TextLabel
-        MoveScaled(43,25,7,3)
+        MoveScaled(42,25,7,3)
         Text = ("Sconto:")
       }
       { CMSconto TextBox
@@ -328,7 +327,7 @@
         Text = ("\xE2\x82\xAC")
       }
       { CMDescrBreve TextArea
-        MoveScaled(10,13,22,6)
+        MoveScaled(10,10,22,9)
         Text = ("")
         ReadOnly = True
       }
@@ -339,7 +338,7 @@
         Wrap = True
       }
       { CMUM TextLabel
-        MoveScaled(38,32,6,4)
+        MoveScaled(33,32,6,4)
         Text = ("CMUM")
       }
       { TextLabel18 TextLabel
@@ -358,7 +357,7 @@
         Text = ("%")
       }
       { TextLabel29 TextLabel
-        MoveScaled(39,25,2,3)
+        MoveScaled(33,25,2,3)
         Text = ("\xE2\x82\xAC")
       }
       { quantita TableView
@@ -368,8 +367,7 @@
       }
     }
     { Frame7 Frame
-      MoveScaled(1,38,53,38)
-      Visible = False
+      MoveScaled(1,38,69,38)
       Text = ("Dati(invisibile)")
       { ListCMid ListBox
         MoveScaled(1,2,7,35)
@@ -393,7 +391,7 @@
         MoveScaled(40,2,7,35)
       }
       { ListCMTot ListBox
-        MoveScaled(47,2,5,35)
+        MoveScaled(47,2,17,35)
       }
     }
     { FrameDatiComputo Frame

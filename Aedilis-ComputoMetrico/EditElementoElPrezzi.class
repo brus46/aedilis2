@@ -16,7 +16,7 @@ END
 PUBLIC SUB Ok_Click()
 DIM procedere AS Boolean
 DIM cont1 AS Integer
-IF (1 = message.Question("Tutte le modifiche proposte, eccetto la categoria, saranno\napportate alle voci del computo con lo stesso codice di tariffa.\n Vuoi continuare?", "Sì", "No")) THEN
+IF (1 = message.Question("Tutte le modifiche proposte, eccetto la categoria, saranno\napportate alle voci del computo con lo stesso codice di tariffa.\nVuoi continuare?", "Sì", "No")) THEN
                procedere = TRUE
 
 IF procedere = TRUE THEN 

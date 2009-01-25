@@ -1,9 +1,9 @@
 Section: office
 Priority: optional
-Standards-Version: 2.0.0
+Standards-Version: 1.0.9
 
 Package: aedilis-dummy
-Version: 2.0.0
+Version: 1.0.9
 Maintainer: Mosconi Marco <brus46@gmail.com>
 Depends: gambas2, gambas2-gb-db-mysql, mysql-server, octave3.0, tetex-bin ,texlive-fonts-recommended, aedilis, aedilis-computometrico, aedilisconfigurator, aedilisdbconf, aedilis-editorprezziari, aedilis-funzionimatematiche, aedilis-help, aedilis-cover
 Architecture: all
