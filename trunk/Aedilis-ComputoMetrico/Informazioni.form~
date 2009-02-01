@@ -7,7 +7,7 @@
   Border = Window.Fixed
   { TextLabel2 TextLabel
     MoveScaled(1,26,62,4)
-    Text = ("Versione: 0.0.72")
+    Text = ("Versione: 0.0.52")
   }
   { TextLabel3 TextLabel
     MoveScaled(1,30,62,4)

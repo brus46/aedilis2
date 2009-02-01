@@ -16,6 +16,9 @@ Geometry=[0,25,301,301]
 [DebugWindow/ListCMTot[contatore]]
 Geometry=[0,25,301,301]
 
+[DebugWindow/ListElementiCM]
+Geometry=[0,25,301,301]
+
 [DebugWindow/gb]
 Geometry=[0,25,301,301]
 

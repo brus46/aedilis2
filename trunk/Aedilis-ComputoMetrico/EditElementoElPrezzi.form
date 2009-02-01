@@ -44,24 +44,24 @@
     Index = 2
     Text = ("Sconto")
     { ScontoPer RadioButton
-      MoveScaled(2,6,24,4)
+      MoveScaled(2,1,24,4)
       Text = ("Sconto Personalizzato:")
       Value = True
     }
     { NoSconto RadioButton
-      MoveScaled(2,16,19,5)
+      MoveScaled(2,19,19,5)
       Text = ("Nessuno Sconto")
     }
     { ScontoSlide Slider
-      MoveScaled(30,5,29,7)
+      MoveScaled(31,6,25,7)
       Mark = True
     }
     { TextLabel2 TextLabel
-      MoveScaled(59,13,2,3)
+      MoveScaled(51,16,2,3)
       Text = ("%")
     }
     { ScontoVal TextLabel
-      MoveScaled(49,13,9,3)
+      MoveScaled(39,16,9,3)
       Text = ("0")
       Alignment = Align.Right
     }

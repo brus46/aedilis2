@@ -44,26 +44,34 @@
     Index = 2
     Text = ("Sconto")
     { ScontoPer RadioButton
-      MoveScaled(2,6,24,4)
+      MoveScaled(2,1,24,4)
       Text = ("Sconto Personalizzato:")
       Value = True
     }
     { NoSconto RadioButton
-      MoveScaled(2,16,19,5)
+      MoveScaled(2,19,19,5)
       Text = ("Nessuno Sconto")
     }
     { ScontoSlide Slider
-      MoveScaled(30,5,29,7)
+      MoveScaled(2,7,25,7)
       Mark = True
     }
     { TextLabel2 TextLabel
-      MoveScaled(59,13,2,3)
+      MoveScaled(54,20,2,3)
       Text = ("%")
     }
     { ScontoVal TextLabel
-      MoveScaled(49,13,9,3)
+      MoveScaled(43,20,9,3)
       Text = ("0")
       Alignment = Align.Right
+    }
+    { ScontoBox TextBox
+      MoveScaled(20,19,21,5)
+      Text = (" ")
+    }
+    { Scontodecimali Slider
+      MoveScaled(33,7,25,7)
+      Mark = True
     }
     Index = 3
     Text = ("Categoria")
@@ -115,6 +123,7 @@
   }
   { CodeAntico TextBox
     MoveScaled(2,8,13,3)
+    Visible = False
     Text = ("TextBox1")
   }
 }
