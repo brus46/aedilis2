@@ -383,20 +383,21 @@ PUBLIC SUB Form_Resize()
        END IF
 
        'Computo
-       FrameComandiCM.X = Tab.Width - FrameComandiCM.Width - 10
-       FrameComandiCM.Y = Tab.Height - FrameComandiCM.Height - 40
-       FrameDatiComputo.Y = FrameElSelCM.Height + FrameElSelCM.Y + 10
+       ListElementiCM.Width = Tab.Width - ListElementiCM.X - 10
+       ListElementiCM.Height = ListElementiCM.Y + 240
+       FrameComandiCM.Y = ListElementiCM.height + 15
+       FrameElSelCM.Y = FrameComandiCM.Height + FrameComandiCM.Y + 10
+       FrameElSelCM.Height = Tab.Height - FrameElSelCM.Y - 40
+       FrameElSelCM.Width = Tab.Width - FrameElSelCM.X - 10 
+       quantita.Width = FrameElSelCM.Width - quantita.X - 10
+       quantita.Height = FrameElSelCM.Height - 300
+       CMDescrLunga.Width = quantita.Width - 50
+       FrameDatiComputo.Y = Framecat.Height + Framecat.Y + 10
        FrameDatiComputo.Height = Tab.Height - FrameDatiComputo.Y - 40
        Totpercategoria.Height = FrameDatiComputo.Height - Totpercategoria.Y - 10
        Totpercategoria.Width = FrameDatiComputo.Width - Totpercategoria.X - 10
-       
-       FrameElSelCM.Width = Tab.Width - FrameElSelCM.X - 10 
-       quantita.Width = FrameElSelCM.Width - quantita.X - 10
-       
        FrameCat.Width = FrameElSelCM.X - FrameCat.X - 10
        CategorieCM.Width = FrameCat.Width - 20
-       ListElementiCM.Width = FrameCat.Width
-       ListElementiCM.Height = tab.Height - ListElementiCM.Y - 40
        
        'Confronta offerte
        TabOfferte.Height = Tab.Height - TabOfferte.Y - 40
@@ -902,7 +903,7 @@ DIM immagine AS Picture
                     IF (ListCmId[contatore2].Text = contatore) THEN 
                          immagine = picins.Picture
 
-               ListaElementiElPrezzi.Add(contatore, ListCmId[contatore2].Text & " - " & ListElCode[contatore].Text & " - " & ListElDescrBreve[contatore].Text, immagine)     
+               ListaElementiElPrezzi.Add(contatore, ListCmId[contatore2].Text & " - " & ListElCode[contatore].Text & " - " & Replace$(ListElDescrBreve[contatore].Text, "\n", " "), immagine)     
                            BREAK 
                     END IF
                NEXT
@@ -919,7 +920,7 @@ DIM immagine AS Picture
                     IF (ListCmId[contatore2].Text = contatore) THEN 
                          immagine = picins.Picture
          
-          ListaElementiElPrezzi.Add(contatore, ListCmId[contatore2].Text & " - " & ListElCode[contatore].Text & " - " & ListElDescrBreve[contatore].Text, immagine)
+          ListaElementiElPrezzi.Add(contatore, ListCmId[contatore2].Text & " - " & ListElCode[contatore].Text & " - " & Replace$(ListElDescrBreve[contatore].Text, "\n", " "), immagine)
                        BREAK 
                     END IF
                NEXT 
@@ -1504,27 +1505,76 @@ END
 PUBLIC SUB CategorieCM_Click()
 
 DIM contatore AS Integer
-
+DIM cont2 AS Integer
+DIM quantparz AS Float
+DIM importovoce AS Float
+DIM prezzoscontato AS Float
   ListElementiCM.Clear
-
+  ListElementiCM.Columns.Count = 6   
+  ListElementiCM.Columns[0].text = "Nº"
+  ListElementiCM.Columns[0].Width = 50
+  ListElementiCM.Columns[1].text = "Art. Tar."
+  ListElementiCM.Columns[1].Width = 100
+  ListElementiCM.Columns[2].text = "Descrizione"
+  ListElementiCM.Columns[2].Width = 400
+  ListElementiCM.Columns[3].text = "Quantità"
+  ListElementiCM.Columns[3].Width = 100  
+  ListElementiCM.Columns[4].text = "Prezzo netto"
+  ListElementiCM.Columns[4].Width = 100  
+  ListElementiCM.Columns[5].text = "Importo"
+  ListElementiCM.Columns[5].Width = 100  
+  
   IF NOT (CategorieCM.Index = CategorieCM.Count - 1) THEN 
      'Categoria specifica
+           
      FOR contatore = 0 TO ListCMId.Count - 1
-          IF (CategorieCM.Index = ListElCat[ListCMId[contatore].Text].Text) THEN 
-               ListElementiCM.add(contatore, ListCMId[contatore].Text & " - " & ListElCode[ListCMId[contatore].Text].Text & " - " & ListElDescrBreve[ListCMId[contatore].Text].Text, picel.Picture)
-          END IF
+         IF (CategorieCM.Index = ListElCat[ListCMId[contatore].Text].Text) THEN 
+             'ListElementiCM.add(contatore, ListCMId[contatore].Text & " - " & ListElCode[ListCMId[contatore].Text].Text & " - " & ListElDescrBreve[ListCMId[contatore].Text].Text, picel.Picture)
+              ListElementiCM.add(contatore, ListCMId[contatore].Text)
+              ListElementiCM[contatore][0] = ListCMId[contatore].Text
+              ListElementiCM[contatore][1] = ListElCode[ListCMId[contatore].Text].Text
+              ListElementiCM[contatore][2] = Replace$(ListElDescrBreve[ListCMId[contatore].Text].Text, "\n", " ")
+              prezzoscontato = ListElPrezzo[Contatore].Text - ((ListElSconto[contatore].Text * ListElPrezzo[Contatore].Text) / 100)
+              ListElementiCM[contatore][4] = Format$(prezzoscontato, ",0.00")
+              FOR cont2 = 0 TO ListQuantitaId.Count - 1
+                IF ListCMid[contatore].text = ListQuantitaID[cont2].Text THEN
+                  quantparz = quantparz + ListCMTot[cont2].text
+                  ListElementiCM[contatore][3] = Format$(quantparz, ",0.00")
+                  importovoce = quantparz * prezzoscontato
+                  importovoce = GLobals.Approssima(importovoce, 0)
+                  ListElementiCM[contatore][5] = Format$(importovoce, ",0.00")
+               END IF
+              NEXT 
+              quantparz = 0
+         END IF
      NEXT 
   ELSE 
      'Tutte le categorie
+    
      FOR contatore = 0 TO ListCMId.Count - 1
-         ListElementiCM.add(contatore, ListCMId[contatore].Text & " - " & ListElCode[ListCMId[contatore].Text].Text & " - " & ListElDescrBreve[ListCMId[contatore].Text].Text, picel.Picture)
-     NEXT 
-  
-  END IF
+       'ListElementiCM.add(contatore, ListCMId[contatore].Text & " - " & ListElCode[ListCMId[contatore].Text].Text & " - " & ListElDescrBreve[ListCMId[contatore].Text].Text, picel.Picture)
+        ListElementiCM.add(contatore, ListCMId[contatore].Text)
+        ListElementiCM[contatore][0] = ListCMId[contatore].Text
+        ListElementiCM[contatore][1] = ListElCode[ListCMId[contatore].Text].Text
+        ListElementiCM[contatore][2] = Replace$(ListElDescrBreve[ListCMId[contatore].Text].Text, "\n", " ")
+        prezzoscontato = ListElPrezzo[Contatore].Text - ((ListElSconto[contatore].Text * ListElPrezzo[Contatore].Text) / 100)
+        ListElementiCM[contatore][4] = Format$(prezzoscontato, ",0.00")
+          FOR cont2 = 0 TO ListQuantitaId.Count - 1
+            IF ListCMid[contatore].text = ListQuantitaID[cont2].Text THEN
+                 quantparz = quantparz + ListCMTot[cont2].text
+                 ListElementiCM[contatore][3] = Format$(quantparz, ",0.00")
+                 importovoce = quantparz * prezzoscontato
+                  importovoce = GLobals.Approssima(importovoce, 0)
+                  ListElementiCM[contatore][5] = Format$(importovoce, ",0.00")
+            END IF
+          NEXT 
+          quantparz = 0
+    NEXT 
+ END IF
 
   CostoFinale.Clear
   cmCode.Clear
-  CMDescrBreve.Clear
+  'CMDescrBreve.Clear
   CMDescrLunga.Clear
   CMPrezzo.Clear
   CMSconto.Clear
@@ -1614,7 +1664,7 @@ IF NOT (ListElementiCM.Current = NULL) THEN
 '  CMUM.Text = ListElUM[ListCMid[ListElementiCM.Current.Key].Text].Text
 
 CMCode.Text = ListElCode[voce_corrente].Text
-CMDescrBreve.Text = ListElDescrBreve[voce_corrente].Text
+'CMDescrBreve.Text = ListElDescrBreve[voce_corrente].Text
 CMDescrLunga.Text = ListElDescr[voce_corrente].Text
 CMPrezzo.Text = ListElPrezzo[voce_corrente].Text
 CMSconto.Text = ListElSconto[voce_corrente].Text
@@ -1622,21 +1672,27 @@ CMUM.Text = ListElUM[voce_corrente].Text
 
   
   quantita.Clear
-  quantita.Columns.Count = 7
+  quantita.Columns.Count = 6
   quantita.Rows.Count = 1
-  quantita[0, 0].Text = "Descr Misura"
-  quantita[0, 1].Text = "Parti Uguali"
-  quantita[0, 2].Text = "Larg"
-  quantita[0, 3].Text = "Lung"
-  quantita[0, 4].Text = "Prof"
-  quantita[0, 5].Text = "Tot"
+  quantita.Columns[0].Text = "Descr Misura"
+  quantita.Columns[1].Text = "Parti Uguali"
+  quantita.Columns[2].Text = "Larg"
+  quantita.Columns[3].Text = "Lung"
+  quantita.Columns[4].Text = "Prof"
+  quantita.Columns[5].Text = "Tot"
+  'quantita[0, 0].Text = "Descr Misura"
+  'quantita[0, 1].Text = "Parti Uguali"
+  'quantita[0, 2].Text = "Larg"
+  'quantita[0, 3].Text = "Lung"
+  'quantita[0, 4].Text = "Prof"
+  'quantita[0, 5].Text = "Tot"
   
   totQ.Text = 0
   ContatoreRighe = 1
   FOR contatore = 0 TO ListQuantitaId.Count - 1
      IF (ListQuantitaId[contatore].Text = ListElementiCM.Current.Key) THEN 
-        quantita.Rows.Count = ContatoreRighe + 1
-         
+        quantita.Rows.Count = ContatoreRighe + 1 
+       
         q1.Text = ListCMQ1[contatore].Text
         q2.Text = ListCMQ2[contatore].Text
         q3.Text = ListCMQ3[contatore].Text
@@ -1653,8 +1709,7 @@ CMUM.Text = ListElUM[voce_corrente].Text
         quantita[ContatoreRighe, 3].Text = q3.Text
         quantita[ContatoreRighe, 4].Text = q4.Text
         quantita[ContatoreRighe, 5].Text = parziale
-        
-        
+              
         ContatoreRighe = ContatoreRighe + 1
         
      END IF
@@ -1729,7 +1784,7 @@ DIM procedere AS Boolean
           ListCMTot.Clear
 
           CMCode.Clear
-          CMDescrBreve.Clear
+         ' CMDescrBreve.Clear
           CMDescrLunga.Clear
           CMPrezzo.Clear
           CMSconto.Clear
@@ -2208,8 +2263,4 @@ PUBLIC SUB SidePanelElPrezzi_Resize()
 
 END
 
-PUBLIC SUB ListaElementiElPrezzi_MouseUp()
 
-  ListaElementiElPrezzi.ToolTip = "ww"
-
-END

@@ -41,8 +41,7 @@ DIM sostituire AS Integer
 DIM ToRemove AS Integer[]
 DIM sovrascrivi AS Boolean
 WITH ComputoMetrico
-'Message.info("Se il codice di tariffa è già presente nel computo\nsi utilizzano i parametri locali dell'elenco prezzi interno.") 
-  IF (1 = message.Question("Se il codice di tariffa è già presente nel computo.\nSovrascrivo il prezzo con i parametri reperiti\ndal database o utilizzo l'elenco locale?", "Utilizza l'EP del database", "Utilizza l'elenco locale")) THEN
+  IF (1 = message.Question("Se il codice di tariffa è già presente nel computo\nsovrascrivo il prezzo con i parametri reperiti\ndal database o utilizzo l'elenco locale?", "Utilizza l'EP del database", "Utilizza l'elenco locale")) THEN
      sovrascrivi = TRUE
   END IF             
   prosegui = 1
@@ -236,7 +235,10 @@ END
 
 PUBLIC SUB ScontoSlide_Change()
 
-  Scontoval.Text = ScontoSlide.Value
+ ' ScontoVal.Text = ScontoSlide.Value
+ScontoBox.text = ScontoSlide.Value
+ScontoBox.Text = ScontoBox.Text
+ScontoVal.Text = ScontoBox.Text
 
 END
 

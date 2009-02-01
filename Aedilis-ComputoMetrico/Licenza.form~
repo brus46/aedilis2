@@ -13,7 +13,7 @@
   }
   { TextLabel1 TextLabel
     MoveScaled(2,2,66,3)
-    Text = ("Licenza sotto cui viene rilasciato Aedilis-ComputoMetrico:")
+    Text = ("Licenza sotto cui \\xC3\\xA8 rilasciato Aedilis-ComputoMetrico:")
   }
   { Button1 Button
     MoveScaled(63,1,13,4)

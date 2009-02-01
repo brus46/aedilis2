@@ -1,22 +1,22 @@
 # Gambas Form File 2.0
 
 { Form Form
-  MoveScaled(0,0,123,109)
+  MoveScaled(0,0,142,109)
   Text = ("Aedilis - Computo Metrico")
   Icon = Picture["Icone/aedilisComputoMetrico.png"]
   { File Menu
     Text = ("File")
     { Nuovo Menu
       Text = ("Nuovo Progetto")
-      Picture = Picture["Icone/aedilisDocumentoNewMt.png"]
+      Picture = Picture["Icone/New.png"]
     }
     { Apri Menu
       Text = ("Apri Progetto")
-      Picture = Picture["Icone/Apri.png"]
+      Picture = Picture["Icone/cartella.png"]
     }
     { Salva Menu
       Text = ("Salva Progetto")
-      Picture = Picture["Icone/Ridimensionato-Salva.png"]
+      Picture = Picture["Icone/Salva.png"]
     }
     { SalvaCriptato Menu
       Text = ("Salva con Password")
@@ -86,7 +86,7 @@
     }
   }
   { Tab TabStrip
-    MoveScaled(0,0,122,99)
+    MoveScaled(0,0,139,99)
     Count = 4
     Index = 0
     Text = ("Elenco Prezzi")
@@ -196,7 +196,8 @@
         MoveScaled(0,14,49,67)
       }
       { Dat Frame
-        MoveScaled(0,38,51,38)
+        MoveScaled(1,41,51,38)
+        Visible = False
         Text = ("Dati(invisibile)")
         { ListElDescr ListBox
           MoveScaled(1,2,7,35)
@@ -233,57 +234,38 @@
         List = []
       }
     }
-    { ListElementiCM ListView
-      MoveScaled(1,14,39,68)
-    }
-    { FrameComandiCM Frame
-      MoveScaled(96,74,35,17)
-      Text = ("Comandi")
-      { EditVoceCM Button
-        MoveScaled(3,3,30,6)
-        Text = ("Edita Voce")
-      }
-      { DeleteVoceCM Button
-        MoveScaled(3,10,30,6)
-        Text = ("Elimina Voce")
-      }
-    }
     { FrameElSelCM Frame
-      MoveScaled(41,1,79,64)
+      MoveScaled(41,36,96,57)
       Text = ("Elemento Selezionato")
-      { TextLabel1 TextLabel
-        MoveScaled(2,13,6,6)
-        Text = ("Descr Breve:")
-      }
       { TextLabel8 TextLabel
-        MoveScaled(33,13,6,5)
+        MoveScaled(2,10,6,5)
         Text = ("Descr Lunga:")
       }
       { TextLabel15 TextLabel
-        MoveScaled(2,4,7,3)
+        MoveScaled(1,4,7,3)
         Text = ("Codice:")
       }
       { CMCode TextBox
-        MoveScaled(10,3,22,5)
+        MoveScaled(9,4,22,5)
         Text = ("")
         ReadOnly = True
       }
       { TextLabel16 TextLabel
-        MoveScaled(2,25,7,3)
+        MoveScaled(30,34,7,3)
         Text = ("Prezzo:")
       }
       { CMPrezzo TextBox
-        MoveScaled(10,24,22,5)
+        MoveScaled(38,33,16,5)
         Text = ("")
         Alignment = Align.Right
         ReadOnly = True
       }
       { TextLabel17 TextLabel
-        MoveScaled(42,25,7,3)
+        MoveScaled(32,4,7,3)
         Text = ("Sconto:")
       }
       { CMSconto TextBox
-        MoveScaled(51,24,10,5)
+        MoveScaled(40,4,10,5)
         Text = ("")
         Alignment = Align.Right
         ReadOnly = True
@@ -313,61 +295,81 @@
         ReadOnly = True
       }
       { TextLabel24 TextLabel
-        MoveScaled(34,3,7,6)
+        MoveScaled(59,34,7,4)
         Text = ("Importo")
       }
       { CostoFinale TextBox
-        MoveScaled(42,3,33,5)
+        MoveScaled(68,33,22,5)
         Text = ("")
         Alignment = Align.Right
         ReadOnly = True
       }
       { TextLabel27 TextLabel
-        MoveScaled(76,4,2,3)
+        MoveScaled(91,34,2,3)
         Text = ("\xE2\x82\xAC")
       }
-      { CMDescrBreve TextArea
-        MoveScaled(10,10,22,9)
-        Text = ("")
-        ReadOnly = True
-      }
       { CMDescrLunga TextArea
-        MoveScaled(42,9,33,14)
+        MoveScaled(9,11,85,20)
         Text = ("")
         ReadOnly = True
         Wrap = True
       }
       { CMUM TextLabel
-        MoveScaled(33,32,6,4)
+        MoveScaled(23,34,6,4)
         Text = ("CMUM")
       }
       { TextLabel18 TextLabel
-        MoveScaled(1,31,9,5)
+        MoveScaled(1,33,9,5)
         Text = ("Quantit\xC3\xA0 totale:")
         Alignment = Align.Center
       }
       { TotQ TextBox
-        MoveScaled(10,31,22,5)
+        MoveScaled(10,33,11,5)
         Text = ("")
         Alignment = Align.Right
         ReadOnly = True
       }
       { TextLabel28 TextLabel
-        MoveScaled(62,25,3,3)
+        MoveScaled(53,5,3,3)
         Text = ("%")
       }
       { TextLabel29 TextLabel
-        MoveScaled(33,25,2,3)
+        MoveScaled(55,34,2,3)
         Text = ("\xE2\x82\xAC")
       }
       { quantita TableView
-        MoveScaled(1,37,75,26)
+        MoveScaled(1,40,93,15)
         Mode = Select.Single
-        Header = GridView.Vertical
+        Header = GridView.Horizontal
+      }
+    }
+    { FrameDatiComputo Frame
+      MoveScaled(1,14,39,72)
+      Text = ("Dati Computo")
+      { TotComputo TextBox
+        MoveScaled(8,3,27,4)
+        Text = ("0")
+        ReadOnly = True
+      }
+      { TextLabel22 TextLabel
+        MoveScaled(1,3,7,3)
+        Text = ("Totale:")
+      }
+      { TextLabel25 TextLabel
+        MoveScaled(36,4,2,3)
+        Text = ("\xE2\x82\xAC")
+      }
+      { TotPerCategoria ListBox
+        MoveScaled(1,10,37,60)
+      }
+      { TextLabel26 TextLabel
+        MoveScaled(1,7,14,3)
+        Text = ("Per categoria:")
       }
     }
     { Frame7 Frame
-      MoveScaled(1,38,69,38)
+      MoveScaled(-12,45,55,38)
+      Visible = False
       Text = ("Dati(invisibile)")
       { ListCMid ListBox
         MoveScaled(1,2,7,35)
@@ -391,31 +393,24 @@
         MoveScaled(40,2,7,35)
       }
       { ListCMTot ListBox
-        MoveScaled(47,2,17,35)
+        MoveScaled(47,2,7,35)
       }
     }
-    { FrameDatiComputo Frame
-      MoveScaled(41,70,57,24)
-      Text = ("Dati Computo")
-      { TotComputo TextBox
-        MoveScaled(8,3,27,4)
-        Text = ("0")
-        ReadOnly = True
+    { ListElementiCM ColumnView
+      MoveScaled(41,2,96,23)
+      Expand = True
+      Resizable = True
+    }
+    { FrameComandiCM Frame
+      MoveScaled(41,26,31,9)
+      Text = ("Comandi")
+      { EditVoceCM Button
+        MoveScaled(1,3,14,5)
+        Text = ("Edita Voce")
       }
-      { TextLabel22 TextLabel
-        MoveScaled(1,3,7,3)
-        Text = ("Totale:")
-      }
-      { TextLabel25 TextLabel
-        MoveScaled(36,4,2,3)
-        Text = ("\xE2\x82\xAC")
-      }
-      { TotPerCategoria ListBox
-        MoveScaled(1,10,55,13)
-      }
-      { TextLabel26 TextLabel
-        MoveScaled(1,7,14,3)
-        Text = ("Per categoria:")
+      { DeleteVoceCM Button
+        MoveScaled(16,3,14,5)
+        Text = ("Elimina Voce")
       }
     }
     Index = 2

@@ -235,7 +235,8 @@ END
 
 PUBLIC SUB ScontoSlide_Change()
 
-  Scontoval.Text = ScontoSlide.Value
+ScontoVal.Text = ScontoSlide.Value
+
 
 END
 
