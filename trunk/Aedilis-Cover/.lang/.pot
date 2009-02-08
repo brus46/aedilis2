@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: .project:1 FMain.class:430 Splash.class:28
+#: .project:1 FMain.class:432 Splash.class:30
 msgid "Aedilis-Cover"
 msgstr ""
 
@@ -20,107 +20,107 @@ msgid ""
 "le ultime pagine dei computi."
 msgstr ""
 
-#: Exporting.class:94
+#: Exporting.class:96
 msgid "Esporta"
 msgstr ""
 
-#: Exporting.class:118
+#: Exporting.class:120
 msgid "Annulla"
 msgstr ""
 
-#: Exporting.class:124
+#: Exporting.class:126
 msgid "I tuoi Layout"
 msgstr ""
 
-#: Exporting.class:129
+#: Exporting.class:131
 msgid "Da esportare:"
 msgstr ""
 
-#: FMain.class:446
+#: FMain.class:448
 msgid "Aggiorna"
 msgstr ""
 
-#: FMain.class:452
+#: FMain.class:454
 msgid "Nuovo Layout"
 msgstr ""
 
-#: FMain.class:458
+#: FMain.class:460
 msgid "Edita Layout"
 msgstr ""
 
-#: FMain.class:464
+#: FMain.class:466
 msgid "Elimina Layout"
 msgstr ""
 
-#: FMain.class:470
+#: FMain.class:472
 msgid "Importa Layouts"
 msgstr ""
 
-#: FMain.class:476
+#: FMain.class:478
 msgid "Esporta Layouts"
 msgstr ""
 
-#: FMain.class:486 Test.class:94
+#: FMain.class:488 Test.class:96
 msgid "Test"
 msgstr ""
 
-#: FMain.class:492
+#: FMain.class:494
 msgid "Salva"
 msgstr ""
 
-#: FMain.class:498
+#: FMain.class:500
 msgid "Guida"
 msgstr ""
 
-#: FMain.class:504 Legenda.class:25
+#: FMain.class:506 Legenda.class:27
 msgid "Legenda"
 msgstr ""
 
-#: FMain.class:511
+#: FMain.class:513
 msgid "Lista Layout:"
 msgstr ""
 
-#: FMain.class:527
+#: FMain.class:529
 msgid "Corpo del layout:"
 msgstr ""
 
-#: FMain.class:538
+#: FMain.class:540
 msgid "Tipo Layout"
 msgstr ""
 
-#: FMain.class:542
+#: FMain.class:544
 msgid "Copertina"
 msgstr ""
 
-#: FMain.class:548
+#: FMain.class:550
 msgid "Retro"
 msgstr ""
 
-#: FMain.class:565
+#: FMain.class:567
 msgid "Invisibile"
 msgstr ""
 
-#: FMain.class:580
+#: FMain.class:582
 msgid "Carica immagine anteprima"
 msgstr ""
 
-#: FMain.class:600
+#: FMain.class:602
 msgid "Nome Layout:"
 msgstr ""
 
-#: FMain.class:605
+#: FMain.class:607
 msgid "Immagini extra:"
 msgstr ""
 
-#: FMain.class:614
+#: FMain.class:616
 msgid "Aggiungi"
 msgstr ""
 
-#: FMain.class:619
+#: FMain.class:621
 msgid "Rimuovi"
 msgstr ""
 
-#: Legenda.class:32
+#: Legenda.class:34
 msgid ""
 "             Legenda delle Special Key di Aedilis:\n"
 "\n"
@@ -140,26 +140,26 @@ msgid ""
 "il nome della vostra immagine.)"
 msgstr ""
 
-#: ShowPic.class:42
+#: ShowPic.class:44
 msgid "Mostra immagine"
 msgstr ""
 
-#: ShowPic.class:58
+#: ShowPic.class:60
 msgid "TextLabel1"
 msgstr ""
 
-#: Test.class:115
+#: Test.class:117
 msgid "Esegui"
 msgstr ""
 
-#: Test.class:122
+#: Test.class:124
 msgid "Comando:"
 msgstr ""
 
-#: Test.class:127
+#: Test.class:129
 msgid "Riavvia il test"
 msgstr ""
 
-#: Test.class:133
+#: Test.class:135
 msgid "Guarda il risultato"
 msgstr ""

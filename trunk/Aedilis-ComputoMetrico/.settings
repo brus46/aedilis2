@@ -29,6 +29,16 @@ SearchWord=True
 SearchComment=False
 SearchString=True
 
+[OpenFile]
+File[1]="ComputoMetrico.form"
+Active=1
+File[2]="ComputoMetrico.class:391.6"
+File[3]="Globals.module:0.0"
+File[4]="Connessione.module:0.0"
+File[5]="EditElementoCM.class:133.13"
+File[6]="ToolImportazione.module:172.12"
+Count=6
+
 [Watches]
 Count=0
 

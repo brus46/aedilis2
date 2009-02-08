@@ -2,7 +2,7 @@
 Title=Aedilis
 Startup=Splash
 Icon=Icone/aedilis.png
-Version=0.0.35
+Version=0.0.36
 Library=gb.qt
 Library=gb.form
 Library=gb.db

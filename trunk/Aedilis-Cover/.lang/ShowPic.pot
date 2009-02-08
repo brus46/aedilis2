@@ -14,11 +14,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ShowPic.class:42
+#: ShowPic.class:44
 msgid "Mostra immagine"
 msgstr ""
 
-#: ShowPic.class:58
+#: ShowPic.class:60
 msgid "TextLabel1"
 msgstr ""
 

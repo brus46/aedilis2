@@ -18,51 +18,51 @@ msgstr ""
 msgid "Questo modulo di Aedilis è il visualizzatore per la sua guida."
 msgstr ""
 
-#: Browser.class:217 Info.class:41
+#: Browser.class:219 Info.class:43
 msgid "Aedilis-Help"
 msgstr ""
 
-#: Browser.class:222
+#: Browser.class:224
 msgid "&File"
 msgstr ""
 
-#: Browser.class:225
+#: Browser.class:227
 msgid "&Esci"
 msgstr ""
 
-#: Browser.class:231
+#: Browser.class:233
 msgid "&?"
 msgstr ""
 
-#: Browser.class:234
+#: Browser.class:236
 msgid "&Help"
 msgstr ""
 
-#: Browser.class:240
+#: Browser.class:242
 msgid "&Info"
 msgstr ""
 
-#: Info.class:28
+#: Info.class:30
 msgid "Info Riguardo Aedilis-Help"
 msgstr ""
 
-#: Info.class:46 Licenza.class:44
+#: Info.class:48 Licenza.class:46
 msgid "Chiudi"
 msgstr ""
 
-#: Info.class:51
+#: Info.class:53
 msgid "Vedi Licenza"
 msgstr ""
 
-#: Info.class:57
+#: Info.class:59
 msgid "Descrizione"
 msgstr ""
 
-#: Licenza.class:26
+#: Licenza.class:28
 msgid "Licenza"
 msgstr ""
 
-#: Licenza.class:33
+#: Licenza.class:35
 msgid ""
 "\\t\\t    GNU GENERAL PUBLIC LICENSE\n"
 "\\t\\t       Version 2, June 1991\n"
@@ -409,6 +409,6 @@ msgid ""
 "Public License instead of this License."
 msgstr ""
 
-#: Licenza.class:39
+#: Licenza.class:41
 msgid "Licenza sotto cui \\xC3\\xA8 rilasciato Aedilis:"
 msgstr ""
