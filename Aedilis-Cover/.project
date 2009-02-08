@@ -2,7 +2,7 @@
 Title=Aedilis-Cover
 Startup=Splash
 Icon=Immagini/Layout.png
-Version=0.0.5
+Version=0.0.6
 Library=gb.qt
 Library=gb.form
 Library=gb.image
@@ -12,6 +12,7 @@ TabSize=5
 Translate=1
 Language=it_IT.UTF-8
 ControlPublic=1
+ExecPath=/home/sergio/Aedilis/Aedilis-Cover/aedilis-cover.gambas
 Maintainer=MosconiMarco
 Address=brus46@gmail.com
 License=General Public Licence

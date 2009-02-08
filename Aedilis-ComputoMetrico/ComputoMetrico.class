@@ -384,13 +384,14 @@ PUBLIC SUB Form_Resize()
 
        'Computo
        ListElementiCM.Width = Tab.Width - ListElementiCM.X - 10
-       ListElementiCM.Height = ListElementiCM.Y + 240
-       FrameComandiCM.Y = ListElementiCM.height + 15
-       FrameElSelCM.Y = FrameComandiCM.Height + FrameComandiCM.Y + 10
+       ListElementiCM.Height = ListElementiCM.Y + Int(tab.height / 4) '240
+       FrameElSelCM.Y = ListElementiCM.height + 15
        FrameElSelCM.Height = Tab.Height - FrameElSelCM.Y - 40
        FrameElSelCM.Width = Tab.Width - FrameElSelCM.X - 10 
+       FrameComandiCM.Y = FrameElSelCM.Y + 15
        quantita.Width = FrameElSelCM.Width - quantita.X - 10
-       quantita.Height = FrameElSelCM.Height - 300
+       quantita.y = totq.Y + totq.height + 10
+       quantita.Height = FrameElSelCM.Height - quantita.y - 10
        CMDescrLunga.Width = quantita.Width - 60
        FrameDatiComputo.Y = Framecat.Height + Framecat.Y + 10
        FrameDatiComputo.Height = Tab.Height - FrameDatiComputo.Y - 40
@@ -1651,6 +1652,7 @@ DIM parziale AS Float
 DIM ContatoreRighe AS Integer
 DIM voce_corrente AS Integer
 DIM quantot AS Float
+
 IF NOT (ListElementiCM.Current = NULL) THEN
          voce_corrente = ListElementiCM.Current.Key
       

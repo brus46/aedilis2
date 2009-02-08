@@ -2,7 +2,7 @@
 Title=Aedilis - Editor dei Prezziari
 Startup=Splash
 Icon=Icone/Modifica.png
-Version=0.0.46
+Version=0.0.47
 Library=gb.qt
 Library=gb.form
 Library=gb.db
@@ -12,6 +12,7 @@ Description=Modulo di Aedilis per la gestione dei prezziari
 Authors=Mosconi Marco
 TabSize=5
 ControlPublic=1
+ExecPath=/home/sergio/Aedilis/Aedilis-EditorPrezziari/aedilis-editorprezziari.gambas
 Maintainer=MosconiMarco
 Address=brus46@gmail.com
 License=General Public Licence

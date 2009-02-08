@@ -14,11 +14,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: Legenda.class:25
+#: Legenda.class:27
 msgid "Legenda"
 msgstr ""
 
-#: Legenda.class:32
+#: Legenda.class:34
 msgid "             Legenda delle Special Key di Aedilis:\n\n##TitoloProgetto##: Stampa il titolo del progetto\n##TitoloDocumento##: Stampa il titolo del documento\n##DataDocumento##: Stampa la data del documento\n##Committente##: Stampa il nome del committente\n##TipoCommittente##: Stampa il tipo di committente\n##Progettista##: Stampa il nome del progettista\n##Comune##: Stampa il comune\n##Provincia##: Stampa la provincia\n##TotaleComputo##: Stampa il totale del computo\n##Resoconto##: Stampa per ogni categoria il totale e poi il totale complessivo (attenzione quest'ultimo comando è su + linee)\n##ImagePath##: Per inserire un'immagine basta caricarla e poi inserire come percorso ##ImagePath##NomeFoto.png (al posto di NomeFoto.png dovrete mettere il nome della vostra immagine.)"
 msgstr ""
 

@@ -14,19 +14,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: Exporting.class:94
+#: Exporting.class:96
 msgid "Esporta"
 msgstr ""
 
-#: Exporting.class:118
+#: Exporting.class:120
 msgid "Annulla"
 msgstr ""
 
-#: Exporting.class:124
+#: Exporting.class:126
 msgid "I tuoi Layout"
 msgstr ""
 
-#: Exporting.class:129
+#: Exporting.class:131
 msgid "Da esportare:"
 msgstr ""
 

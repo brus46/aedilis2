@@ -14,23 +14,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: Test.class:94
+#: Test.class:96
 msgid "Test"
 msgstr ""
 
-#: Test.class:115
+#: Test.class:117
 msgid "Esegui"
 msgstr ""
 
-#: Test.class:122
+#: Test.class:124
 msgid "Comando:"
 msgstr ""
 
-#: Test.class:127
+#: Test.class:129
 msgid "Riavvia il test"
 msgstr ""
 
-#: Test.class:133
+#: Test.class:135
 msgid "Guarda il risultato"
 msgstr ""
 

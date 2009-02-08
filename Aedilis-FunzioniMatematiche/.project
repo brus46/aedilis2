@@ -2,13 +2,14 @@
 Title=Aedilis - Funzioni Matematiche
 Startup=Splash
 Icon=Immagini/function_editor.gif
-Version=0.0.6
+Version=0.0.7
 Library=gb.qt
 Library=gb.form
 Library=gb.qt.ext
 Description=Modulo per le funzioni matematiche di Aedilis\n Questo modulo per aedilis permette di creare funzioni matematiche personalizzate.\n  Esse vengono scritte in un linguaggio compatibile con Octave e quindi possono essere richiamate in qualunque momento.
 TabSize=5
 ControlPublic=1
+ExecPath=/home/sergio/Aedilis/Aedilis-FunzioniMatematiche/aedilis-funzionimatematiche.gambas
 Maintainer=MosconiMarco
 Address=brus46@gmail.com
 License=General Public Licence
