@@ -86,7 +86,7 @@
     }
   }
   { Tab TabStrip
-    MoveScaled(0,0,139,99)
+    MoveScaled(0,2,139,99)
     Count = 4
     Index = 0
     Text = ("Elenco Prezzi")
@@ -196,7 +196,7 @@
         MoveScaled(0,14,49,67)
       }
       { Dat Frame
-        MoveScaled(1,41,51,38)
+        MoveScaled(-1,28,51,38)
         Visible = False
         Text = ("Dati(invisibile)")
         { ListElDescr ListBox
@@ -225,13 +225,29 @@
     Index = 1
     Text = ("Computo Metrico")
     { FrameCat Frame
-      MoveScaled(1,1,39,12)
-      Text = ("Categoria")
+      MoveScaled(1,1,39,17)
+      Text = ("SuperCategorie e Categorie")
       { CategorieCM ComboBox
-        MoveScaled(2,3,35,7)
+        MoveScaled(12,10,26,5)
         Text = ("Tutte")
         ReadOnly = True
         List = []
+      }
+      { SuperCatCM ComboBox
+        MoveScaled(12,3,26,5)
+        Text = ("ComboBox1")
+        ReadOnly = True
+        List = [("lavori a Misura"), ("Lavori a Corpo"), ("Sicurezza")]
+      }
+      { Label1 Label
+        MoveScaled(1,2,8,7)
+        Font = Font["-1"]
+        Text = ("SuperCat.")
+      }
+      { Label2 Label
+        MoveScaled(1,9,8,6)
+        Font = Font["-1"]
+        Text = ("Categoria")
       }
     }
     { FrameElSelCM Frame
@@ -342,11 +358,10 @@
         MoveScaled(1,34,94,16)
         Mode = Select.Single
         Header = GridView.Horizontal
-        Scrollbar = Scroll.Vertical
       }
     }
     { FrameDatiComputo Frame
-      MoveScaled(1,14,39,72)
+      MoveScaled(1,19,39,67)
       Text = ("Dati Computo")
       { TotComputo TextBox
         MoveScaled(8,3,27,4)
@@ -361,16 +376,29 @@
         MoveScaled(36,4,2,3)
         Text = ("\xE2\x82\xAC")
       }
-      { TotPerCategoria ListBox
-        MoveScaled(1,10,37,60)
-      }
       { TextLabel26 TextLabel
-        MoveScaled(1,7,14,3)
+        MoveScaled(1,23,14,3)
         Text = ("Per categoria:")
+      }
+      { TotPerCategoria TreeView
+        MoveScaled(1,27,36,43)
+        Expand = True
+      }
+      { TotSup1 TextBox
+        MoveScaled(8,8,27,4)
+        Text = ("TextBox1")
+      }
+      { TextBox2 TextBox
+        MoveScaled(8,13,27,4)
+        Text = ("TextBox2")
+      }
+      { TextBox3 TextBox
+        MoveScaled(8,18,27,4)
+        Text = ("TextBox3")
       }
     }
     { Frame7 Frame
-      MoveScaled(-12,45,55,38)
+      MoveScaled(39,35,67,38)
       Visible = False
       Text = ("Dati(invisibile)")
       { ListCMid ListBox
@@ -396,6 +424,9 @@
       }
       { ListCMTot ListBox
         MoveScaled(47,2,7,35)
+      }
+      { ListElSupCat ListBox
+        MoveScaled(56,2,9,19)
       }
     }
     { ListElementiCM ColumnView
@@ -515,7 +546,7 @@
         MoveScaled(0,23,49,58)
       }
       { Frame4 Frame
-        MoveScaled(3,42,9,38)
+        MoveScaled(3,42,20,38)
         Visible = False
         Text = ("Dati(invisibile)")
         { ListIdEl ListView

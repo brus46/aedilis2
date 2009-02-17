@@ -2,12 +2,11 @@
 Title=Aedilis - Computo Metrico
 Startup=Splash
 Icon=Icone/aedilisComputoMetrico.resized.png
-Version=0.0.79
+Version=0.0.82
 Library=gb.qt
 Library=gb.form
 Library=gb.db
 Library=gb.db.form
-Library=gb.qt.ext
 Description=Questo Modulo per Aedilis permette di realizzare Elenchi Prezzi e Computi Metrici
 Authors=Mosconi Marco\nSerbrac
 TabSize=5
