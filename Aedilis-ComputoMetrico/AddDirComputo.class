@@ -62,7 +62,8 @@ WITH ComputoMetrico
      NEXT 
      
      IF (prosegui = 1) THEN 
-     
+           'ListElSupCat aggiunto da Serbrac
+          .ListElSupCat.add(SuperCategoria.Index)
           .ListElCat.Add(Categorie.Index)
           .ListElDescrBreve.Add(Globals.Cut_Descr(Descrizione.Text, Connessione.LenDescrBreve))
           .ListElDescr.Add(Descrizione.Text)
@@ -80,6 +81,7 @@ WITH ComputoMetrico
           .CategorieElPrezzi_Click()
           id = .ListElCat.Count - 1
           FOR contatore = 1 TO quantita.Rows.Count - 1
+          
                .ListQuantitaId.Add(id)
                .ListCMDescrMis.Add(quantita[contatore, 0].Text)
                .ListCMQ1.Add(quantita[contatore, 1].Text)

@@ -25,7 +25,7 @@ END
 
 PUBLIC SUB Refresh2()
   
-  AddElPrezzi.Categorie.List = Categorie.List
+  
   ComputoMetrico.CategorieElPrezzi.List = Categorie.List
   ComputoMetrico.CategorieElPrezzi.Add("Tutte")
   ComputoMetrico.CategorieElPrezzi.Text = "Tutte"
@@ -42,7 +42,7 @@ PUBLIC SUB Add_Click()
 DIM id AS Integer
 
 IF NOT (NomeCat.Text = "") THEN 
-
+     ComputoMetrico.TotPerCategoria.Clear
      Categorie.Add(NomeCat.Text)
      CatProp.Add("1")
      Refresh1()

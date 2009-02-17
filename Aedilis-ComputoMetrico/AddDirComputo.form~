@@ -11,11 +11,11 @@
     Index = 0
     Text = ("Categoria")
     { TextLabel7 TextLabel
-      MoveScaled(14,5,10,4)
+      MoveScaled(15,7,10,4)
       Text = ("Categoria:")
     }
     { Categorie ComboBox
-      MoveScaled(29,5,26,4)
+      MoveScaled(30,7,26,4)
       Text = ("Varie")
       ReadOnly = True
       List = [("Varie")]
@@ -23,6 +23,12 @@
     { EditCat Button
       MoveScaled(21,14,18,4)
       Text = ("Edita Categorie")
+    }
+    { SuperCategoria ComboBox
+      MoveScaled(30,2,26,4)
+      Text = ("SuperCategorie")
+      ReadOnly = True
+      List = [("Lavori a Misura"), ("Lavori a Corpo"), ("Sicurezza")]
     }
     Index = 1
     Text = ("Sconto")
@@ -60,10 +66,6 @@
     { TextLabel8 TextLabel
       MoveScaled(36,3,2,3)
       Text = ("%")
-    }
-    { ScontoBox TextBox
-      MoveScaled(31,15,19,4)
-      Text = (" ")
     }
     Index = 2
     Text = ("Descrizione")

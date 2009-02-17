@@ -192,18 +192,23 @@ END
 
 PUBLIC SUB RefreshTotaleComputo()
 DIM contatore AS Integer
+DIM j AS Integer
+DIM contatore_supcat AS Integer
 DIM contatore_cat AS Integer
 DIM contatore_id AS Integer
 DIM totquantita AS Float
 DIM totcategoria AS Float
 DIM parzialeimporto AS Float
+DIM SubtotSuper AS Float
 DIM tot AS Float
+DIM MacroCat AS String
 
 TotComputo.Text = 0
 tot = 0
 FOR contatore = 0 TO ListQuantitaId.Count - 1
      totquantita = 1
-     totquantita = ListCMTot[contatore].Text  
+     totquantita = ListCMTot[contatore].Text 
+    
      FOR contatore_id = 0 TO ListCMid.Count - 1
           IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN 
           parzialeimporto = totquantita * (ListElPrezzo[contatore_id].Text)
@@ -214,35 +219,60 @@ FOR contatore = 0 TO ListQuantitaId.Count - 1
      END IF
      parzialeimporto = parzialeimporto - ((parzialeimporto * Val(ListElSconto[contatore_id].Text)) / 100)
      Tot = Tot + parzialeimporto
+  
       END IF
       NEXT 
 NEXT 
 
 TotComputo.Text = Globals.Approssima(Tot, 0)
 TotComputo.text = Format$(TotComputo.text, ",0.00")
-Totpercategoria.Clear
-FOR contatore_cat = 0 TO CategorieCM.Count - 2
-     
-     totcategoria = 0
-     FOR contatore = 0 TO ListQuantitaId.Count - 1
+TotperCategoria.Clear
+
+Totpercategoria.Add("Lavori a Misura", "Lavori a Misura", PicCat.picture)
+Totpercategoria.Add("Lavori a Corpo", "Lavori a Corpo", PicCat.picture)
+Totpercategoria.Add("Sicurezza", "Sicurezza", PicCat.picture)
+
+FOR contatore_supcat = 0 TO ComputoMetrico.SuperCatCM.Count - 1
+ FOR contatore_cat = 0 TO CategorieCM.Count - 2
+      totcategoria = 0
+       FOR contatore = 0 TO ListQuantitaId.Count - 1
           FOR contatore_id = 0 TO ListCMid.Count - 1
-               IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN  
-          IF (ListElCat[contatore_id].Text = contatore_cat) THEN 
+           IF (ListCMid[contatore_id].Text = ListQuantitaId[contatore].Text) THEN  'se la riga di misure appartiene alla voce
+           IF (ListElSupcat[contatore_id].text = contatore_supcat) THEN
+           IF (ListElCat[contatore_id].Text = contatore_cat) THEN 
                totquantita = 1
                totquantita = ListCMTot[contatore].Text
                parzialeimporto = totquantita * ListElPrezzo[contatore_id].Text
                parzialeimporto = parzialeimporto - ((parzialeimporto * Val(ListElSconto[contatore_id].Text)) / 100)
                totcategoria = totcategoria + parzialeimporto
-          END IF
-          END IF
+               MacroCat = SuperCatCM[ListElSupcat[contatore_id].Text].Text      
+  
+           END IF    
+                        SubtotSuper = totcategoria
+ TotSup1.Text = Globals.Approssima(SubtotSuper, 0)
+ TotSup1.text = Format$(TotSup1.text, ",0.00")
+           END IF
+           END IF
           NEXT 
-     NEXT 
-     totcategoria = Globals.Approssima(totcategoria, 0)
-     Totpercategoria.Add(CategorieCM[contatore_cat].Text & " - " & Format$(totcategoria, ",0.00") & " €")
+        NEXT     
+ totcategoria = Globals.Approssima(totcategoria, 0)
 
-NEXT 
-
+ IF NOT (Macrocat = NULL) AND totcategoria > 0 THEN
+ 
+ TRY Totpercategoria.Add(contatore_supcat, CategorieCM[contatore_cat].Text & " - " & Format$(totcategoria, ",0.00") & " €", PicCat.picture, MacroCat)
+ IF ERROR 
+ TotperCategoria.MoveLast
+ j = Val(TotperCategoria.Item.key)
+ j = j + 1
+ Totpercategoria.Add(j, CategorieCM[contatore_cat].Text & " - " & Format$(totcategoria, ",0.00") & " €", PicCat.picture, MacroCat)
+ END IF
+ 
+ END IF   
+ NEXT
+ 
+NEXT
 END 
+
 PUBLIC SUB CleanOfferte()
 DIM contatore AS Integer
      TabellaOfferte.Clear
@@ -385,14 +415,10 @@ PUBLIC SUB Form_Resize()
        'Computo
        ListElementiCM.Width = Tab.Width - ListElementiCM.X - 10
        ListElementiCM.Height = ListElementiCM.Y + Int(tab.height / 4) '240
-      ' FrameComandiCM.Y = ListElementiCM.height + 15
-       
-       'FrameElSelCM.Y = FrameComandiCM.Height + FrameComandiCM.Y + 10
        FrameElSelCM.Y = ListElementiCM.height + 15
        FrameElSelCM.Height = Tab.Height - FrameElSelCM.Y - 40
        FrameElSelCM.Width = Tab.Width - FrameElSelCM.X - 10 
        FrameComandiCM.Y = FrameElSelCM.Y + 15
-      ' FrameComandiCM.X = CMSconto.x + CMSconto.width + 15
        quantita.Width = FrameElSelCM.Width - quantita.X - 10
        quantita.y = totq.Y + totq.height + 10
        quantita.Height = FrameElSelCM.Height - quantita.y - 10
@@ -402,7 +428,7 @@ PUBLIC SUB Form_Resize()
        Totpercategoria.Height = FrameDatiComputo.Height - Totpercategoria.Y - 10
        Totpercategoria.Width = FrameDatiComputo.Width - Totpercategoria.X - 10
        FrameCat.Width = FrameElSelCM.X - FrameCat.X - 10
-       CategorieCM.Width = FrameCat.Width - 20
+      ' CategorieCM.Width = FrameCat.Width - 20
        
        'Confronta offerte
        TabOfferte.Height = Tab.Height - TabOfferte.Y - 40
@@ -439,11 +465,12 @@ PUBLIC SUB Form_Open()
      ME.Center
      ME.maximized = TRUE
      RefreshPrezziari_Click()
-     versione = "1.3.1"
+     versione = "1.3.2"
      password = ""
      CleanOfferte()
      Aziende.ListAziende.Clear
      Importing = ""
+ComputoMetrico.SuperCatCM.List = AddDirComputo.SuperCategoria.List
 END
 
 PUBLIC SUB Info_Click()
@@ -538,9 +565,8 @@ DIM contatore2 AS Integer
           WITH CategorieComputo
           FOR contatore = 0 TO .Categorie.Count - 1
                PRINT #SaveFile, .Categorie[contatore].Text
-          NEXT 
+          NEXT
           END WITH 
-          
           PRINT #SaveFile, "#ElPrezzi#"
           FOR contatore = 0 TO ListElCat.Count - 1
                PRINT #SaveFile, "@"
@@ -553,7 +579,7 @@ DIM contatore2 AS Integer
                PRINT #SaveFile, ListElPrezzo[contatore].Text
                PRINT #SaveFile, ListElSconto[contatore].Text
                PRINT #SaveFile, ListElUM[contatore].Text
-               
+               PRINT #SaveFile, ListElSupCat[contatore].Text
           NEXT 
           
           
@@ -1022,7 +1048,7 @@ END IF
                PRINT Versione
                
                LINE INPUT #OpenFile, linea
-               IF ((Versione = " 1.0.0") OR (Versione = " 1.0.1") OR (Versione = " 1.1.0") OR (Versione = " 1.1.1") OR (Versione = " 1.1.2")) THEN 
+               IF ((Versione = " 1.0.0") OR (Versione = " 1.0.1") OR (Versione = " 1.1.0") OR (Versione = " 1.1.1") OR (Versione = " 1.1.2") OR (Versione = " 1.3.0") OR (Versione = " 1.3.1")) THEN 
                     PRINT "OldVersion"
                     message.Warning("Questo è un vecchio formato non più supportato!")
                ELSE 
@@ -1097,7 +1123,7 @@ END IF
                          ListElPrezzo.Clear
                          ListElSconto.Clear
                          ListElUM.Clear
-               
+                         ListElSupcat.Clear
                          '#ElPrezzi#'
                          REPEAT 
                               LINE INPUT #OpenFile, linea
@@ -1137,7 +1163,8 @@ END IF
                          
                                    LINE INPUT #OpenFile, linea
                                    ListElUM.Add(linea)
-                    
+                                   LINE INPUT #OpenFile, linea
+                                   ListElSupcat.Add(linea)
                               END IF
                          UNTIL (linea = "#Computo#")
                          'CategorieElPrezzi_Click()
@@ -1170,7 +1197,8 @@ END IF
                                                   LINE INPUT #OpenFile, linea
                                                   IF NOT (linea = "##END-TEXT##") THEN TmpLinea = TmpLinea & linea & "\n"
                                              WEND     
-                                             TmpLinea = Mid$(TmpLinea, 1, Len(TmpLinea) - 1) 
+                                             'TmpLinea = Mid$(TmpLinea, 1, Len(TmpLinea) - 1) 
+                                              TmpLinea = Mid$(TmpLinea, 1, Len(TmpLinea)) 
                                              'PRINT TmpLinea
                                              ListCMDescrMis.Add(TmpLinea)
                                              
@@ -1533,6 +1561,8 @@ DIM prezzoscontato AS Float
      'Categoria specifica
            
      FOR contatore = 0 TO ListCMId.Count - 1
+       IF (SuperCatCM.Index = ListElSupcat[ListCMId[contatore].Text].Text) THEN 
+       
          IF (CategorieCM.Index = ListElCat[ListCMId[contatore].Text].Text) THEN 
              'ListElementiCM.add(contatore, ListCMId[contatore].Text & " - " & ListElCode[ListCMId[contatore].Text].Text & " - " & ListElDescrBreve[ListCMId[contatore].Text].Text, picel.Picture)
               ListElementiCM.add(contatore, ListCMId[contatore].Text)
@@ -1552,6 +1582,7 @@ DIM prezzoscontato AS Float
               NEXT 
               quantparz = 0
          END IF
+       END IF
      NEXT 
   ELSE 
      'Tutte le categorie
@@ -1733,7 +1764,6 @@ END
 
 PUBLIC SUB CMSconto_KeyPress()
 
-  
 
 END
 
@@ -2269,4 +2299,98 @@ PUBLIC SUB SidePanelElPrezzi_Resize()
 
 END
 
+PUBLIC SUB TotPerCategoria_DblClick()
+TRY CategorieCM.index = TotperCategoria.Current.Key
+IF NOT ( ERROR ) THEN 
+'CategorieCM.index = TotperCategoria.Current.Key
+TotperCategoria.Current.Expanded = TRUE
+END IF
+END
 
+
+PUBLIC SUB SuperCatCM_Click()
+
+  DIM contatore AS Integer
+DIM cont2 AS Integer
+DIM quantparz AS Float
+DIM importovoce AS Float
+DIM prezzoscontato AS Float
+  ListElementiCM.Clear
+  ListElementiCM.Columns.Count = 6   
+  ListElementiCM.Columns[0].text = "Nº"
+  ListElementiCM.Columns[0].Width = 50
+  ListElementiCM.Columns[1].text = "Art. Tar."
+  ListElementiCM.Columns[1].Width = 100
+  ListElementiCM.Columns[2].text = "Descrizione"
+  ListElementiCM.Columns[2].Width = 400
+  ListElementiCM.Columns[3].text = "Quantità"
+  ListElementiCM.Columns[3].Width = 100  
+  ListElementiCM.Columns[4].text = "Prezzo netto"
+  ListElementiCM.Columns[4].Width = 100  
+  ListElementiCM.Columns[5].text = "Importo"
+  ListElementiCM.Columns[5].Width = 100  
+  
+  'IF NOT (SuperCatCM.Index = SuperCatCM.Count - 1) THEN 
+     'Categoria specifica
+           
+     FOR contatore = 0 TO ListCMId.Count - 1
+         IF (SuperCatCM.Index = ListElSupcat[ListCMId[contatore].Text].Text) THEN 
+         
+              ListElementiCM.add(contatore, ListCMId[contatore].Text)
+              ListElementiCM[contatore][0] = ListCMId[contatore].Text
+              ListElementiCM[contatore][1] = ListElCode[ListCMId[contatore].Text].Text
+              ListElementiCM[contatore][2] = Replace$(ListElDescrBreve[ListCMId[contatore].Text].Text, "\n", " ")
+              prezzoscontato = ListElPrezzo[Contatore].Text - ((ListElSconto[contatore].Text * ListElPrezzo[Contatore].Text) / 100)
+              ListElementiCM[contatore][4] = Format$(prezzoscontato, ",0.00")
+              FOR cont2 = 0 TO ListQuantitaId.Count - 1
+                IF ListCMid[contatore].text = ListQuantitaID[cont2].Text THEN
+                  quantparz = quantparz + ListCMTot[cont2].text
+                  ListElementiCM[contatore][3] = Format$(quantparz, ",0.00")
+                  importovoce = quantparz * prezzoscontato
+                  importovoce = GLobals.Approssima(importovoce, 0)
+                  ListElementiCM[contatore][5] = Format$(importovoce, ",0.00")
+               END IF
+              NEXT 
+              quantparz = 0
+         END IF
+     NEXT 
+'  ELSE 
+     'Tutte le categorie
+    
+ '    FOR contatore = 0 TO ListCMId.Count - 1
+ '       ListElementiCM.add(contatore, ListCMId[contatore].Text)
+ '       ListElementiCM[contatore][0] = ListCMId[contatore].Text
+ '       ListElementiCM[contatore][1] = ListElCode[ListCMId[contatore].Text].Text
+ '       ListElementiCM[contatore][2] = Replace$(ListElDescrBreve[ListCMId[contatore].Text].Text, "\n", " ")
+ '       prezzoscontato = ListElPrezzo[Contatore].Text - ((ListElSconto[contatore].Text * ListElPrezzo[Contatore].Text) / 100)
+ '       ListElementiCM[contatore][4] = Format$(prezzoscontato, ",0.00")
+ '         FOR cont2 = 0 TO ListQuantitaId.Count - 1
+ '           IF ListCMid[contatore].text = ListQuantitaID[cont2].Text THEN
+ '                quantparz = quantparz + ListCMTot[cont2].text
+ '                ListElementiCM[contatore][3] = Format$(quantparz, ",0.00")
+ '                importovoce = quantparz * prezzoscontato
+ '                 importovoce = GLobals.Approssima(importovoce, 0)
+ '                 ListElementiCM[contatore][5] = Format$(importovoce, ",0.00")
+ '           END IF
+ '         NEXT 
+  '        quantparz = 0
+  '  NEXT 
+' END IF
+
+  CostoFinale.Clear
+  cmCode.Clear
+  'CMDescrBreve.Clear
+  CMDescrLunga.Clear
+  CMPrezzo.Clear
+  CMSconto.Clear
+  cmum.Text = ""
+  q1.Clear
+  q2.Clear
+  q3.Clear
+  q4.Clear
+  totq.Clear
+  quantita.Clear
+  RefreshTotaleComputo()
+
+
+END
