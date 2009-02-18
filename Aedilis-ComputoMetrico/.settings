@@ -38,8 +38,10 @@ SearchString=True
 [OpenFile]
 File[1]="ComputoMetrico.form"
 Active=1
-File[2]="ComputoMetrico.class:250.0"
-Count=2
+File[2]="ComputoMetrico.class:288.53"
+File[3]="AddDirComputo.form"
+File[4]="AddDirComputo.class:36.0"
+Count=4
 
 [Watches]
 Count=0

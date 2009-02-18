@@ -86,7 +86,7 @@
     }
   }
   { Tab TabStrip
-    MoveScaled(0,2,139,99)
+    MoveScaled(1,1,138,99)
     Count = 4
     Index = 0
     Text = ("Elenco Prezzi")
@@ -382,6 +382,7 @@
       }
       { TotPerCategoria TreeView
         MoveScaled(1,27,36,43)
+        Font = Font["-1"]
         Expand = True
       }
       { TotLavMisura TextBox
@@ -422,7 +423,8 @@
       }
     }
     { Frame7 Frame
-      MoveScaled(5,55,67,38)
+      MoveScaled(6,51,67,38)
+      Visible = False
       Text = ("Dati(invisibile)")
       { ListCMid ListBox
         MoveScaled(1,2,7,35)
@@ -454,6 +456,7 @@
     }
     { ListElementiCM ColumnView
       MoveScaled(41,2,96,23)
+      Background = &HFFFFDF&
       Expand = True
       Resizable = True
     }
@@ -688,7 +691,7 @@
     Text = ("0")
   }
   { Frame3 Frame
-    MoveScaled(2,90,35,8)
+    MoveScaled(2,90,49,8)
     Visible = False
     Text = ("Invisibile")
     { PicPrezzChiuso PictureBox
@@ -718,6 +721,14 @@
     { PicIns PictureBox
       MoveScaled(29,3,3,3)
       Picture = Picture["Icone/ElInserito.png"]
+    }
+    { PicSup PictureBox
+      MoveScaled(34,2,6,4)
+      Picture = Picture["Icone/home32x32.png"]
+    }
+    { SubCat PictureBox
+      MoveScaled(40,2,6,4)
+      Picture = Picture["Icone/subcat.png"]
     }
   }
 }
