@@ -468,6 +468,7 @@ PUBLIC SUB Form_Open()
      Aziende.ListAziende.Clear
      Importing = ""
 ComputoMetrico.SuperCatCM.List = AddDirComputo.SuperCategoria.List
+ListElementiCM.Resizable = TRUE
 END
 
 PUBLIC SUB Info_Click()

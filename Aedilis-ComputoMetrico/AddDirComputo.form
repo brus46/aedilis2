@@ -185,7 +185,7 @@
     Text = ("Annulla")
   }
   { Dati ListBox
-    MoveScaled(27,2,37,3)
+    MoveScaled(15,25,37,3)
     Visible = False
   }
 }
