@@ -202,7 +202,11 @@ DIM parzialeimporto AS Float
 DIM SubtotSuper AS Float
 DIM tot AS Float
 DIM MacroCat AS String
-
+DIM RefVoce AS Integer[]
+DIM RefSuper AS Integer[]
+DIM RefCat AS Integer[]
+DIM RefParziale AS Float[]
+DIM impsup0 AS Float
 TotComputo.Text = 0
 tot = 0
 FOR contatore = 0 TO ListQuantitaId.Count - 1
@@ -228,9 +232,9 @@ TotComputo.Text = Globals.Approssima(Tot, 0)
 TotComputo.text = Format$(TotComputo.text, ",0.00")
 TotperCategoria.Clear
 
-Totpercategoria.Add("Lavori a Misura", "Lavori a Misura", PicCat.picture)
-Totpercategoria.Add("Lavori a Corpo", "Lavori a Corpo", PicCat.picture)
-Totpercategoria.Add("Sicurezza", "Sicurezza", PicCat.picture)
+Totpercategoria.Add("Lavori a Misura", "Lavori a Misura", PicSup.picture)
+Totpercategoria.Add("Lavori a Corpo", "Lavori a Corpo", PicSup.picture)
+Totpercategoria.Add("Sicurezza", "Sicurezza", PicSup.picture)
 
 FOR contatore_supcat = 0 TO ComputoMetrico.SuperCatCM.Count - 1
  FOR contatore_cat = 0 TO CategorieCM.Count - 2
@@ -254,19 +258,47 @@ FOR contatore_supcat = 0 TO ComputoMetrico.SuperCatCM.Count - 1
         NEXT     
  totcategoria = Globals.Approssima(totcategoria, 0)
 
- 'IF NOT (Macrocat = NULL) AND totcategoria > 0 THEN
- IF NOT (Macrocat = NULL) THEN
- TRY Totpercategoria.Add(contatore_supcat, CategorieCM[contatore_cat].Text & " - " & Format$(totcategoria, ",0.00") & " €", PicCat.picture, MacroCat)
+ IF NOT (Macrocat = NULL) AND totcategoria > 0 THEN
+ 
+ TRY Totpercategoria.Add(contatore_supcat, CategorieCM[contatore_cat].Text & " - " & Format$(totcategoria, ",0.00") & " €", SubCat.picture, MacroCat)
+ RefVoce = NEW Integer[]
+ RefSuper = NEW Integer[]
+ RefCat = NEW Integer[]
+ RefParziale = NEW Float[]
+ RefSuper.Add(contatore_supcat)
+ RefCat.Add(contatore_cat)
+ RefParziale.Add(totcategoria)
+ 
  IF ERROR 
  TotperCategoria.MoveLast
  j = Val(TotperCategoria.Item.key)
  j = j + 1
- Totpercategoria.Add(j, CategorieCM[contatore_cat].Text & " - " & Format$(totcategoria, ",0.00") & " €", PicCat.picture, MacroCat)
+ Totpercategoria.Add(j, CategorieCM[contatore_cat].Text & " - " & Format$(totcategoria, ",0.00") & " €", SubCat.picture, MacroCat)
  END IF
- 
- END IF   
- NEXT
- 
+
+FOR j = 0 TO RefCat.Count - 1
+IF RefSuper[j] = 0 THEN 
+impsup0 = impsup0 + RefParziale[j]
+totlavMisura.Text = Globals.Approssima(impsup0, 0)
+TotLavMisura.Text = Format$(TotLavMisura.Text, ",0.00")
+impsup0 = 0
+END IF
+IF RefSuper[j] = 1 THEN 
+impsup0 = impsup0 + RefParziale[j]
+TotLavCorpo.Text = Globals.Approssima(impsup0, 0)
+TotLavCorpo.Text = Format$(TotLavCorpo.Text, ",0.00")
+impsup0 = 0
+END IF
+IF RefSuper[j] = 2 THEN 
+impsup0 = impsup0 + RefParziale[j]
+TotCostiSicurezza.Text = Globals.Approssima(impsup0, 0)
+TotCostiSicurezza.Text = Format$(TotCostiSicurezza, ",0.00")
+impsup0 = 0
+END IF
+NEXT 
+
+END IF 
+NEXT
 NEXT
 END 
 

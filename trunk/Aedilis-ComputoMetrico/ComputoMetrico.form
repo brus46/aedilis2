@@ -86,7 +86,7 @@
     }
   }
   { Tab TabStrip
-    MoveScaled(0,2,139,99)
+    MoveScaled(1,1,138,99)
     Count = 4
     Index = 0
     Text = ("Elenco Prezzi")
@@ -364,13 +364,16 @@
       MoveScaled(1,19,39,67)
       Text = ("Dati Computo")
       { TotComputo TextBox
-        MoveScaled(9,18,25,4)
+        MoveScaled(13,19,21,4)
+        Background = &HFFFFDF&
+        Foreground = &H000080&
         Text = ("0")
+        Alignment = Align.Right
         ReadOnly = True
       }
       { TextLabel22 TextLabel
-        MoveScaled(1,19,6,3)
-        Text = ("Totale:")
+        MoveScaled(1,20,11,4)
+        Text = ("TOTALE")
       }
       { TextLabel25 TextLabel
         MoveScaled(36,3,2,3)
@@ -382,30 +385,34 @@
       }
       { TotPerCategoria TreeView
         MoveScaled(1,27,36,43)
+        Font = Font["-1"]
         Expand = True
       }
       { TotLavMisura TextBox
         MoveScaled(13,3,21,4)
         Text = ("0")
+        Alignment = Align.Right
       }
       { TotLavCorpo TextBox
         MoveScaled(13,8,21,4)
         Text = ("0")
+        Alignment = Align.Right
       }
       { TotCostiSicurezza TextBox
         MoveScaled(13,13,21,4)
         Text = ("0")
+        Alignment = Align.Right
       }
       { TextLabel1 TextLabel
-        MoveScaled(1,3,12,4)
+        MoveScaled(1,4,12,4)
         Text = ("Lav. a Misura")
       }
       { TextLabel33 TextLabel
-        MoveScaled(1,8,11,3)
+        MoveScaled(1,9,11,3)
         Text = ("Lav. a Corpo")
       }
       { TextLabel34 TextLabel
-        MoveScaled(1,13,11,4)
+        MoveScaled(1,14,11,4)
         Text = ("Sicurezza")
       }
       { TextLabel35 TextLabel
@@ -417,7 +424,7 @@
         Text = ("\xE2\x82\xAC")
       }
       { TextLabel37 TextLabel
-        MoveScaled(36,18,2,3)
+        MoveScaled(36,19,2,3)
         Text = ("\xE2\x82\xAC")
       }
     }
@@ -455,6 +462,7 @@
     }
     { ListElementiCM ColumnView
       MoveScaled(41,2,96,23)
+      Background = &HFFFFDF&
       Expand = True
       Resizable = True
     }
@@ -689,7 +697,7 @@
     Text = ("0")
   }
   { Frame3 Frame
-    MoveScaled(2,90,35,8)
+    MoveScaled(2,90,49,8)
     Visible = False
     Text = ("Invisibile")
     { PicPrezzChiuso PictureBox
@@ -719,6 +727,14 @@
     { PicIns PictureBox
       MoveScaled(29,3,3,3)
       Picture = Picture["Icone/ElInserito.png"]
+    }
+    { PicSup PictureBox
+      MoveScaled(34,2,6,4)
+      Picture = Picture["Icone/home32x32.png"]
+    }
+    { SubCat PictureBox
+      MoveScaled(40,2,6,4)
+      Picture = Picture["Icone/subcat.png"]
     }
   }
 }
