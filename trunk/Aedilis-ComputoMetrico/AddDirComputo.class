@@ -47,17 +47,20 @@ WITH ComputoMetrico
   prosegui = 1
      FOR contatore = 0 TO .ListElCode.Count - 1
   
-     IF sovrascrivi = FALSE THEN 
+     IF sovrascrivi = FALSE THEN 'si utilizza l'elenco locale
           IF (Dati[0].Text = .ListElCode[contatore].Text) THEN 
                Descrizione.Text = .ListElDescr[contatore].Text
                dati[2].Text = .ListElPrezzo[contatore].Text
                dati[3].Text = .ListElSconto[contatore].Text
           END IF
+     END IF         
   
-     ELSE 
+     IF sovrascrivi = TRUE 'si utilizzano i dati del database
+      IF (Dati[0].Text = .ListElCode[contatore].Text) THEN    
     .ListElDescr[contatore].Text = Descrizione.Text 
     .ListElPrezzo[contatore].Text = dati[2].Text
     .ListElSconto[contatore].Text = dati[3].Text
+     END IF
      END IF
      NEXT 
      

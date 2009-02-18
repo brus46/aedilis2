@@ -248,17 +248,14 @@ FOR contatore_supcat = 0 TO ComputoMetrico.SuperCatCM.Count - 1
                MacroCat = SuperCatCM[ListElSupcat[contatore_id].Text].Text      
   
            END IF    
-                        SubtotSuper = totcategoria
- TotSup1.Text = Globals.Approssima(SubtotSuper, 0)
- TotSup1.text = Format$(TotSup1.text, ",0.00")
            END IF
            END IF
           NEXT 
         NEXT     
  totcategoria = Globals.Approssima(totcategoria, 0)
 
- IF NOT (Macrocat = NULL) AND totcategoria > 0 THEN
- 
+ 'IF NOT (Macrocat = NULL) AND totcategoria > 0 THEN
+ IF NOT (Macrocat = NULL) THEN
  TRY Totpercategoria.Add(contatore_supcat, CategorieCM[contatore_cat].Text & " - " & Format$(totcategoria, ",0.00") & " €", PicCat.picture, MacroCat)
  IF ERROR 
  TotperCategoria.MoveLast
@@ -471,6 +468,7 @@ PUBLIC SUB Form_Open()
      Aziende.ListAziende.Clear
      Importing = ""
 ComputoMetrico.SuperCatCM.List = AddDirComputo.SuperCategoria.List
+ListElementiCM.Resizable = TRUE
 END
 
 PUBLIC SUB Info_Click()

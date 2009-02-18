@@ -422,7 +422,7 @@
       }
     }
     { Frame7 Frame
-      MoveScaled(39,35,67,38)
+      MoveScaled(6,51,67,38)
       Visible = False
       Text = ("Dati(invisibile)")
       { ListCMid ListBox

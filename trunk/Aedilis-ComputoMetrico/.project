@@ -2,7 +2,7 @@
 Title=Aedilis - Computo Metrico
 Startup=Splash
 Icon=Icone/aedilisComputoMetrico.resized.png
-Version=0.0.82
+Version=0.0.83
 Library=gb.qt
 Library=gb.form
 Library=gb.db
@@ -11,7 +11,7 @@ Description=Questo Modulo per Aedilis permette di realizzare Elenchi Prezzi e Co
 Authors=Mosconi Marco\nSerbrac
 TabSize=5
 ControlPublic=1
-ExecPath=/home/sergio/Aedilis/Aedilis-ComputoMetrico/aedilis-computometrico.gambas
+ExecPath=/home/sergio/Aedilis-svn/Aedilis-ComputoMetrico/aedilis-computometrico.gambas
 Maintainer=MosconiMarco
 Address=brus46@gmail.com
 License=General Public Licence
