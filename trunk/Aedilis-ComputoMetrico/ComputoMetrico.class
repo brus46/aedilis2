@@ -207,6 +207,8 @@ DIM RefSuper AS Integer[]
 DIM RefCat AS Integer[]
 DIM RefParziale AS Float[]
 DIM impsup0 AS Float
+DIM impsup1 AS Float
+DIM impsup2 AS Float
 TotComputo.Text = 0
 tot = 0
 FOR contatore = 0 TO ListQuantitaId.Count - 1
@@ -274,6 +276,14 @@ FOR contatore_supcat = 0 TO ComputoMetrico.SuperCatCM.Count - 1
  j = Val(TotperCategoria.Item.key)
  j = j + 1
  Totpercategoria.Add(j, CategorieCM[contatore_cat].Text & " - " & Format$(totcategoria, ",0.00") & " €", SubCat.picture, MacroCat)
+  RefVoce = NEW Integer[]
+ RefSuper = NEW Integer[]
+ RefCat = NEW Integer[]
+ RefParziale = NEW Float[]
+ RefSuper.Add(contatore_supcat)
+ RefCat.Add(contatore_cat)
+ RefParziale.Add(totcategoria)
+ 
  END IF
 
 FOR j = 0 TO RefCat.Count - 1
@@ -281,19 +291,16 @@ IF RefSuper[j] = 0 THEN
 impsup0 = impsup0 + RefParziale[j]
 totlavMisura.Text = Globals.Approssima(impsup0, 0)
 TotLavMisura.Text = Format$(TotLavMisura.Text, ",0.00")
-impsup0 = 0
 END IF
 IF RefSuper[j] = 1 THEN 
-impsup0 = impsup0 + RefParziale[j]
-TotLavCorpo.Text = Globals.Approssima(impsup0, 0)
+impsup1 = impsup1 + RefParziale[j]
+TotLavCorpo.Text = Globals.Approssima(impsup1, 0)
 TotLavCorpo.Text = Format$(TotLavCorpo.Text, ",0.00")
-impsup0 = 0
 END IF
 IF RefSuper[j] = 2 THEN 
-impsup0 = impsup0 + RefParziale[j]
-TotCostiSicurezza.Text = Globals.Approssima(impsup0, 0)
+impsup2 = impsup2 + RefParziale[j]
+TotCostiSicurezza.Text = Globals.Approssima(impsup2, 0)
 TotCostiSicurezza.Text = Format$(TotCostiSicurezza.text, ",0.00")
-impsup0 = 0
 END IF
 NEXT 
 
